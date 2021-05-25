@@ -1,21 +1,24 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import 'reflect-metadata'
+import { NavigationContainer } from '@react-navigation/native'
+import React, { FunctionComponent } from 'react'
+import { ThemeProvider } from 'react-native-magnus'
+import { DatabaseConnectionProvider } from './src/data/Connection'
+import BottomTabNavigation from './src/navigation/BottomTabNavigation'
+import TodoList from './src/components/TodoList'
 
-export default function App() {
+const theme = {}
+
+export const App: FunctionComponent = () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+    <ThemeProvider theme={theme}>
+      <DatabaseConnectionProvider>
+        <NavigationContainer>
+          {/* <BottomTabNavigation /> */}
+          <TodoList />
+        </NavigationContainer>
+      </DatabaseConnectionProvider>
+    </ThemeProvider>
+  )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+export default App

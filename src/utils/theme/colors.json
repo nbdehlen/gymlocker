@@ -1,0 +1,10 @@
+{
+  "primary": {
+    "color": "#1D1E27",
+    "onColor": "#3ca1f2"
+  },
+  "background": "#1D1E27",
+  "light_1": "#f7f7f7",
+  "dark_1": "#414067",
+  "placeholder_opacity": "rgba(174,158,158, 0.4)"
+}
