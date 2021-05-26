@@ -1,26 +1,30 @@
 import { Connection, Repository } from 'typeorm'
-import { ExerciseSelectModel } from '../entities/ExerciseSelectModel'
+import { ExerciseModel } from '../entities/ExerciseModel'
+import { SetModel } from '../entities/SetModel'
+import { WorkoutModel } from '../entities/WorkoutModel'
 
-interface ICreateExerciseSelectData {
+interface ICreateExerciseData {
   exercise: string
-  displayName: string
+  displayName?: string
   muscles: string
   assistingMuscles?: string
   tool?: string
-  custom?: boolean
+  start?: string
+  sets?: Promise<SetModel[]>
+  workout?: WorkoutModel
 }
 
-export class ExerciseSelectRepository {
-  private ormRepository: Repository<ExerciseSelectModel>
+export class ExerciseRepository {
+  private ormRepository: Repository<ExerciseModel>
 
   constructor(connection: Connection) {
-    this.ormRepository = connection.getRepository(ExerciseSelectModel)
+    this.ormRepository = connection.getRepository(ExerciseModel)
   }
 
-  public async getAll(): Promise<ExerciseSelectModel[]> {
-    const exercisesSelect = await this.ormRepository.find()
+  public async getAll(): Promise<ExerciseModel[]> {
+    const exercises = await this.ormRepository.find()
 
-    return exercisesSelect
+    return exercises
   }
 
   public async create({
@@ -29,20 +33,24 @@ export class ExerciseSelectRepository {
     muscles,
     assistingMuscles,
     tool,
-    custom,
-  }: ICreateExerciseSelectData): Promise<ExerciseSelectModel> {
-    const exerciseSelect = this.ormRepository.create({
+    start,
+    sets,
+    workout,
+  }: ICreateExerciseData): Promise<ExerciseModel> {
+    const exercisee = this.ormRepository.create({
       exercise,
       displayName,
       muscles,
       assistingMuscles,
       tool,
-      custom,
+      start,
+      sets,
+      workout,
     })
 
-    await this.ormRepository.save(exerciseSelect)
+    await this.ormRepository.save(exercisee)
 
-    return exerciseSelect
+    return exercisee
   }
 
   //   public async toggle(id: number): Promise<void> {

@@ -2,11 +2,14 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity('exercisesSelect')
 export class ExerciseSelectModel {
-  @PrimaryGeneratedColumn('increment')
-  id: number
+  @PrimaryGeneratedColumn('uuid')
+  id: string
 
   @Column({ unique: true })
   exercise: string
+
+  @Column({ unique: true, nullable: true })
+  displayName: string
 
   @Column()
   muscles: string
@@ -51,7 +54,7 @@ export class ExerciseSelectModel {
 /**
  *  Person Updates
  *    Day: Date
- *    Scale: KG / Pounds ???? or just asyncStorage
+ *    unit: KG / Pounds ???? or just asyncStorage
  *    Weight: number
  *    Calories: number
  *    length: string

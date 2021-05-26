@@ -13,8 +13,8 @@ export const App: FunctionComponent = () => {
     <ThemeProvider theme={theme}>
       <DatabaseConnectionProvider>
         <NavigationContainer>
-          {/* <BottomTabNavigation /> */}
-          <TodoList />
+          <BottomTabNavigation />
+          {/* <TodoList /> */}
         </NavigationContainer>
       </DatabaseConnectionProvider>
     </ThemeProvider>

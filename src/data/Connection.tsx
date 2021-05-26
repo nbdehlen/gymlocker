@@ -1,13 +1,24 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { ActivityIndicator } from 'react-native'
 import { Connection, createConnection } from 'typeorm'
-
-import { TodoModel } from './entities/TodoModel'
-import { CreateTodosTable1621889762076 } from './migrations/1621889762076-CreateTodosTable'
-import { TodosRepository } from './repositories/TodosRepository'
+import { CardioModel } from './entities/CardioModel'
+import { ExerciseModel } from './entities/ExerciseModel'
+import { ExerciseSelectModel } from './entities/ExerciseSelectModel'
+import { SetModel } from './entities/SetModel'
+import { WorkoutModel } from './entities/WorkoutModel'
+import { CreateExercisesSelectTable1621964884049 } from './migrations/1621964884049-CreateExercisesSelectTable'
+import { CardioRepository } from './repositories/CardioRepository'
+import { ExerciseRepository } from './repositories/ExerciseRepository'
+import { ExerciseSelectRepository } from './repositories/ExerciseSelectRepository'
+import { SetRepository } from './repositories/SetRepository'
+import { WorkoutRepository } from './repositories/WorkoutRepository'
 
 interface DatabaseConnectionContextData {
-  todosRepository: TodosRepository
+  workoutRepository: WorkoutRepository
+  exerciseSelectRepository: ExerciseSelectRepository
+  exerciseRepository: ExerciseRepository
+  setRepository: SetRepository
+  cardioRepository: CardioRepository
 }
 
 const DatabaseConnectionContext = createContext<DatabaseConnectionContextData>(
@@ -20,12 +31,12 @@ export const DatabaseConnectionProvider: React.FC = ({ children }) => {
   const connect = useCallback(async () => {
     const createdConnection = await createConnection({
       type: 'expo',
-      database: 'todos_example_article.db',
+      database: 'workout.db',
       driver: require('expo-sqlite'),
-      entities: [TodoModel],
+      entities: [ExerciseSelectModel, ExerciseModel, SetModel, WorkoutModel, CardioModel],
 
-      migrations: [CreateTodosTable1621889762076],
-      migrationsRun: true,
+      migrations: [CreateExercisesSelectTable1621964884049],
+      // migrationsRun: true,
 
       synchronize: false,
     })
@@ -46,7 +57,11 @@ export const DatabaseConnectionProvider: React.FC = ({ children }) => {
   return (
     <DatabaseConnectionContext.Provider
       value={{
-        todosRepository: new TodosRepository(connection),
+        workoutRepository: new WorkoutRepository(connection),
+        exerciseSelectRepository: new ExerciseSelectRepository(connection),
+        exerciseRepository: new ExerciseRepository(connection),
+        setRepository: new SetRepository(connection),
+        cardioRepository: new CardioRepository(connection),
       }}>
       {children}
     </DatabaseConnectionContext.Provider>
