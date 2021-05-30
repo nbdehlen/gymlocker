@@ -8,8 +8,8 @@ export class ExerciseSelectModel {
   @Column({ unique: true })
   exercise: string
 
-  @Column({ unique: true, nullable: true })
-  displayName: string
+  // @Column({ unique: true, nullable: true })
+  // displayName: string
 
   @Column()
   muscles: string
@@ -17,10 +17,10 @@ export class ExerciseSelectModel {
   @Column({ nullable: true })
   assistingMuscles: string
 
-  @Column({ nullable: true })
-  tool: string
+  // @Column({ nullable: true })
+  // tool: string
 
-  @Column({ default: true })
+  @Column()
   custom: boolean
 }
 

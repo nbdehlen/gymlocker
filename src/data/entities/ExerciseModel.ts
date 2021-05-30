@@ -2,6 +2,10 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Generated,
+  Index,
+  JoinColumn,
+  JoinTable,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -12,14 +16,11 @@ import { WorkoutModel } from './WorkoutModel'
 
 @Entity('exercises')
 export class ExerciseModel {
-  @PrimaryGeneratedColumn('uuid')
-  id: string
+  @PrimaryGeneratedColumn('increment')
+  id: number
 
-  @Column({ unique: true })
+  @Column()
   exercise: string
-
-  @Column({ unique: true, nullable: true })
-  displayName: string
 
   @Column()
   muscles: string
@@ -27,21 +28,20 @@ export class ExerciseModel {
   @Column({ nullable: true })
   assistingMuscles: string
 
-  @Column({ nullable: true })
-  tool: string
+  @Index()
+  @Column()
+  order: number
 
-  @Column({ default: new Date() })
-  start: Date
+  @Column()
+  workout_id: number
 
-  @CreateDateColumn()
-  createdAt: Date
-
-  @UpdateDateColumn()
-  updatedAt: Date
-
-  @OneToMany((type) => SetModel, (set) => set.exercise)
-  sets: Promise<SetModel[]>
-
-  @ManyToOne((type) => WorkoutModel, (workout) => workout.exercises)
+  @ManyToOne(() => WorkoutModel)
+  // , (workout) => workout.exercises, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'workout_id' })
   workout: WorkoutModel
+
+  @OneToMany(() => SetModel, (set) => set.exercises)
+  @JoinTable()
+  // sets: Promise<SetModel[]>
+  sets: SetModel[]
 }

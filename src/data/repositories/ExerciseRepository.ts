@@ -1,17 +1,12 @@
 import { Connection, Repository } from 'typeorm'
 import { ExerciseModel } from '../entities/ExerciseModel'
-import { SetModel } from '../entities/SetModel'
-import { WorkoutModel } from '../entities/WorkoutModel'
 
 interface ICreateExerciseData {
   exercise: string
-  displayName?: string
   muscles: string
   assistingMuscles?: string
-  tool?: string
-  start?: string
-  sets?: Promise<SetModel[]>
-  workout?: WorkoutModel
+  order: number
+  workout_id?: number
 }
 
 export class ExerciseRepository {
@@ -29,28 +24,30 @@ export class ExerciseRepository {
 
   public async create({
     exercise,
-    displayName,
     muscles,
     assistingMuscles,
-    tool,
-    start,
-    sets,
-    workout,
+    order,
+    workout_id,
   }: ICreateExerciseData): Promise<ExerciseModel> {
     const exercisee = this.ormRepository.create({
       exercise,
-      displayName,
       muscles,
       assistingMuscles,
-      tool,
-      start,
-      sets,
-      workout,
+      order,
+      workout_id,
     })
 
     await this.ormRepository.save(exercisee)
 
     return exercisee
+  }
+
+  public async createMany(exercises: ICreateExerciseData[]): Promise<ExerciseModel[]> {
+    const data = this.ormRepository.create(exercises)
+
+    await this.ormRepository.save(data)
+
+    return data
   }
 
   //   public async toggle(id: number): Promise<void> {

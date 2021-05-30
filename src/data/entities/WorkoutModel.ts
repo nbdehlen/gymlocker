@@ -2,6 +2,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Index,
+  JoinTable,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -9,26 +11,31 @@ import {
 import { CardioModel } from './CardioModel'
 import { ExerciseModel } from './ExerciseModel'
 
-@Entity('workout')
+@Entity('workouts')
 export class WorkoutModel {
-  @PrimaryGeneratedColumn('uuid')
-  id: string
+  @PrimaryGeneratedColumn('increment')
+  id: number
 
-  @Column({ unique: true, default: new Date() })
+  @Index()
+  @Column({ unique: true, default: () => 'CURRENT_TIMESTAMP' })
   start: Date
 
-  @Column({ unique: true, default: new Date() })
+  @Column({ unique: true, default: () => 'CURRENT_TIMESTAMP' })
   end: Date
 
-  @CreateDateColumn()
-  createdAt: Date
+  // @CreateDateColumn()
+  // createdAt: Date
 
-  @UpdateDateColumn()
-  updatedAt: Date
+  // @UpdateDateColumn()
+  // updatedAt: Date
 
-  @OneToMany((type) => ExerciseModel, (exercise) => exercise.workout)
-  exercises?: Promise<ExerciseModel[]>
+  // @OneToMany(() => ExerciseModel, (exercise) => exercise.workout)
+  // exercises?: Promise<ExerciseModel[]>
 
-  @OneToMany((type) => CardioModel, (cardio) => cardio.workout)
-  cardios?: Promise<CardioModel[]>
+  // @OneToMany(() => CardioModel, (cardio) => cardio.workout)
+  // cardios?: Promise<CardioModel[]>
+
+  @OneToMany(() => ExerciseModel, (exercise) => exercise.workout)
+  @JoinTable()
+  exercises: ExerciseModel[]
 }

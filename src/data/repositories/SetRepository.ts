@@ -3,10 +3,11 @@ import { ExerciseModel } from '../entities/ExerciseModel'
 import { SetModel } from '../entities/SetModel'
 
 interface ICreateSetData {
-  weight: number
+  weight_kg: number
   repetitions: number
   unit?: string
-  exercise: ExerciseModel
+  order: number
+  exercise_id?: number
 }
 
 export class SetRepository {
@@ -22,17 +23,32 @@ export class SetRepository {
     return setRepository
   }
 
-  public async create({ weight, repetitions, unit, exercise }: ICreateSetData): Promise<SetModel> {
+  public async create({
+    weight_kg,
+    repetitions,
+    unit,
+    order,
+    exercise_id,
+  }: ICreateSetData): Promise<SetModel> {
     const set = this.ormRepository.create({
-      weight,
+      weight_kg,
       repetitions,
-      unit,
-      exercise,
+      unit: unit || 'kg',
+      order,
+      exercise_id: exercise_id || 0,
     })
 
     await this.ormRepository.save(set)
 
     return set
+  }
+
+  public async createMany(sets: ICreateSetData[]): Promise<SetModel[]> {
+    const data = this.ormRepository.create(sets)
+
+    await this.ormRepository.save(data)
+
+    return data
   }
 
   public async delete(id: number): Promise<void> {

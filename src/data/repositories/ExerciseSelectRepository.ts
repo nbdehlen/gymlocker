@@ -3,10 +3,8 @@ import { ExerciseSelectModel } from '../entities/ExerciseSelectModel'
 
 interface ICreateExerciseSelectData {
   exercise: string
-  displayName: string
   muscles: string
   assistingMuscles?: string
-  tool?: string
   custom?: boolean
 }
 
@@ -25,18 +23,14 @@ export class ExerciseSelectRepository {
 
   public async create({
     exercise,
-    displayName,
     muscles,
     assistingMuscles,
-    tool,
     custom,
   }: ICreateExerciseSelectData): Promise<ExerciseSelectModel> {
     const exerciseSelect = this.ormRepository.create({
       exercise,
-      displayName,
       muscles,
       assistingMuscles,
-      tool,
       custom,
     })
 

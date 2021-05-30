@@ -1,13 +1,11 @@
 import { Connection, Repository } from 'typeorm'
-import { ExerciseModel } from '../entities/ExerciseModel'
 import { WorkoutModel } from '../entities/WorkoutModel'
-import { CardioModel } from '../entities/CardioModel'
 
 interface ICreateWorkoutData {
   start?: Date
   end?: Date
-  exercises?: Promise<ExerciseModel[]>
-  cardios?: Promise<CardioModel[]>
+  // exercises?: Promise<ExerciseModel[]>
+  // cardios?: Promise<CardioModel[]>
 }
 
 export class WorkoutRepository {
@@ -17,30 +15,41 @@ export class WorkoutRepository {
     this.ormRepository = connection.getRepository(WorkoutModel)
   }
 
-  public async getAll(): Promise<WorkoutModel[]> {
-    const workouts = await this.ormRepository.find()
-
-    return workouts
+  public async getAll(relations?: string[]): Promise<WorkoutModel[]> {
+    return await this.ormRepository.find({
+      ...(relations && { relations }),
+    })
   }
 
-  public async create({
-    start,
-    end,
-    exercises,
-    cardios,
-  }: ICreateWorkoutData): Promise<WorkoutModel> {
-    const workout = this.ormRepository.create({
-      start,
-      end,
-      exercises,
-      cardios,
+  // TODO: Pagination
+  public async getBatch(
+    from: number = 0,
+    limit = 10,
+    relations?: string[]
+  ): Promise<WorkoutModel[]> {
+    return await this.ormRepository.find({
+      ...(relations && { relations }),
     })
+  }
 
+  public async getById(id: number, relations?: string[]): Promise<WorkoutModel[]> {
+    return await this.ormRepository.find({
+      where: { id },
+      ...(relations && { relations }),
+    })
+  }
+
+  public async create({ start, end }: ICreateWorkoutData): Promise<WorkoutModel> {
+    const workout = this.ormRepository.create({ start, end })
     await this.ormRepository.save(workout)
-
     return workout
   }
 
+  public async createMany(workouts: ICreateWorkoutData[]): Promise<WorkoutModel[]> {
+    const data = this.ormRepository.create(workouts)
+    await this.ormRepository.save(data)
+    return data
+  }
   //   public async toggle(id: number): Promise<void> {
   //     await this.ormRepository.query(
   //       `

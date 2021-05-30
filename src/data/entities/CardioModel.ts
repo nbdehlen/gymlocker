@@ -2,6 +2,9 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  Generated,
+  Index,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
@@ -10,30 +13,30 @@ import { WorkoutModel } from './WorkoutModel'
 
 @Entity('cardios')
 export class CardioModel {
-  @PrimaryGeneratedColumn('uuid')
-  id: string
-
-  @Column({ unique: true, default: new Date() })
-  start: Date
-
-  @Column({ unique: true, default: new Date() })
-  end: Date
+  @PrimaryGeneratedColumn('increment')
+  id: number
 
   @Column({ nullable: true })
   cardioType: string
+
+  @Column()
+  duration_minutes: number
 
   @Column({ nullable: true })
   calories: number
 
   @Column({ nullable: true })
-  meters: number
+  distance_m: number
 
-  @CreateDateColumn()
-  createdAt: Date
+  @Index()
+  @Column()
+  order: number
 
-  @UpdateDateColumn()
-  updatedAt: Date
+  @Column()
+  workout_id: number
 
-  @ManyToOne((type) => WorkoutModel, (workout) => workout.cardios)
-  workout: WorkoutModel
+  @ManyToOne(() => WorkoutModel)
+  //  (workout) => workout.cardios, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'workout_id' })
+  workout_two: WorkoutModel
 }

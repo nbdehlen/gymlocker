@@ -1,16 +1,14 @@
 import { Connection, Repository } from 'typeorm'
 import { CardioModel } from '../entities/CardioModel'
-import { ExerciseModel } from '../entities/ExerciseModel'
-import { SetModel } from '../entities/SetModel'
 import { WorkoutModel } from '../entities/WorkoutModel'
 
 interface ICreateCardioData {
-  start?: Date
-  end?: Date
   cardioType?: string
+  duration_minutes: number
   calories?: number
-  meters: number
-  workout: WorkoutModel
+  distance_m: number
+  order: number
+  workout_id?: number
 }
 
 export class CardioRepository {
@@ -26,21 +24,32 @@ export class CardioRepository {
     return cardios
   }
 
+  public async tableColumns(): Promise<CardioModel[]> {
+    // const metadata = await this.ormRepository.metadata
+    const cardios = await this.ormRepository.query(`DESC cardios`)
+    console.log(
+      '____________________________________',
+      cardios,
+      '____________________________________'
+    )
+    return cardios
+  }
+
   public async create({
-    start,
-    end,
     cardioType,
+    duration_minutes,
     calories,
-    meters,
-    workout,
+    distance_m,
+    order,
+    workout_id,
   }: ICreateCardioData): Promise<CardioModel> {
     const cardio = this.ormRepository.create({
-      start,
-      end,
       cardioType,
+      duration_minutes,
       calories,
-      meters,
-      workout,
+      distance_m,
+      order,
+      workout_id,
     })
 
     await this.ormRepository.save(cardio)
