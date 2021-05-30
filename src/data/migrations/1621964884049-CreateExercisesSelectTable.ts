@@ -1,6 +1,4 @@
-import { getRepository, MigrationInterface, QueryRunner, Table } from 'typeorm'
-import exercisesSelect from '../seeding/starter/exercisesSelect'
-
+import { MigrationInterface, QueryRunner, Table } from 'typeorm'
 export class CreateExercisesSelectTable1621964884049 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
@@ -9,20 +7,22 @@ export class CreateExercisesSelectTable1621964884049 implements MigrationInterfa
         columns: [
           {
             name: 'id',
-            type: 'integer',
+            type: 'string',
             isPrimary: true,
             isGenerated: true,
-            generationStrategy: 'increment',
+            generationStrategy: 'uuid',
           },
           {
             name: 'exercise',
             type: 'text',
-            isNullable: true,
+            isUnique: true,
           },
-          {
-            name: 'displayName',
-            type: 'text',
-          },
+          // {
+          //   name: 'displayName',
+          //   type: 'text',
+          //   isUnique: true,
+          //   isNullable: true,
+          // },
           {
             name: 'muscles',
             type: 'text',
@@ -32,14 +32,15 @@ export class CreateExercisesSelectTable1621964884049 implements MigrationInterfa
             type: 'text',
             isNullable: true,
           },
-          {
-            name: 'tool',
-            type: 'text',
-            isNullable: true,
-          },
+          // {
+          //   name: 'tool',
+          //   type: 'text',
+          //   isNullable: true,
+          // },
           {
             name: 'custom',
             type: 'boolean',
+            isNullable: false,
           },
         ],
       })
