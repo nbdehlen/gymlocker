@@ -35,7 +35,7 @@ export const screenOptions = (route: RouteProp<ParamListBase, string>) => ({
         />
       )
     }
-    if (route.name === ScreenRoute.GYM) {
+    if (route.name === StackRoute.GYM) {
       return (
         <Icon
           name="like2"
