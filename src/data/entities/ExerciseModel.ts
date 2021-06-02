@@ -40,7 +40,7 @@ export class ExerciseModel {
   @JoinColumn({ name: 'workout_id' })
   workout: WorkoutModel
 
-  @OneToMany(() => SetModel, (set) => set.exercises)
+  @OneToMany(() => SetModel, (set) => set.exercise)
   @JoinTable()
   // sets: Promise<SetModel[]>
   sets: SetModel[]

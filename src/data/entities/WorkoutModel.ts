@@ -34,6 +34,9 @@ export class WorkoutModel {
 
   // @OneToMany(() => CardioModel, (cardio) => cardio.workout)
   // cardios?: Promise<CardioModel[]>
+  @OneToMany(() => CardioModel, (cardio) => cardio.workout)
+  @JoinTable()
+  cardios: CardioModel[]
 
   @OneToMany(() => ExerciseModel, (exercise) => exercise.workout)
   @JoinTable()

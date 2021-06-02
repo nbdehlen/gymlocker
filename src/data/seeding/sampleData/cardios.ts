@@ -5,6 +5,7 @@ export const cardios = [
     calories: 417,
     distance_m: 5500,
     order: 1,
+    workout_id: 1,
   },
   {
     cardioType: 'run',
@@ -12,6 +13,7 @@ export const cardios = [
     calories: 417,
     distance_m: 5500,
     order: 2,
+    workout_id: 1,
   },
   {
     cardioType: 'run',
@@ -19,6 +21,7 @@ export const cardios = [
     calories: 417,
     distance_m: 5500,
     order: 3,
+    workout_id: 1,
   },
   {
     cardioType: 'run',
@@ -26,6 +29,7 @@ export const cardios = [
     calories: 417,
     distance_m: 5500,
     order: 4,
+    workout_id: 1,
   },
   {
     cardioType: 'run',
@@ -33,6 +37,7 @@ export const cardios = [
     calories: 417,
     distance_m: 5500,
     order: 5,
+    workout_id: 1,
   },
   {
     cardioType: 'run',
@@ -40,5 +45,6 @@ export const cardios = [
     calories: 417,
     distance_m: 5500,
     order: 6,
+    workout_id: 1,
   },
 ]

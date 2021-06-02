@@ -1,4 +1,5 @@
-import { Connection, Repository } from 'typeorm'
+import { endOfDay, isSameDay, startOfDay } from 'date-fns'
+import { Between, Connection, Repository } from 'typeorm'
 import { WorkoutModel } from '../entities/WorkoutModel'
 
 interface ICreateWorkoutData {
@@ -35,6 +36,29 @@ export class WorkoutRepository {
   public async getById(id: number, relations?: string[]): Promise<WorkoutModel[]> {
     return await this.ormRepository.find({
       where: { id },
+      ...(relations && { relations }),
+    })
+  }
+
+  public async getBetweenDates(
+    start: string,
+    end: string,
+    relations?: string[]
+  ): Promise<WorkoutModel[]> {
+    console.log(
+      Between(startOfDay(new Date(start)).toISOString(), endOfDay(new Date(end)).toISOString())
+    )
+
+    const where = {
+      start: Between(
+        startOfDay(new Date(start)).toISOString(),
+        endOfDay(new Date(end)).toISOString()
+      ),
+    }
+    // console.log('WHERE', where)
+
+    return await this.ormRepository.find({
+      where,
       ...(relations && { relations }),
     })
   }

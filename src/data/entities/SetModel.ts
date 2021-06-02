@@ -25,5 +25,5 @@ export class SetModel {
 
   @ManyToOne(() => ExerciseModel)
   @JoinColumn({ name: 'exercise_id' })
-  exercises: ExerciseModel
+  exercise: ExerciseModel
 }

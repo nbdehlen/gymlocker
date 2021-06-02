@@ -38,5 +38,5 @@ export class CardioModel {
   @ManyToOne(() => WorkoutModel)
   //  (workout) => workout.cardios, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'workout_id' })
-  workout_two: WorkoutModel
+  workout: WorkoutModel
 }

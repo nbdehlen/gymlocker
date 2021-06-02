@@ -2,8 +2,8 @@ import { sub } from 'date-fns'
 
 export const workouts = [
   {
-    start: sub(new Date(), { days: 7, hours: 2 }),
-    end: sub(new Date(), { days: 7 }),
+    start: sub(new Date(), { days: 0, hours: 2 }),
+    end: sub(new Date(), { days: 0 }),
   },
   // {
   //   start: sub(new Date(), { days: 6, hours: 2 }),
