@@ -3,6 +3,9 @@ import { useDatabaseConnection } from '../../data/Connection'
 import { Button, Div, Input, Text } from 'react-native-magnus'
 import sampleData from '../../data/seeding/sampleData'
 import theme, { B } from '../../utils/theme'
+import getRandomDateWithinPeriod from '../../data/seeding/utils/getRandomDateWithinPeriod'
+import { add, sub } from 'date-fns'
+import { SetModel } from '../../data/entities/SetModel'
 
 type OwnProps = {}
 
@@ -11,34 +14,121 @@ type Props = OwnProps
 export const SettingsScreen: FunctionComponent<Props> = () => {
   const { cardioRepository, workoutRepository, exerciseRepository, setRepository } =
     useDatabaseConnection()
-  const [workoutId, setWorkoutId] = useState(1)
+  const [id, setId] = useState<number>(1)
+  const [workouts, setWorkouts] = useState<number>(1)
+  const [error, setError] = useState('')
+  const { cardios, exercises, sets } = sampleData
 
-  const { cardios, exercises, sets, workouts } = sampleData
+  const createWorkouts = async () => {
+    const startingPeriod = sub(new Date(), { days: 90, hours: 0 })
+    const endingPeriod = new Date()
 
-  const seedWorkouts = async () => {
-    const data = await workoutRepository.createMany(workouts)
-    console.log(data)
-  }
-  const seedExercises = async () => {
-    const data = await exerciseRepository.createMany(exercises)
-    console.log(data)
+    const promises = [...Array(workouts)].map(async (_) => {
+      const start = getRandomDateWithinPeriod(startingPeriod, endingPeriod)
+      const end = add(start, { days: 0, hours: 2 })
+      const workout = await workoutRepository.create({ start, end })
+
+      if (workout) {
+        const newExercises = exercises.map((exercise) => ({
+          ...exercise,
+          workout_id: workout.id,
+        }))
+
+        const createExercises = await exerciseRepository.createMany(newExercises)
+
+        if (createExercises) {
+          createExercises.map(async (exercise: any, i: number) => {
+            let setsWithExerciseIds: any = []
+            sets[i].map((set) => {
+              setsWithExerciseIds.push({ exercise_id: exercise.id, ...set })
+            })
+
+            await setRepository.createMany(setsWithExerciseIds)
+          })
+        } else {
+          setError('exerciseId does not exist')
+        }
+      } else {
+        setError('workoutId does not exist')
+      }
+    })
+
+    await Promise.all[promises]
   }
 
-  const seedSets = async () => {
-    const data = await setRepository.createMany(sets)
-    console.log(data)
+  const getAllWorkouts = async () => {
+    await workoutRepository
+      .getAll(['exercises', 'exercises.sets'])
+      .then((workouts) => workouts && console.log(JSON.stringify(workouts, null, 4)))
   }
+
+  const getWorkoutById = async () => {
+    await workoutRepository
+      .getById(id, ['exercises', 'exercises.sets'])
+      .then((workout) => workout && console.log(JSON.stringify(workout, null, 4)))
+  }
+
+  const getExerciseById = async () => {
+    await exerciseRepository
+      .getById(id, ['sets'])
+      .then((exercise) => exercise && console.log(JSON.stringify(exercise, null, 4)))
+  }
+
+  // const getSetById = async () => {
+  //   await workoutRepository
+  //     .getById(id, ['exercises', 'exercises.sets'])
+  //     .then((workout) => workout && console.log(JSON.stringify(workout, null, 4)))
+  // }
+
+  const deleteAllWorkouts = () => {}
+
+  // const seedWorkouts = async () => {
+  //   try {
+  //     const data = await workoutRepository.create(workout)
+  //     console.log(data)
+  //     // return data
+  //   } catch (err) {
+  //     setError(err)
+  //     // return null
+  //   }
+  // }
+  // const seedExercises = async () => {
+  //   const workout = await workoutRepository.workoutIdExists(id)
+
+  //   if (workout) {
+  //     const newExercises = exercises.map((exercise) => ({
+  //       ...exercise,
+  //       workout_id: id,
+  //     }))
+
+  //     const data = await exerciseRepository.createMany(newExercises)
+  //     console.log(data)
+  //   } else {
+  //     setError('workoutId does not exist')
+  //   }
+  // }
+
+  // const seedSets = async () => {
+  //   const exercise = await exerciseRepository.exerciseIdExists(id)
+  //   if (exercise) {
+  //     const data = await setRepository.createMany(sets)
+  //     console.log(data)
+  //   } else {
+  //     setError('exerciseId does not exist')
+  //   }
+  // }
 
   const onPressInc = () => {
-    setWorkoutId((prevState) => prevState + 1)
+    setId((prevState) => prevState + 1)
   }
   const onPressDec = () => {
-    setWorkoutId((prevState) => prevState - 1)
+    setId((prevState) => prevState - 1)
   }
 
   return (
     <Div flex={1} justifyContent="center" alignItems="center" bg={theme.primary.color}>
       <Div flexDir="row">
+        {error ? <Text> {error} </Text> : <B.Spacer h={40} />}
         <Button
           onPress={onPressInc}
           w={40}
@@ -53,7 +143,7 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
         </Button>
         <B.Spacer w={8} />
         <Text color="white" fontSize={24}>
-          {workoutId}
+          {id}
         </Text>
         <B.Spacer w={8} />
         <Button onPress={onPressDec} w={40} h={40} p={0} m={0} rounded="circle">
@@ -63,18 +153,23 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
         </Button>
       </Div>
       <B.Spacer h={16} />
-      <Button onPress={seedWorkouts} alignSelf="center" w={200}>
-        <Text color="white">Seed DB with {workoutId} workouts </Text>
+      <Button onPress={createWorkouts} alignSelf="center" w={200}>
+        <Text color="white">Seed DB with {id} full workouts.</Text>
       </Button>
 
       <B.Spacer h={16} />
-      <Button onPress={seedExercises} alignSelf="center">
-        <Text color="white">Seed workout {workoutId} with exercises </Text>
+      <Button onPress={getAllWorkouts} alignSelf="center">
+        <Text color="white">Log all workouts</Text>
       </Button>
 
       <B.Spacer h={16} />
-      <Button onPress={seedSets} alignSelf="center">
-        <Text color="white">Seed exercises in workout {workoutId} with sets </Text>
+      <Button onPress={getWorkoutById} alignSelf="center">
+        <Text color="white">Get workout by id {id}</Text>
+      </Button>
+
+      <B.Spacer h={16} />
+      <Button onPress={getExerciseById} alignSelf="center">
+        <Text color="white">Get exercise by id {id}</Text>
       </Button>
     </Div>
   )
