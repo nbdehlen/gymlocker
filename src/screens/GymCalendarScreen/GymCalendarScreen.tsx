@@ -69,14 +69,11 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
 
   useEffect(() => {
     // TODO: merge this somehow
-    // if (start && end) {
     workoutRepository.getBetweenDates(start, end, ['exercises']).then(setWorkouts)
-    // }
   }, [workoutRepository, selected])
-  // }, [workoutRepository])
 
   useEffect(() => {
-    if (workouts) {
+    if (workouts?.length > 0) {
       const final = {}
       workouts.map((workout, i) => {
         const date = format(workout.start, 'yyyy-MM-dd')
@@ -89,9 +86,10 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
       })
 
       const newMarkedDates = { ...markedDates, ...final }
-      // console.log('NEW MARKED DATES', newMarkedDates)
       // TODO: !!!!!!!!!!!!! set workouts and markedDates on month change
       setMarkedDates(newMarkedDates)
+    } else {
+      setMarkedDates({})
     }
   }, [workouts])
 

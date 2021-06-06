@@ -83,4 +83,8 @@ export class ExerciseRepository {
   public async delete(id: number): Promise<void> {
     await this.ormRepository.delete(id)
   }
+
+  public async deleteAll(): Promise<void> {
+    await this.ormRepository.clear()
+  }
 }
