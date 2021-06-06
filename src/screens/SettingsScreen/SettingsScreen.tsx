@@ -6,6 +6,7 @@ import theme, { B } from '../../utils/theme'
 import getRandomDateWithinPeriod from '../../data/seeding/utils/getRandomDateWithinPeriod'
 import { add, sub } from 'date-fns'
 import { SetModel } from '../../data/entities/SetModel'
+import { SetRepository } from '../../data/repositories/SetRepository'
 
 type OwnProps = {}
 
@@ -15,7 +16,6 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
   const { cardioRepository, workoutRepository, exerciseRepository, setRepository } =
     useDatabaseConnection()
   const [id, setId] = useState<number>(1)
-  const [workouts, setWorkouts] = useState<number>(1)
   const [error, setError] = useState('')
   const { cardios, exercises, sets } = sampleData
 
@@ -23,7 +23,7 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
     const startingPeriod = sub(new Date(), { days: 90, hours: 0 })
     const endingPeriod = new Date()
 
-    const promises = [...Array(workouts)].map(async (_) => {
+    const promises = [...Array(id)].map(async (_) => {
       const start = getRandomDateWithinPeriod(startingPeriod, endingPeriod)
       const end = add(start, { days: 0, hours: 2 })
       const workout = await workoutRepository.create({ start, end })
@@ -80,7 +80,12 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
   //     .then((workout) => workout && console.log(JSON.stringify(workout, null, 4)))
   // }
 
-  const deleteAllWorkouts = () => {}
+  const deleteAllWorkouts = async () => {
+    await workoutRepository.deleteAll()
+    await exerciseRepository.deleteAll()
+    await cardioRepository.deleteAll()
+    await setRepository.deleteAll()
+  }
 
   // const seedWorkouts = async () => {
   //   try {
@@ -170,6 +175,11 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
       <B.Spacer h={16} />
       <Button onPress={getExerciseById} alignSelf="center">
         <Text color="white">Get exercise by id {id}</Text>
+      </Button>
+
+      <B.Spacer h={16} />
+      <Button onPress={deleteAllWorkouts} alignSelf="center">
+        <Text color="white">Delete all workouts</Text>
       </Button>
     </Div>
   )
