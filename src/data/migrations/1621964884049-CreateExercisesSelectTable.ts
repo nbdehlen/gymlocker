@@ -1,6 +1,7 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm'
 export class CreateExercisesSelectTable1621964884049 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
+    console.log('ExercisesSelect created')
     await queryRunner.createTable(
       new Table({
         name: 'exercisesSelect',

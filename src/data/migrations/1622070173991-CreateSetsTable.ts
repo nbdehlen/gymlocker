@@ -9,6 +9,8 @@ import {
 
 export class CreateSetsTable1622070173991 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
+    console.log('Sets created')
+
     await queryRunner.createTable(
       new Table({
         name: 'sets',
@@ -27,12 +29,6 @@ export class CreateSetsTable1622070173991 implements MigrationInterface {
           {
             name: 'repetitions',
             type: 'integer',
-          },
-          {
-            name: 'unit',
-            type: 'text',
-            isNullable: false,
-            default: "'kg'",
           },
           {
             name: 'order',

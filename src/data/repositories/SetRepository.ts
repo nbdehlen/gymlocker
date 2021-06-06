@@ -5,7 +5,6 @@ import { SetModel } from '../entities/SetModel'
 interface ICreateSetData {
   weight_kg: number
   repetitions: number
-  unit?: string
   order: number
   exercise_id?: number
 }
@@ -26,14 +25,12 @@ export class SetRepository {
   public async create({
     weight_kg,
     repetitions,
-    unit,
     order,
     exercise_id,
   }: ICreateSetData): Promise<SetModel> {
     const set = this.ormRepository.create({
       weight_kg,
       repetitions,
-      unit: unit || 'kg',
       order,
       exercise_id: exercise_id || 0,
     })

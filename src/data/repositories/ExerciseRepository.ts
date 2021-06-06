@@ -22,6 +22,22 @@ export class ExerciseRepository {
     return exercises
   }
 
+  public async getById(id: number, relations?: string[]): Promise<ExerciseModel[]> {
+    return await this.ormRepository.find({
+      where: { id },
+      ...(relations && { relations }),
+    })
+  }
+
+  public async exerciseIdExists(id: number): Promise<boolean> {
+    const exercise = await this.ormRepository.find({ where: { id } })
+    if (exercise) {
+      console.log(exercise)
+      return true
+    }
+    return false
+  }
+
   public async create({
     exercise,
     muscles,
@@ -29,7 +45,7 @@ export class ExerciseRepository {
     order,
     workout_id,
   }: ICreateExerciseData): Promise<ExerciseModel> {
-    const exercisee = this.ormRepository.create({
+    const data = this.ormRepository.create({
       exercise,
       muscles,
       assistingMuscles,
@@ -37,9 +53,9 @@ export class ExerciseRepository {
       workout_id,
     })
 
-    await this.ormRepository.save(exercisee)
+    await this.ormRepository.save(data)
 
-    return exercisee
+    return data
   }
 
   public async createMany(exercises: ICreateExerciseData[]): Promise<ExerciseModel[]> {

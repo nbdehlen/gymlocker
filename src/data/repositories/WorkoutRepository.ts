@@ -40,14 +40,23 @@ export class WorkoutRepository {
     })
   }
 
+  public async workoutIdExists(id: number): Promise<boolean> {
+    const workout = await this.ormRepository.find({ where: { id } })
+    if (workout) {
+      console.log(workout)
+      return true
+    }
+    return false
+  }
+
   public async getBetweenDates(
     start: string,
     end: string,
     relations?: string[]
   ): Promise<WorkoutModel[]> {
-    console.log(
-      Between(startOfDay(new Date(start)).toISOString(), endOfDay(new Date(end)).toISOString())
-    )
+    // console.log(
+    //   Between(startOfDay(new Date(start)).toISOString(), endOfDay(new Date(end)).toISOString())
+    // )
 
     const where = {
       start: Between(
@@ -90,5 +99,9 @@ export class WorkoutRepository {
 
   public async delete(id: number): Promise<void> {
     await this.ormRepository.delete(id)
+  }
+
+  public async deleteAll(): Promise<void> {
+    await this.ormRepository.clear()
   }
 }

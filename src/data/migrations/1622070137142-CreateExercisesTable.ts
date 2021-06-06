@@ -9,6 +9,7 @@ import {
 
 export class CreateExerciseTable1622070137142 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
+    console.log('Exercises created')
     await queryRunner.createTable(
       new Table({
         name: 'exercises',

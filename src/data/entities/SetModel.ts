@@ -12,9 +12,6 @@ export class SetModel {
   @Column()
   repetitions: number
 
-  @Column({ nullable: false, default: () => "'kg'" })
-  unit: string
-
   @Index()
   @Column()
   order: number

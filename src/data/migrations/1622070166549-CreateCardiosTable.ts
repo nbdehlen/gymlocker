@@ -11,6 +11,7 @@ import {
 //TODO: change genereated ids to text
 export class CreateCardiosTable1622070166549 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
+    console.log('Cardios created')
     await queryRunner.createTable(
       new Table({
         name: 'cardios',
