@@ -50,7 +50,7 @@ const getCalendarSpan = (today: string) => {
   return { start: String(prevMon), end: String(nextSun) }
 }
 
-// TODO: on month swipe/click - new workout fetch and set date to 1st?
+// TODO: on month swipe/click - new workout fetch and set date to 1st? ???
 
 // TODO: card and smart logic for display workout overview
 
@@ -68,25 +68,15 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
   const navigation = useNavigation()
 
   useEffect(() => {
-    console.log('SELECTED', selected)
-
-    workoutRepository.getBetweenDates(start, end, ['exercises']).then((newWorkouts) => {
-      // if (workouts?.length > 0 && newWorkouts?.length > 0) {
-      //   const mergeWorkouts = [new Set([...workouts, ...newWorkouts])]
-      //   console.log(mergeWorkouts, 'MEEEERGE')
-      //   setWorkouts(mergeWorkouts)
-      // } else if (newWorkouts?.length > 0) {
-      //   console.log('newWorkouts', newWorkouts)
-      setWorkouts(newWorkouts)
-      // }
-      // console.log('no workouts!!')
-    })
+    // TODO: merge this somehow
+    // if (start && end) {
+    workoutRepository.getBetweenDates(start, end, ['exercises']).then(setWorkouts)
+    // }
   }, [workoutRepository, selected])
+  // }, [workoutRepository])
 
-  const markDates = useMemo(() => {
-    // useEffect(() => {
+  useEffect(() => {
     if (workouts) {
-      // const starter = { selected: false, dots: workoutDot(0) }
       const final = {}
       workouts.map((workout, i) => {
         const date = format(workout.start, 'yyyy-MM-dd')
@@ -99,14 +89,14 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
       })
 
       const newMarkedDates = { ...markedDates, ...final }
-      console.log('NEW MARKED DATES', newMarkedDates)
-
+      // console.log('NEW MARKED DATES', newMarkedDates)
+      // TODO: !!!!!!!!!!!!! set workouts and markedDates on month change
       setMarkedDates(newMarkedDates)
     }
   }, [workouts])
 
   const setDots = (selected: string) => {
-    console.log('NEW MARKED DATES', markedDates)
+    // console.log('NEW MARKED DATES', markedDates)
 
     if (!markedDates[selected] || !markedDates[selected]?.dots) {
       return null
@@ -115,6 +105,7 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
   }
 
   const onChangeMonth = (month: DateObject) => {
+    // TODO: Only update dots when month change?
     setSelected(month.dateString)
   }
   const onDayPress = (date: DateObject) => {
