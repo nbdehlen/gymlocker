@@ -35,12 +35,12 @@ export const DatabaseConnectionProvider: React.FC = ({ children }) => {
       driver: require('expo-sqlite'),
       entities: [ExerciseSelectModel, WorkoutModel, ExerciseModel, CardioModel, SetModel],
       migrations,
-      migrationsRun: true,
-      synchronize: false,
+      // dropSchema: true,
+      // migrationsRun: true, // TODO: set based on asyncStorage
+      // synchronize: true, // TODO: set based on asyncStorage
       // cli: {
       //   migrationsDir: 'src/migrations',
       // },
-      // dropSchema: true,
     })
 
     setConnection(createdConnection)

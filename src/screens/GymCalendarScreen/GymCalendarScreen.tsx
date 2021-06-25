@@ -18,8 +18,9 @@ import { WorkoutModel } from '../../data/entities/WorkoutModel'
 import { useDatabaseConnection } from '../../data/Connection'
 import { Between } from 'typeorm'
 import { nextSunday } from 'date-fns/esm'
-import { useNavigation, useNavigationState } from '@react-navigation/core'
+import { useNavigation } from '@react-navigation/core'
 import { ScreenRoute } from '../../navigation/NAV_CONSTANTS'
+import WorkoutSection from './WorkoutSection'
 
 type OwnProps = {}
 
@@ -27,6 +28,8 @@ type Props = OwnProps
 
 // function to set dot color to white
 const dotColor = (color: string) => (color = 'white')
+
+//TODO: Update dots when workout is removed/added
 
 const cardio = { key: 'cardio', color: 'red' }
 // const exercise = {key:'exercise', color: 'blue', selectedDotColor: 'blue'};
@@ -56,13 +59,14 @@ const getCalendarSpan = (today: string) => {
 
 // TODO: think about how to send the data?
 
-// TODO: Left drawer on calendar screen for weight and calories?
+// TODO: Left drawer on calendar screen for weight and calories eaten?
 
 export const GymCalendarScreen: FunctionComponent<Props> = () => {
   const { workoutRepository } = useDatabaseConnection()
   const [workouts, setWorkouts] = useState<WorkoutModel[]>([])
   const today = format(new Date(), 'yyyy-MM-dd')
   const [selected, setSelected] = useState(today)
+  const [selectedWorkouts, setSelectedWorkouts] = useState<WorkoutModel[]>([])
   const { start, end } = useMemo(() => getCalendarSpan(selected), [selected])
   const [markedDates, setMarkedDates] = useState({})
   const navigation = useNavigation()
@@ -71,6 +75,13 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
     // TODO: merge this somehow
     workoutRepository.getBetweenDates(start, end, ['exercises']).then(setWorkouts)
   }, [workoutRepository, selected])
+
+  useEffect(() => {
+    const TodaysWorkouts = workouts.filter(
+      (workout) => format(new Date(workout?.start), 'yyyy-MM-dd') === selected
+    )
+    setSelectedWorkouts(TodaysWorkouts)
+  }, [selected])
 
   useEffect(() => {
     if (workouts?.length > 0) {
@@ -110,8 +121,9 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
     setSelected(date.dateString)
   }
 
-  const onPressWorkout = (workout: WorkoutModel | {} = {}) =>
+  const onPressAddWorkout = (workout: WorkoutModel | {} = {}) => {
     navigation.navigate(ScreenRoute.ADD_EDIT, { workout })
+  }
 
   return (
     <Div flex={1} bg={theme.background} pt={32}>
@@ -190,93 +202,27 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
           }}
         />
         <B.Spacer h={16} />
-        <Button alignSelf="center" w="90%" rounded={6} onPress={() => onPressWorkout()}>
+        {/* <Button alignSelf="center" w="90%" rounded={6} onPress={() => onPressAddWorkout()}>
           <Text color={theme.light_1} fontSize={14}>
+            Add workout
+          </Text>
+        </Button> */}
+        <Button
+          // borderColor={theme.primary.onColor}
+          borderColor="rgba(60, 161, 242, 0.6)"
+          borderWidth={1}
+          bg="transparent"
+          alignSelf="center"
+          w="90%"
+          rounded={4}
+          onPress={onPressAddWorkout}>
+          <Text color={theme.primary.onColor} fontSize={14}>
             Add workout
           </Text>
         </Button>
         <B.Spacer h={32} />
-        {workouts &&
-          workouts.map(
-            (workout) =>
-              format(new Date(workout.start), 'yyyy-MM-dd') === selected && (
-                <Div
-                  key={workout.id}
-                  bg={theme.primary.color}
-                  // w="10%"
-                  // mr={16}
-                  // ml={16}
-                  // mb={32}
-                  justifyContent="center"
-                  // alignItems="center"
-                >
-                  <Div
-                    flexDir="row"
-                    flex={1}
-                    justifyContent="center"
-                    alignSelf="center"
-                    // alignSelf="flex-end"
-                    // alignItems="flex-start"
-                    // borderWidth={1}
-                    borderBottomWidth={1}
-                    // rounded={4}
-                    borderColor="rgba(255,255,255,0.4)"
-                    w="90%"
-                    pb={4}>
-                    <Div flex={1} alignItems="center">
-                      <Text color={theme.light_1} fontSize={14}>
-                        23
-                      </Text>
-                      <Text color={theme.light_1} fontSize={12}>
-                        sets
-                      </Text>
-                    </Div>
-                    <B.Spacer w={16} />
-                    <Div flex={1} alignItems="center">
-                      <Text color={theme.light_1} fontSize={14}>
-                        60
-                      </Text>
-                      <Text color={theme.light_1} fontSize={12}>
-                        cal
-                      </Text>
-                    </Div>
-                    <B.Spacer w={16} />
-                    <Div flex={1} alignItems="center">
-                      <Text color={theme.light_1} fontSize={14}>
-                        3.2
-                      </Text>
-                      <Text color={theme.light_1} fontSize={12}>
-                        km
-                      </Text>
-                    </Div>
-                    <B.Spacer w={16} />
-                    <Div flex={1} alignItems="center">
-                      <Text color={theme.light_1} fontSize={14}>
-                        90
-                      </Text>
-                      <Text color={theme.light_1} fontSize={12}>
-                        min
-                      </Text>
-                    </Div>
-                    <Div alignItems="flex-end" justifyContent="center">
-                      <Icon
-                        fontFamily="SimpleLineIcons"
-                        name="arrow-right"
-                        color={theme.primary.onColor}
-                        fontSize={16}
-                      />
-                    </Div>
-                  </Div>
-                  {/* <B.Spacer h={16} />
-                  <Button alignSelf="center" w="90%" onPress={() => onPressWorkout(workout)}>
-                    <Text color={theme.light_1} fontSize={14}>
-                      {`Edit workout ${differenceInMinutes(workout.end, workout.start)}m`}
-                    </Text>
-                  </Button> */}
-                  <B.Spacer h={32} />
-                </Div>
-              )
-          )}
+        {selectedWorkouts &&
+          selectedWorkouts.map((selectedWorkout) => <WorkoutSection workout={selectedWorkout} />)}
       </ScrollView>
     </Div>
   )
