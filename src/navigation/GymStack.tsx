@@ -106,13 +106,13 @@ export const GymStack: FunctionComponent = () => {
       <Stack.Screen
         name={ScreenRoute.WORKOUT_EDIT}
         component={WorkoutEditScreen}
-        options={({ route }) => {
-          console.log({ route })
-          return {
-            headerRight: () => <Div />,
-            headerTitle: () => null,
-          }
-        }}
+        // options={() => {
+        // console.log({ route })
+        // return {
+        // headerRight: () => <Div />,
+        // headerTitle: () => null,
+        // }
+        // }}
       />
     </Stack.Navigator>
   )

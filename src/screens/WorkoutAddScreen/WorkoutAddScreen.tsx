@@ -4,7 +4,7 @@ import React, { FunctionComponent, useLayoutEffect, useState } from 'react'
 import { Keyboard } from 'react-native'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
 import { Fab, Div, Input, Text, Button, Icon } from 'react-native-magnus'
-import theme from '../../utils/theme'
+import theme, { B } from '../../utils/theme'
 
 type OwnProps = {}
 
@@ -17,19 +17,26 @@ export const WorkoutAddScreen: FunctionComponent<Props> = () => {
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <Div>
-          <Text color="green" fontSize={16}>
-            Save
+        <Div mr={20} flexDir="row">
+          <Text color={theme.primary.onColor} fontSize={14}>
+            SAVE
           </Text>
+          <B.Spacer w={8} />
+          <Icon
+            name="ios-save-outline"
+            fontFamily="Ionicons"
+            color={theme.primary.onColor}
+            fontSize={18}
+          />
         </Div>
       ),
-      headerTitle: () => (
-        <Div justifyContent="center" alignItems="center">
-          <Text color="yellow" fontSize={16}>
-            Clear
-          </Text>
-        </Div>
-      ),
+      headerTitle: () => null,
+      //   <Div justifyContent="center" alignItems="center">
+      //     <Text color="yellow" fontSize={16}>
+      //       Clear
+      //     </Text>
+      //   </Div>
+      // ),
     })
   }, [navigation])
 

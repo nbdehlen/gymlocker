@@ -76,13 +76,6 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
   }, [workoutRepository, selected])
 
   useEffect(() => {
-    const TodaysWorkouts = workouts.filter(
-      (workout) => format(new Date(workout?.start), 'yyyy-MM-dd') === selected
-    )
-    setSelectedWorkouts(TodaysWorkouts)
-  }, [selected])
-
-  useEffect(() => {
     if (workouts?.length > 0) {
       const final = {}
       workouts.map((workout, i) => {
@@ -103,9 +96,15 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
     }
   }, [workouts])
 
-  const setDots = (selected: string) => {
-    // console.log('NEW MARKED DATES', markedDates)
+  const updateSelectedWorkout = (day: string) => {
+    const TodaysWorkouts = workouts.filter(
+      (workout) => format(new Date(workout?.start), 'yyyy-MM-dd') === day
+    )
+    setSelectedWorkouts(TodaysWorkouts)
+  }
 
+  const updateDots = (selected: string) => {
+    // console.log('NEW MARKED DATES', markedDates)
     if (!markedDates[selected] || !markedDates[selected]?.dots) {
       return null
     }
@@ -113,16 +112,18 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
   }
 
   const onChangeMonth = (month: DateObject) => {
+    const day = month.dateString
     // TODO: Only update dots when month change?
-    setSelected(month.dateString)
+    setSelected(day)
+    updateSelectedWorkout(day)
   }
   const onDayPress = (date: DateObject) => {
-    setSelected(date.dateString)
+    const day = date.dateString
+    setSelected(day)
+    updateSelectedWorkout(day)
   }
 
-  const onPressAddWorkout = (workout: WorkoutModel | {} = {}) => {
-    navigation.navigate(ScreenRoute.WORKOUT_ADD, { workout })
-  }
+  const onPressAddWorkout = () => navigation.navigate(ScreenRoute.WORKOUT_ADD)
 
   return (
     <Div flex={1} bg={theme.background} pt={32}>
@@ -160,7 +161,7 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
             ...markedDates,
             [selected]: {
               selected: true,
-              dots: setDots(selected),
+              dots: updateDots(selected),
               // dots: [{ key: 'temp-25', color: 'red' }],
               disableTouchEvent: true,
               // ...(markedDates.hasOwnProperty(selected) ? markedDates[selected] : {}),
