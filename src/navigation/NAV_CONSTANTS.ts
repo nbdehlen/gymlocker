@@ -4,7 +4,8 @@ export enum ScreenRoute {
   CALENDAR = 'screens/calendar',
   GOALS = 'screens/goals',
   SETTINGS = 'screens/settings',
-  ADD_EDIT = 'screens/add_edit',
+  WORKOUT_ADD = 'screens/workout_add',
+  WORKOUT_EDIT = 'screens/workout_edit',
 }
 
 export enum StackRoute {

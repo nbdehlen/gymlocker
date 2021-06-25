@@ -4,9 +4,10 @@ import { ScreenRoute, TabRoute } from './NAV_CONSTANTS'
 import theme from '../utils/theme'
 import { Div, Icon, Text } from 'react-native-magnus'
 import GymCalendarScreen from '../screens/GymCalendarScreen'
-import GymAddEditScreen from '../screens/GymAddEditScreen'
 import { TouchableOpacity } from 'react-native'
 import { CommonActions } from '@react-navigation/native'
+import WorkoutAddScreen from '../screens/WorkoutAddScreen'
+import WorkoutEditScreen from '../screens/WorkoutEditScreen'
 
 type OwnProps = {}
 
@@ -14,7 +15,7 @@ type Props = OwnProps
 
 const Stack = createStackNavigator()
 //TODO: Cardio workout relstions broken?
-export const GymStack: FunctionComponent = ({ navigation }) => {
+export const GymStack: FunctionComponent = () => {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -50,8 +51,8 @@ export const GymStack: FunctionComponent = ({ navigation }) => {
       />
 
       <Stack.Screen
-        name={ScreenRoute.ADD_EDIT}
-        component={GymAddEditScreen}
+        name={ScreenRoute.WORKOUT_ADD}
+        component={WorkoutAddScreen}
         // options={({ route: { params } }) => {
         //   console.log(params)
         options={() => {
@@ -98,6 +99,17 @@ export const GymStack: FunctionComponent = ({ navigation }) => {
             //     </Text>
             //   </Div>
             // ),
+            headerTitle: () => null,
+          }
+        }}
+      />
+      <Stack.Screen
+        name={ScreenRoute.WORKOUT_EDIT}
+        component={WorkoutEditScreen}
+        options={({ route }) => {
+          console.log({ route })
+          return {
+            headerRight: () => <Div />,
             headerTitle: () => null,
           }
         }}

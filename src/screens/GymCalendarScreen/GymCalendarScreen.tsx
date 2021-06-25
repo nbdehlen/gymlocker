@@ -52,10 +52,9 @@ const getCalendarSpan = (today: string) => {
 
   return { start: String(prevMon), end: String(nextSun) }
 }
+// TODO: Sets are undefined in WorkoutSection. Maybe query them when workoutSelected?
 
 // TODO: on month swipe/click - new workout fetch and set date to 1st? ???
-
-// TODO: card and smart logic for display workout overview
 
 // TODO: think about how to send the data?
 
@@ -122,7 +121,7 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
   }
 
   const onPressAddWorkout = (workout: WorkoutModel | {} = {}) => {
-    navigation.navigate(ScreenRoute.ADD_EDIT, { workout })
+    navigation.navigate(ScreenRoute.WORKOUT_ADD, { workout })
   }
 
   return (

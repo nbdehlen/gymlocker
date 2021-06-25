@@ -10,7 +10,9 @@ type OwnProps = {}
 
 type Props = OwnProps
 
-export const GymAddEditScreen: FunctionComponent<Props> = () => {
+export const WorkoutEditScreen: FunctionComponent<any> = ({ route }) => {
+  console.log('IN WORKOUT EDIT SCREEN: ', { route })
+
   const navigation = useNavigation()
   const [startDate, setStartDate] = useState(new Date())
 
@@ -65,4 +67,4 @@ export const GymAddEditScreen: FunctionComponent<Props> = () => {
   )
 }
 
-export default GymAddEditScreen
+export default WorkoutEditScreen

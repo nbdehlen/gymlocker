@@ -20,8 +20,9 @@ export const screenOptions = (route: RouteProp<ParamListBase, string>) => ({
     if (route.name === ScreenRoute.CHARTS) {
       return (
         <Icon
-          name="like2"
-          color={focused ? theme.primary.onColor : theme.light_1}
+          name="graph"
+          fontFamily="Octicons"
+          color={focused ? theme.primary.onColor : '#e9e9e9cc'}
           fontSize={iconSize}
         />
       )
@@ -29,8 +30,9 @@ export const screenOptions = (route: RouteProp<ParamListBase, string>) => ({
     if (route.name === ScreenRoute.GOALS) {
       return (
         <Icon
-          name="like2"
-          color={focused ? theme.primary.onColor : theme.light_1}
+          name="trophy-outline"
+          fontFamily="Ionicons"
+          color={focused ? theme.primary.onColor : '#e9e9e9cc'}
           fontSize={iconSize}
         />
       )
@@ -38,18 +40,20 @@ export const screenOptions = (route: RouteProp<ParamListBase, string>) => ({
     if (route.name === StackRoute.GYM) {
       return (
         <Icon
-          name="like2"
-          color={focused ? theme.primary.onColor : theme.light_1}
-          fontSize={iconSize}
+          name="calendar"
+          fontFamily="FontAwesome"
+          color={focused ? theme.primary.onColor : '#e9e9e9cc'}
+          fontSize={iconSize - 2}
         />
       )
     }
     if (route.name === ScreenRoute.SETTINGS) {
       return (
         <Icon
-          name="like2"
-          color={focused ? theme.primary.onColor : theme.light_1}
-          fontSize={iconSize}
+          name="ios-settings-outline"
+          fontFamily="Ionicons"
+          color={focused ? theme.primary.onColor : '#e9e9e9cc'}
+          fontSize={iconSize + 2}
         />
       )
     }

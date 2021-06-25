@@ -73,8 +73,8 @@ type Props = OwnProps
 const WorkoutSection: FunctionComponent<Props> = ({ workout }) => {
   const navigation = useNavigation()
 
-  const onPressEditWorkout = (workout: WorkoutModel | {} = {}) => {
-    navigation.navigate(ScreenRoute.ADD_EDIT, { workout })
+  const onPressEditWorkout = (workout: WorkoutModel) => {
+    navigation.navigate(ScreenRoute.WORKOUT_EDIT, { workout })
   }
 
   return (
