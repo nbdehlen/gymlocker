@@ -1,21 +1,27 @@
 import React, { FunctionComponent } from 'react'
 import { createStackNavigator, StackHeaderLeftButtonProps } from '@react-navigation/stack'
 import { ScreenRoute, TabRoute } from './NAV_CONSTANTS'
-import theme from '../utils/theme'
+import theme, { B } from '../utils/theme'
 import { Div, Icon, Text } from 'react-native-magnus'
 import GymCalendarScreen from '../screens/GymCalendarScreen'
 import { TouchableOpacity } from 'react-native'
-import { CommonActions } from '@react-navigation/native'
+import { CommonActions, RouteProp, useNavigation } from '@react-navigation/native'
 import WorkoutAddScreen from '../screens/WorkoutAddScreen'
 import WorkoutEditScreen from '../screens/WorkoutEditScreen'
+import WorkoutDetailsScreen from '../screens/WorkoutDetailsScreen'
+import { WorkoutParamList } from './navigationTypes'
+import { StackNavigationProp } from '@react-navigation/stack'
 
-type OwnProps = {}
+type GymStackNavigation = StackNavigationProp<WorkoutParamList>
+type GymStackRouteProp = RouteProp<WorkoutParamList, any> // TODO: Fix this
+type Props = {
+  route: GymStackRouteProp
+  navigation: GymStackNavigation
+}
 
-type Props = OwnProps
-
-const Stack = createStackNavigator()
+const Stack = createStackNavigator<WorkoutParamList>()
 //TODO: Cardio workout relstions broken?
-export const GymStack: FunctionComponent = () => {
+export const GymStack: FunctionComponent<Props> = ({ route, navigation }) => {
   return (
     <Stack.Navigator
       screenOptions={{
@@ -114,6 +120,7 @@ export const GymStack: FunctionComponent = () => {
         // }
         // }}
       />
+      <Stack.Screen name={ScreenRoute.WORKOUT_DETAILS} component={WorkoutDetailsScreen} />
     </Stack.Navigator>
   )
 }

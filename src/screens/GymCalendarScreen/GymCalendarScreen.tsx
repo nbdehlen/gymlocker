@@ -20,7 +20,7 @@ import { Between } from 'typeorm'
 import { nextSunday } from 'date-fns/esm'
 import { useNavigation } from '@react-navigation/core'
 import { ScreenRoute } from '../../navigation/NAV_CONSTANTS'
-import WorkoutSection from './WorkoutSection'
+import WorkoutSection from '../../components/WorkoutSection'
 
 type OwnProps = {}
 
@@ -97,10 +97,13 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
   }, [workouts])
 
   const updateSelectedWorkout = (day: string) => {
-    const TodaysWorkouts = workouts.filter(
+    const todaysWorkouts = workouts.filter(
       (workout) => format(new Date(workout?.start), 'yyyy-MM-dd') === day
     )
-    setSelectedWorkouts(TodaysWorkouts)
+    const todaysWorkoutIds = todaysWorkouts.map((workout) => workout.id)
+    workoutRepository
+      .getManyById(todaysWorkoutIds, ['exercises', 'exercises.sets'])
+      .then((data) => data && setSelectedWorkouts(data))
   }
 
   const updateDots = (selected: string) => {
@@ -125,6 +128,9 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
 
   const onPressAddWorkout = () => navigation.navigate(ScreenRoute.WORKOUT_ADD)
 
+  const onPressEditWorkout = (workout: WorkoutModel) => {
+    navigation.navigate(ScreenRoute.WORKOUT_DETAILS, { workout })
+  }
   return (
     <Div flex={1} bg={theme.background} pt={32}>
       <ScrollView>
@@ -222,7 +228,9 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
         </Button>
         <B.Spacer h={32} />
         {selectedWorkouts &&
-          selectedWorkouts.map((selectedWorkout) => <WorkoutSection workout={selectedWorkout} />)}
+          selectedWorkouts.map((selectedWorkout) => (
+            <WorkoutSection workout={selectedWorkout} onPress={onPressEditWorkout} /> // TODO: typing here
+          ))}
       </ScrollView>
     </Div>
   )
