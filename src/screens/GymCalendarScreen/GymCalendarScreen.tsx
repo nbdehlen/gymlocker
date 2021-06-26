@@ -115,7 +115,8 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
   }
 
   const onChangeMonth = (month: DateObject) => {
-    const day = month.dateString
+    const day = month.dateString.slice(0, 8) + '01'
+
     // TODO: Only update dots when month change?
     setSelected(day)
     updateSelectedWorkout(day)

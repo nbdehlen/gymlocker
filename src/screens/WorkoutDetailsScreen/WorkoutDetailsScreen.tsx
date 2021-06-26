@@ -1,5 +1,5 @@
 import { RouteProp, useNavigation } from '@react-navigation/core'
-import React, { FunctionComponent, useLayoutEffect } from 'react'
+import React, { FunctionComponent, useLayoutEffect, useState } from 'react'
 import { ScrollView, TouchableOpacity } from 'react-native'
 import { Button, Div, Icon, Text } from 'react-native-magnus'
 import WorkoutSection from '../../components/WorkoutSection'
@@ -9,6 +9,7 @@ import { WorkoutModel } from '../../data/entities/WorkoutModel'
 import { WorkoutParamList } from '../../navigation/navigationTypes'
 import { ScreenRoute } from '../../navigation/NAV_CONSTANTS'
 import theme, { B } from '../../utils/theme'
+import WorkoutModal from './WorkoutModal'
 
 // type GeneralRowProps = {
 //   title: string
@@ -141,6 +142,8 @@ export const WorkoutDetailsScreen: FunctionComponent<Props> = ({
   },
 }) => {
   const navigation = useNavigation()
+  const [modalVisible, setModalVisible] = useState<number | null>(null)
+
   // console.log(workout.exercises[0].sets, 'SSSSSSSSSSSSEEEEEEEEEEETTTTTTTTTTTSSSSSSS')
 
   useLayoutEffect(() => {
@@ -164,6 +167,11 @@ export const WorkoutDetailsScreen: FunctionComponent<Props> = ({
     })
   }, [navigation])
 
+  const handleModal = (index: number): void => {
+    modalVisible === index ? setModalVisible(null) : setModalVisible(index)
+  }
+
+  // TODO: grey container tag thingy for KG and around reps and/or around 5x10 etc
   // TODO: Fix padding for this and WorkoutSection
   return (
     <Div flex={1} bg={theme.background} pt={24}>
@@ -172,9 +180,9 @@ export const WorkoutDetailsScreen: FunctionComponent<Props> = ({
         <Div mx={16}>
           <Div flexWrap="wrap" alignItems="flex-start">
             {workout?.exercises &&
-              workout.exercises.map((exercise) => (
+              workout.exercises.map((exercise, i) => (
                 <Div key={exercise.id} ml={0} mb={20} flexDir="row">
-                  <Button bg="transparent" p={0} m={0}>
+                  <Button bg="transparent" p={0} m={0} onPress={() => handleModal(i)}>
                     <Text color={theme.primary.onColor} fontWeight="bold">
                       {exercise.exercise}
                     </Text>
@@ -193,6 +201,12 @@ export const WorkoutDetailsScreen: FunctionComponent<Props> = ({
 
                   {/* ))} */}
                   <B.Spacer h={16} />
+                  <WorkoutModal
+                    exercise={exercise}
+                    i={i}
+                    modalVisible={modalVisible}
+                    handleModal={handleModal}
+                  />
                 </Div>
               ))}
           </Div>
