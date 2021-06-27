@@ -30,7 +30,7 @@ const RenderItem: FunctionComponent<WorkoutSummary> = ({ data, title }) => (
 
 type OwnProps = {
   workout: WorkoutModel
-  onPress?: (workout: WorkoutModel) => {}
+  onPress?(workout: WorkoutModel): void
 }
 
 type Props = OwnProps

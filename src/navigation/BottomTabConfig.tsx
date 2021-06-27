@@ -1,11 +1,10 @@
 import React from 'react'
 import { ParamListBase, RouteProp } from '@react-navigation/core'
-// import Icons from '../../../assets/index'
-// import theme from '../../utils/theme'
 import { ScreenRoute, StackRoute, TabRoute } from './NAV_CONSTANTS'
 import theme from '../utils/theme'
 import { Icon } from 'react-native-magnus'
 import { getThemeColor } from 'react-native-magnus/lib/typescript/src/theme/theme.service'
+import { BottomTabBarOptions, BottomTabNavigationOptions } from '@react-navigation/bottom-tabs'
 
 type TabBarIconProps = {
   focused: boolean
@@ -40,10 +39,10 @@ export const screenOptions = (route: RouteProp<ParamListBase, string>) => ({
     if (route.name === StackRoute.GYM) {
       return (
         <Icon
-          name="calendar"
-          fontFamily="FontAwesome"
+          name="note"
+          fontFamily="SimpleLineIcons"
           color={focused ? theme.primary.onColor : '#e9e9e9cc'}
-          fontSize={iconSize - 2}
+          fontSize={iconSize - 1}
         />
       )
     }
@@ -60,7 +59,8 @@ export const screenOptions = (route: RouteProp<ParamListBase, string>) => ({
   },
 })
 
-export const tabBarOptions = {
+export const tabBarOptions: BottomTabBarOptions = {
+  // tabStyle: { flexDirection: 'row', alignItems: 'flex-start' },
   keyboardHidesTabBar: true,
   showLabel: false,
   style: {

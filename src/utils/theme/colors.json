@@ -1,7 +1,8 @@
 {
   "primary": {
     "color": "#1D1E27",
-    "onColor": "#3ca1f2"
+    "onColor": "#3ca1f2",
+    "border": "rgba(60, 161, 242, 0.6)"
   },
   "background": "#1D1E27",
   "light_1": "#f7f7f7",

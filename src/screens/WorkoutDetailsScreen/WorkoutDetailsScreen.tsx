@@ -79,57 +79,6 @@ const truncateSets = (sets: SetModel[]): string => {
   return str
 }
 
-type ExerciseTableProps = {
-  sets: SetModel[]
-  headers?: string[]
-}
-const SetsTable: FunctionComponent<ExerciseTableProps> = ({ sets, headers }) => (
-  <Div
-  // flexDir="row"
-  >
-    <Div flexDir="row" flex={1}>
-      <Div flex={1}></Div>
-      {headers &&
-        headers.map((header) => (
-          <Div alignItems="center" flex={1}>
-            <Text fontSize={13} color={theme.light_1}>
-              {header}
-            </Text>
-          </Div>
-        ))}
-    </Div>
-    {sets.map((set, i) => {
-      return (
-        <>
-          <Div
-            // borderBottomWidth={1}
-            // borderColor={theme.placeholder_opacity} //weaker blue
-            // alignItems="flex-end"
-            // flex={1}
-            flexDir="row">
-            <Div flex={1}>
-              <Text
-                style={{
-                  fontSize: 13,
-                  color: theme.light_1,
-                }}>
-                SET {i + 1}
-              </Text>
-            </Div>
-            <Div style={{ alignItems: 'center', flex: 1 }}>
-              <Text style={{ fontSize: 14, color: theme.light_1 }}>{`${set.weight_kg} kg`}</Text>
-            </Div>
-            <Div style={{ alignItems: 'center', flex: 1 }}>
-              <Text style={{ fontSize: 14, color: theme.light_1 }}>{set.repetitions}</Text>
-            </Div>
-          </Div>
-          <B.Spacer h={4} />
-        </>
-      )
-    })}
-  </Div>
-)
-
 type OwnProps = {}
 
 type Props = OwnProps & {
