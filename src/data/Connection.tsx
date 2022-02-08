@@ -12,6 +12,8 @@ import { ExerciseSelectRepository } from './repositories/ExerciseSelectRepositor
 import { SetRepository } from './repositories/SetRepository'
 import { WorkoutRepository } from './repositories/WorkoutRepository'
 import { migrations } from '../data/migrations'
+import { getData } from '../utils/asyncStorage'
+import { NEW_INSTALL } from '../storageConstants'
 
 interface DatabaseConnectionContextData {
   workoutRepository: WorkoutRepository
@@ -21,14 +23,13 @@ interface DatabaseConnectionContextData {
   cardioRepository: CardioRepository
 }
 
-const DatabaseConnectionContext = createContext<DatabaseConnectionContextData>(
-  {} as DatabaseConnectionContextData
-)
+const DatabaseConnectionContext = createContext<DatabaseConnectionContextData>({} as DatabaseConnectionContextData)
 
 export const DatabaseConnectionProvider: React.FC = ({ children }) => {
   const [connection, setConnection] = useState<Connection | null>(null)
 
   const connect = useCallback(async () => {
+    const installDate = await getData(NEW_INSTALL)
     const createdConnection = await createConnection({
       type: 'expo',
       database: '@workouts.db',
@@ -38,6 +39,8 @@ export const DatabaseConnectionProvider: React.FC = ({ children }) => {
       // dropSchema: true,
       // migrationsRun: true, // TODO: set based on asyncStorage
       // synchronize: true, // TODO: set based on asyncStorage
+      migrationsRun: !installDate, // TODO: set based on asyncStorage
+      synchronize: !installDate, // TODO: set based on asyncStorage
       // cli: {
       //   migrationsDir: 'src/migrations',
       // },
