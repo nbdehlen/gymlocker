@@ -2,7 +2,7 @@ import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } f
 import { ScrollView, TouchableOpacity } from 'react-native'
 import { Button, Div, Icon, Text } from 'react-native-magnus'
 import theme, { B } from '../../utils/theme'
-import { Calendar, CalendarList, Agenda, DateObject } from 'react-native-calendars'
+import { Calendar, CalendarList, Agenda } from 'react-native-calendars'
 import {
   differenceInMinutes,
   endOfDay,
@@ -97,9 +97,7 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
   }, [workouts])
 
   const updateSelectedWorkout = (day: string) => {
-    const todaysWorkouts = workouts.filter(
-      (workout) => format(new Date(workout?.start), 'yyyy-MM-dd') === day
-    )
+    const todaysWorkouts = workouts.filter((workout) => format(new Date(workout?.start), 'yyyy-MM-dd') === day)
     const todaysWorkoutIds = todaysWorkouts.map((workout) => workout.id)
     workoutRepository
       .getManyById(todaysWorkoutIds, ['exercises', 'exercises.sets'])
@@ -114,14 +112,14 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
     return markedDates[selected].dots.map((dot, i) => ({ key: `temp-${i}`, color: 'white' }))
   }
 
-  const onChangeMonth = (month: DateObject) => {
+  const onChangeMonth = (month: any) => {
     const day = month.dateString.slice(0, 8) + '01'
 
     // TODO: Only update dots when month change?
     setSelected(day)
     updateSelectedWorkout(day)
   }
-  const onDayPress = (date: DateObject) => {
+  const onDayPress = (date: any) => {
     const day = date.dateString
     setSelected(day)
     updateSelectedWorkout(day)
@@ -139,23 +137,11 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
           firstDay={1}
           renderArrow={(direction) => {
             if (direction === 'left') {
-              return (
-                <Icon
-                  fontFamily="SimpleLineIcons"
-                  name="arrow-left"
-                  color={theme.primary.onColor}
-                  fontSize={16}
-                />
-              )
+              return <Icon fontFamily="SimpleLineIcons" name="arrow-left" color={theme.primary.onColor} fontSize={16} />
             }
             if (direction === 'right') {
               return (
-                <Icon
-                  fontFamily="SimpleLineIcons"
-                  name="arrow-right"
-                  color={theme.primary.onColor}
-                  fontSize={16}
-                />
+                <Icon fontFamily="SimpleLineIcons" name="arrow-right" color={theme.primary.onColor} fontSize={16} />
               )
             }
           }}

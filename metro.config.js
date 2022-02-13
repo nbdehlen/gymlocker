@@ -1,4 +1,5 @@
 module.exports = {
+  // Using metro config for typeorm
   transformer: {
     minifierConfig: {
       keep_classnames: true, // FIX typeorm

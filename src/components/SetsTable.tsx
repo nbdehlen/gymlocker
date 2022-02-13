@@ -12,8 +12,8 @@ const SetsTable: FunctionComponent<ExerciseTableProps> = ({ sets, headers }) => 
     <Div flexDir="row" flex={1}>
       {/* <Div flex={1}></Div> */}
       {headers &&
-        headers.map((header) => (
-          <Div alignItems="center" flex={1}>
+        headers.map((header, i) => (
+          <Div alignItems="center" flex={1} key={i}>
             <Text fontSize={13} color={theme.light_1}>
               {header}
             </Text>
@@ -21,7 +21,7 @@ const SetsTable: FunctionComponent<ExerciseTableProps> = ({ sets, headers }) => 
         ))}
     </Div>
     {sets.map((set, i) => (
-      <Div mb={8} flexDir="row">
+      <Div mb={8} flexDir="row" key={i}>
         {/* <Div alignItems="center" flex={1}>
           <Icon name="remove" fontFamily="FontAwesome" />
         </Div> */}

@@ -28,6 +28,7 @@
       "favicon": "./assets/favicon.png"
     },
     "packagerOpts": {
+      "comment": "Using metro config for Typeorm",
       "config": "metro.config.js"
     }
   }
