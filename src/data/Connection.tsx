@@ -40,7 +40,7 @@ export const DatabaseConnectionProvider: React.FC = ({ children }) => {
       // migrationsRun: true, // TODO: set based on asyncStorage
       // synchronize: true, // TODO: set based on asyncStorage
       migrationsRun: !installDate, // TODO: set based on asyncStorage
-      synchronize: !installDate, // TODO: set based on asyncStorage
+      synchronize: !installDate // TODO: set based on asyncStorage
       // cli: {
       //   migrationsDir: 'src/migrations',
       // },
@@ -66,8 +66,9 @@ export const DatabaseConnectionProvider: React.FC = ({ children }) => {
         exerciseSelectRepository: new ExerciseSelectRepository(connection),
         exerciseRepository: new ExerciseRepository(connection),
         setRepository: new SetRepository(connection),
-        cardioRepository: new CardioRepository(connection),
-      }}>
+        cardioRepository: new CardioRepository(connection)
+      }}
+    >
       {children}
     </DatabaseConnectionContext.Provider>
   )

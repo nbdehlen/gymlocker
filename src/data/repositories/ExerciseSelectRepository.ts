@@ -25,13 +25,13 @@ export class ExerciseSelectRepository {
     exercise,
     muscles,
     assistingMuscles,
-    custom,
+    custom
   }: ICreateExerciseSelectData): Promise<ExerciseSelectModel> {
     const exerciseSelect = this.ormRepository.create({
       exercise,
       muscles,
       assistingMuscles,
-      custom,
+      custom
     })
 
     await this.ormRepository.save(exerciseSelect)
@@ -52,6 +52,15 @@ export class ExerciseSelectRepository {
   //       [id]
   //     )
   //   }
+
+  public async getExercisesByMuscle(muscle: string): Promise<ExerciseSelectModel[]> {
+    const exercises = await this.ormRepository.find({ where: { muscles: muscle } })
+    return exercises
+  }
+
+  public async createMany(exercises: ICreateExerciseSelectData[]): Promise<void> {
+    await this.ormRepository.save(exercises)
+  }
 
   public async delete(id: number): Promise<void> {
     await this.ormRepository.delete(id)

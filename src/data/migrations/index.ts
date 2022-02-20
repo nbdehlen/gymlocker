@@ -6,7 +6,6 @@ import { CreateSetsTable1622070173991 } from './1622070173991-CreateSetsTable'
 import { CreateWorkoutToExerciseFK1622328667572 } from './1622328667572-CreateWorkoutToExerciseFK'
 import { CreateWorkoutToCardioFK1622328685466 } from './1622328685466-CreateWorkoutToCardioFK'
 import { CreateExerciseToSetFK1622328699766 } from './1622328699766-CreateExerciseToSetFK'
-import { SeedExercisesSelect1622339639048 } from './1622339639048-SeedExercisesSelect'
 
 export const migrations = [
   CreateExercisesSelectTable1621964884049,
@@ -16,6 +15,5 @@ export const migrations = [
   CreateSetsTable1622070173991,
   CreateWorkoutToCardioFK1622328685466,
   CreateWorkoutToExerciseFK1622328667572,
-  CreateExerciseToSetFK1622328699766,
-  SeedExercisesSelect1622339639048,
+  CreateExerciseToSetFK1622328699766
 ]

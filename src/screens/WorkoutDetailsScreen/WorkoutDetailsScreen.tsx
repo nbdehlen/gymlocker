@@ -3,43 +3,11 @@ import React, { FunctionComponent, useLayoutEffect, useState } from 'react'
 import { ScrollView, TouchableOpacity } from 'react-native'
 import { Button, Div, Icon, Text } from 'react-native-magnus'
 import WorkoutSection from '../../components/WorkoutSection'
-import { ExerciseModel } from '../../data/entities/ExerciseModel'
 import { SetModel } from '../../data/entities/SetModel'
-import { WorkoutModel } from '../../data/entities/WorkoutModel'
 import { WorkoutParamList } from '../../navigation/navigationTypes'
-import { ScreenRoute } from '../../navigation/NAV_CONSTANTS'
+import { DrawerRoute, ScreenRoute } from '../../navigation/NAV_CONSTANTS'
 import theme, { B } from '../../utils/theme'
 import WorkoutModal from './WorkoutModal'
-
-// type GeneralRowProps = {
-//   title: string
-//   data: string
-// }
-
-// const GeneralRow: FunctionComponent<GeneralRowProps> = ({ title, data }) => (
-//   <Div flexDir="row">
-//     <Text color={theme.light_1}>{`${title}: `}</Text>
-//     <Text color={theme.light_1}>{data}</Text>
-//   </Div>
-// )
-
-// type ExerciseHeaderProps = {
-//   title: string
-//   exercise: ExerciseModel
-//   Modal: JSX.Element
-
-// }
-
-// const ExerciseHeader: FunctionComponent<ExerciseHeaderProps> = ({ title, exercise, Modal }) => {
-//   return (
-//     <Div>
-//       <Text>{title}</Text>
-//       <Button>
-//         <Text>Details...</Text>
-//       </Button>
-//     </Div>
-//   )
-// }
 
 const truncateSets = (sets: SetModel[]): string => {
   // if all sets are the same, return 12 4x10
@@ -47,17 +15,15 @@ const truncateSets = (sets: SetModel[]): string => {
   // if any following weight is the same, return 12x12,9 etc
   // 12 4x10, 9
   const uniformSets =
-    sets.filter(
-      (set) => set.repetitions === sets[0].repetitions && set.weight_kg === sets[0].weight_kg
-    ).length === sets.length
+    sets.filter((set) => set.repetitions === sets[0].repetitions && set.weight_kg === sets[0].weight_kg).length ===
+    sets.length
 
   if (uniformSets) {
     const str = `${sets[0].weight_kg}kg ${sets.length}x${sets[0].repetitions}`
     return str
   }
 
-  const unformWeight =
-    sets.filter((set) => set.weight_kg === sets[0].weight_kg).length === sets.length
+  const unformWeight = sets.filter((set) => set.weight_kg === sets[0].weight_kg).length === sets.length
   if (unformWeight) {
     const weight = `${sets[0].weight_kg}kg `
     let str = `${weight}x`
@@ -87,38 +53,37 @@ type Props = OwnProps & {
 
 export const WorkoutDetailsScreen: FunctionComponent<Props> = ({
   route: {
-    params: { workout },
-  },
+    params: { workout }
+  }
 }) => {
   const navigation = useNavigation()
   const [modalVisible, setModalVisible] = useState<number | null>(null)
-
-  // console.log(workout.exercises[0].sets, 'SSSSSSSSSSSSEEEEEEEEEEETTTTTTTTTTTSSSSSSS')
+  const handleModal = (index: number) => (modalVisible === index ? setModalVisible(null) : setModalVisible(index))
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity
-          onPress={() => navigation.navigate(ScreenRoute.WORKOUT_EDIT, { workout })}>
+          onPress={() =>
+            navigation.navigate(DrawerRoute.GYM_DRAWER, { screen: ScreenRoute.WORKOUT_EDIT, params: { workout } })
+          }
+        >
           <Div mr={20} pb={8} flexDir="row">
             <B.Spacer w={8} />
             <Icon name="edit" fontFamily="AntDesign" color={theme.primary.onColor} fontSize={22} />
           </Div>
         </TouchableOpacity>
       ),
+      // TODO: workout date here or do something else with it
       headerTitle: () => (
         <Div alignItems="center" pb={8}>
           <Text color={theme.light_1} fontSize={14}>
             16:32 12th June 21
           </Text>
         </Div>
-      ),
+      )
     })
-  }, [navigation])
-
-  const handleModal = (index: number): void => {
-    modalVisible === index ? setModalVisible(null) : setModalVisible(index)
-  }
+  }, [navigation, workout])
 
   // TODO: grey container tag thingy for KG and around reps and/or around 5x10 etc
   // TODO: Fix padding for this and WorkoutSection
@@ -136,26 +101,10 @@ export const WorkoutDetailsScreen: FunctionComponent<Props> = ({
                       {exercise.exercise}
                     </Text>
                   </Button>
-                  {/* <SetsTable sets={exercise.sets} headers={['WEIGHT', 'REPS']} /> */}
-
-                  {/* <Div flexDir="row"> */}
                   <B.Spacer w={8} />
                   <Text color={theme.light_1}> {truncateSets(exercise.sets)} </Text>
-                  {/* {exercise.sets.map((set) => (
-                    <Div flexDir="row" justifyContent="flex-start">
-                    <Div flexDir="row"> */}
-                  {/* <Text color={theme.light_1}>{`${set.weight_kg}`}</Text>
-                      <Text color={theme.light_1}>{`x${set.repetitions} `}</Text> */}
-                  {/* </Div> */}
-
-                  {/* ))} */}
                   <B.Spacer h={16} />
-                  <WorkoutModal
-                    exercise={exercise}
-                    i={i}
-                    modalVisible={modalVisible}
-                    handleModal={handleModal}
-                  />
+                  <WorkoutModal exercise={exercise} i={i} modalVisible={modalVisible} handleModal={handleModal} />
                 </Div>
               ))}
           </Div>

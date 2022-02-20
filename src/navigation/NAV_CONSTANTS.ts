@@ -6,11 +6,15 @@ export enum ScreenRoute {
   SETTINGS = 'screens/settings',
   WORKOUT_ADD = 'screens/workout_add',
   WORKOUT_EDIT = 'screens/workout_edit',
-  WORKOUT_DETAILS = 'screens/workout_details',
+  WORKOUT_DETAILS = 'screens/workout_details'
 }
 
 export enum StackRoute {
-  GYM = 'stack/gym',
+  GYM = 'stack/gym'
+}
+
+export enum DrawerRoute {
+  GYM_DRAWER = 'drawer/gym'
 }
 
 export enum TabRoute {}

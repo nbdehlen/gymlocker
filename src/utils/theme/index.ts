@@ -4,7 +4,7 @@ import * as base from './base'
 export const B = base
 
 const theme = {
-  ...colors,
+  ...colors
 }
 
 export default theme

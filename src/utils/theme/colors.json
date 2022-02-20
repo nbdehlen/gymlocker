@@ -6,6 +6,7 @@
   },
   "background": "#1D1E27",
   "light_1": "#f7f7f7",
+  "light_border": "rgba(244,244,244,0.7)",
   "dark_1": "#414067",
   "placeholder_opacity": "rgba(174,158,158, 0.4)"
 }

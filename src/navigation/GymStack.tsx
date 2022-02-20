@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react'
-import { createStackNavigator, StackHeaderLeftButtonProps } from '@react-navigation/stack'
-import { ScreenRoute, TabRoute } from './NAV_CONSTANTS'
-import theme, { B } from '../utils/theme'
+import { createStackNavigator } from '@react-navigation/stack'
+import { DrawerRoute, ScreenRoute } from './NAV_CONSTANTS'
+import theme from '../utils/theme'
 import { Div, Icon, Text } from 'react-native-magnus'
 import GymCalendarScreen from '../screens/GymCalendarScreen'
 import { TouchableOpacity } from 'react-native'
@@ -11,6 +11,7 @@ import WorkoutEditScreen from '../screens/WorkoutEditScreen'
 import WorkoutDetailsScreen from '../screens/WorkoutDetailsScreen'
 import { WorkoutParamList } from './navigationTypes'
 import { StackNavigationProp } from '@react-navigation/stack'
+import DrawerNavigation from './DrawerNavigation'
 
 type GymStackNavigation = StackNavigationProp<WorkoutParamList>
 type GymStackRouteProp = RouteProp<WorkoutParamList, any> // TODO: Fix this
@@ -42,27 +43,23 @@ export const GymStack: FunctionComponent<Props> = ({ route, navigation }) => {
           backgroundColor: theme.primary.color,
           // backgroundColor: 'transparent',
           // height: 0,
-          elevation: 0,
+          elevation: 0
         },
         headerLeftContainerStyle: {
           marginBottom: 8,
-          marginLeft: 4,
+          marginLeft: 4
         },
-        headerTintColor: theme.primary.onColor,
-      }}>
-      <Stack.Screen
-        name={ScreenRoute.CALENDAR}
-        component={GymCalendarScreen}
-        options={{ headerShown: false }}
-      />
+        headerTintColor: theme.primary.onColor
+      }}
+    >
+      <Stack.Screen name={ScreenRoute.CALENDAR} component={GymCalendarScreen} options={{ headerShown: false }} />
 
-      <Stack.Screen
+      {/* <Stack.Screen
         name={ScreenRoute.WORKOUT_ADD}
         component={WorkoutAddScreen}
         // options={({ route: { params } }) => {
         //   console.log(params)
         options={() => {
-          // dfsfdfdsfds
           return {
             // headerTransparent: false,
             // style: {},
@@ -87,7 +84,6 @@ export const GymStack: FunctionComponent<Props> = ({ route, navigation }) => {
             //         // opacity: 0.1,
             //       }}
             //                         onPress={() => navigation.()}>
-            //       // onPress={() => navigation.dispatch(CommonActions.goBack())}>
             //       <Icon name="like2" color={theme.primary.onColor} fontSize={28} />
             //     </TouchableOpacity>
             //   )
@@ -108,17 +104,14 @@ export const GymStack: FunctionComponent<Props> = ({ route, navigation }) => {
             headerTitle: () => null,
           }
         }}
-      />
+      /> */}
       <Stack.Screen
-        name={ScreenRoute.WORKOUT_EDIT}
-        component={WorkoutEditScreen}
-        // options={() => {
-        // console.log({ route })
-        // return {
-        // headerRight: () => <Div />,
-        // headerTitle: () => null,
-        // }
-        // }}
+        name={DrawerRoute.GYM_DRAWER}
+        component={DrawerNavigation}
+        options={() => ({
+          headerRight: () => <Div />,
+          headerTitle: () => null
+        })}
       />
       <Stack.Screen name={ScreenRoute.WORKOUT_DETAILS} component={WorkoutDetailsScreen} />
     </Stack.Navigator>
