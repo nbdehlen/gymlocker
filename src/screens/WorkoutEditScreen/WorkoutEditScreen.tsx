@@ -1,17 +1,13 @@
-import { RouteProp, useNavigation } from '@react-navigation/core'
+import { RouteProp } from '@react-navigation/core'
 import format from 'date-fns/format'
-import React, { FunctionComponent, useLayoutEffect, useState } from 'react'
-import { Keyboard, Platform, ScrollView, TouchableOpacity } from 'react-native'
+import React, { FunctionComponent, useState } from 'react'
+import { Keyboard, Platform, ScrollView } from 'react-native'
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler'
-import { Fab, Div, Input, Text, Button, Icon, ThemeContext } from 'react-native-magnus'
-import { iconFontFamilyType } from 'react-native-magnus/lib/typescript/src/ui/icon/icon.type'
-import { WorkoutModel } from '../../data/entities/WorkoutModel'
+import { Div, Input, Icon } from 'react-native-magnus'
 import { WorkoutParamList } from '../../navigation/navigationTypes'
 import { ScreenRoute } from '../../navigation/NAV_CONSTANTS'
 import theme, { B } from '../../utils/theme'
 import DateTimePicker from '@react-native-community/datetimepicker'
-import { getThemeColor } from 'react-native-magnus/lib/typescript/src/theme/theme.service'
-import SetsTable from '../../components/SetsTable'
 
 type OwnProps = {}
 
@@ -20,54 +16,43 @@ type Props = OwnProps & {
 }
 
 // TODO: OnLongPress -> re-arrange order?
-export const WorkoutEditScreen: FunctionComponent<Props> = ({
-  route: {
-    params: { workout },
-  },
-}) => {
-  const navigation = useNavigation()
+export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
+  const { workout } = route.params
+
+  // TODO: create hook for the date stuff?
   // Date stuff
   const [date, setDate] = useState(workout.start)
+  const [endDate, setEndDate] = useState(new Date(workout.start.getTime() + 60 * 60 * 1000))
   const [mode, setMode] = useState('date')
   const [show, setShow] = useState(false)
+  const [pickerIndex, setPickerIndex] = useState(0)
+  const minutes = (endDate.getTime() - date.getTime()) / (60 * 1000)
+  const [min, setMin] = useState(minutes)
 
-  // const onPressEdit = () => {
-  //   if (screenMode === Mode.EDIT) {
-  //     setScreenMode(Mode.SAVE)
-  //   } else {
-  //     setScreenMode(Mode.EDIT)
-  //   }
-  // }
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity onPress={onPressSave}>
-          <Div mr={20} flexDir="row">
-            <Text color={theme.primary.onColor} fontSize={14}>
-              SAVE
-            </Text>
-            <B.Spacer w={8} />
-            <Icon
-              name="ios-save-outline"
-              fontFamily="Ionicons"
-              color={theme.primary.onColor}
-              fontSize={18}
-            />
-          </Div>
-        </TouchableOpacity>
-      ),
-      headerTitle: () => null,
-    })
-  }, [navigation])
-
-  const onPressSave = () => {
-    console.log('yolo')
+  const onChangeMinutes = (minStr: string) => {
+    setMin(Number(minStr))
   }
 
+  const onBlurMinutes = () => {
+    const dateAsNum = date.getTime() + min * 60 * 1000
+    const newEndDate = new Date(dateAsNum)
+
+    // TODO: need to use blur/focus and/or debounce it
+    setEndDate(newEndDate)
+  }
+
+  // TODO: determine if edited for save button and/or alert
+  const [touched, setTouched] = useState(false)
+
+  const [activeExercise, setActiveExercise] = useState<number>()
+  const changeActiveExercise = (num: number) => setActiveExercise(num)
+
   const onChangeDate = (event, selectedDate) => {
-    const currentDate = selectedDate || date
+    const newDate = pickerIndex === 0 ? date : endDate
+    const currentDate = selectedDate || newDate
     setShow(Platform.OS === 'ios')
-    setDate(currentDate)
+    pickerIndex === 0 ? setDate(currentDate) : setEndDate(currentDate)
+    // TODO: also need to set minutes here
   }
 
   const showMode = (currentMode) => {
@@ -79,65 +64,41 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({
     showMode('date')
   }
 
-  const showTimepicker = () => {
+  const showTimepicker = (picker: number) => {
+    setPickerIndex(picker)
     showMode('time')
   }
 
   return (
-    // <Div flex={1}>
     <TouchableWithoutFeedback
       onPress={Keyboard.dismiss}
-      containerStyle={{
-        flex: 1,
-        backgroundColor: theme.primary.color,
-        // justifyContent: 'flex-start',
-      }}>
-      <ScrollView
-        contentContainerStyle={{
-          minHeight: '100%',
-          // justifyContent: 'flex-start',
-          // justifyContent: 'space-evenly',
-          // justifyContent: 'flex-start',
-          // alignItems: 'flex-end',
-        }}
-        // style={{ backgroundColor: 'grey' }}
-      >
-        <Div justifyContent="center" flexDir="row">
-          <B.LightText fontWeight="bold" fontSize={14}>
-            WORKOUT INFO
-          </B.LightText>
-        </Div>
-
+      containerStyle={{ flex: 1, backgroundColor: theme.primary.color }}
+    >
+      <ScrollView contentContainerStyle={{ minHeight: '100%' }}>
         <Div flexDir="row" mx={20} mt={20}>
           <Div flex={1} alignItems="center">
             <TouchableWithoutFeedback onPress={showDatepicker}>
               <B.LightText fontSize={12}>Start date</B.LightText>
-              <B.LightText
-                fontSize={16}
-                rounded={4}
-                px={6}
-                py={2}
-                borderWidth={1}
-                borderColor={theme.primary.border}
-                // borderColor={theme.placeholder_opacity}
-              >
+              <B.LightText fontSize={16} rounded={4} px={6} py={2} borderWidth={1} borderColor={theme.primary.border}>
                 {format(date, 'dd MMM yy')}
               </B.LightText>
             </TouchableWithoutFeedback>
           </Div>
 
           <Div flex={1} alignItems="center">
-            <TouchableWithoutFeedback onPress={showTimepicker}>
+            <TouchableWithoutFeedback onPress={() => showTimepicker(0)}>
               <B.LightText fontSize={12}>Start time</B.LightText>
-              <B.LightText
-                fontSize={16}
-                borderWidth={1}
-                // borderColor={theme.placeholder_opacity}
-                borderColor={theme.primary.border}
-                rounded={4}
-                px={6}
-                py={2}>
+              <B.LightText fontSize={16} borderWidth={1} borderColor={theme.primary.border} rounded={4} px={6} py={2}>
                 {format(date, 'HH:mm')}
+              </B.LightText>
+            </TouchableWithoutFeedback>
+          </Div>
+
+          <Div flex={1} alignItems="center">
+            <TouchableWithoutFeedback onPress={() => showTimepicker(1)}>
+              <B.LightText fontSize={12}>End time</B.LightText>
+              <B.LightText fontSize={16} borderWidth={1} borderColor={theme.primary.border} rounded={4} px={6} py={2}>
+                {format(endDate, 'HH:mm')}
               </B.LightText>
             </TouchableWithoutFeedback>
           </Div>
@@ -145,22 +106,26 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({
           <Div flex={1} alignItems="center">
             <TouchableWithoutFeedback>
               <B.LightText fontSize={12}>Minutes</B.LightText>
-              <B.LightText
+              <Input
+                bg="transparent"
                 fontSize={16}
                 borderWidth={1}
-                // borderColor={theme.placeholder_opacity}
                 borderColor={theme.primary.border}
+                color={theme.light_1}
                 rounded={4}
                 px={6}
-                py={2}>
-                123
-              </B.LightText>
+                py={0}
+                focusBorderColor="blue700"
+                keyboardType="numeric"
+                onChangeText={onChangeMinutes}
+                value={min === 0 ? '' : String(min)}
+                onBlur={onBlurMinutes}
+              />
             </TouchableWithoutFeedback>
           </Div>
           {show && (
             <DateTimePicker
-              testID="dateTimePicker"
-              value={date}
+              value={pickerIndex === 0 ? date : endDate}
               mode={mode}
               is24Hour={true}
               display="default"
@@ -168,67 +133,23 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({
             />
           )}
         </Div>
-
         <B.Spacer h={20} />
-        {workout.exercises.map((exercise) => (
-          <Div>
-            {/* <SetsTable sets={exercise.sets} headers={['WEIGHT', 'REPS', '']} /> */}
+        {workout.exercises.map((exercise, i) => (
+          <Div key={i}>
             <Div flexDir="row">
               <Div flex={1}>
                 <B.LightText fontWeight="bold" fontSize={14}>
                   {exercise.exercise}
                 </B.LightText>
               </Div>
-              <Icon
-                name="edit"
-                fontFamily="FontAwesome"
-                fontSize={16}
-                color={theme.primary.onColor}
-                mr={12}
-              />
+              <Icon name="edit" fontFamily="FontAwesome" fontSize={16} color={theme.primary.onColor} mr={12} />
             </Div>
-            <Div flexDir="row"></Div>
+            <Div flexDir="row" />
             <B.Spacer h={16} />
           </Div>
         ))}
       </ScrollView>
-      <Fab
-        bg={theme.primary.color}
-        color={theme.primary.onColor}
-        h={50}
-        p={0}
-        borderWidth={1}
-        borderColor={theme.primary.onColor}
-        w={50}
-        position="absolute"
-        // flex={1}
-        bottom={20}
-        right={20}>
-        <Button
-          p="none"
-          bg="transparent"
-          justifyContent="flex-end"
-          borderColor={theme.primary.onColor}
-          borderWidth={1}>
-          <Div rounded="sm" bg={theme.background} p="sm">
-            <Text color={theme.primary.onColor}>Add exercise</Text>
-          </Div>
-        </Button>
-        <Button
-          p="none"
-          bg="transparent"
-          justifyContent="flex-end"
-          borderColor={theme.primary.onColor}
-          borderWidth={1}>
-          <Div rounded="sm" bg="white" p="sm">
-            <Text color={theme.primary.onColor} fontSize="md">
-              Add cardio
-            </Text>
-          </Div>
-        </Button>
-      </Fab>
     </TouchableWithoutFeedback>
-    // </Div>
   )
 }
 

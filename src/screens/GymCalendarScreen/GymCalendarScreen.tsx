@@ -12,15 +12,16 @@ import {
   getDaysInMonth,
   isFirstDayOfMonth,
   startOfDay,
-  startOfWeek,
+  startOfWeek
 } from 'date-fns'
 import { WorkoutModel } from '../../data/entities/WorkoutModel'
 import { useDatabaseConnection } from '../../data/Connection'
 import { Between } from 'typeorm'
 import { nextSunday } from 'date-fns/esm'
 import { useNavigation } from '@react-navigation/core'
-import { ScreenRoute } from '../../navigation/NAV_CONSTANTS'
+import { DrawerRoute, ScreenRoute } from '../../navigation/NAV_CONSTANTS'
 import WorkoutSection from '../../components/WorkoutSection'
+import DrawerNavigation from '../../navigation/DrawerNavigation'
 
 type OwnProps = {}
 
@@ -69,6 +70,8 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
   const { start, end } = useMemo(() => getCalendarSpan(selected), [selected])
   const [markedDates, setMarkedDates] = useState({})
   const navigation = useNavigation()
+
+  // TODO: If today has workouts they are not shown in the list until you click another date and go back
 
   useEffect(() => {
     // TODO: merge this somehow
@@ -125,11 +128,9 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
     updateSelectedWorkout(day)
   }
 
-  const onPressAddWorkout = () => navigation.navigate(ScreenRoute.WORKOUT_ADD)
+  const onPressAddWorkout = () => navigation.navigate(DrawerRoute.GYM_DRAWER)
+  const onPressEditWorkout = (workout: WorkoutModel) => navigation.navigate(ScreenRoute.WORKOUT_DETAILS, { workout })
 
-  const onPressEditWorkout = (workout: WorkoutModel) => {
-    navigation.navigate(ScreenRoute.WORKOUT_DETAILS, { workout })
-  }
   return (
     <Div flex={1} bg={theme.background} pt={32}>
       <ScrollView>
@@ -156,9 +157,9 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
               selected: true,
               dots: updateDots(selected),
               // dots: [{ key: 'temp-25', color: 'red' }],
-              disableTouchEvent: true,
+              disableTouchEvent: true
               // ...(markedDates.hasOwnProperty(selected) ? markedDates[selected] : {}),
-            },
+            }
             // '2021-06-03': {
             //   selected: false,
             //   dots: [{ key: 'temp-25', color: 'white' }],
@@ -191,7 +192,7 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
             // textDayHeaderFontFamily: font.Nunito_400Regular,
             textDayFontSize: 12,
             textMonthFontSize: 16,
-            textDayHeaderFontSize: 13,
+            textDayHeaderFontSize: 13
           }}
         />
         <B.Spacer h={16} />
@@ -201,22 +202,22 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
           </Text>
         </Button> */}
         <Button
-          // borderColor={theme.primary.onColor}
           borderColor="rgba(60, 161, 242, 0.6)"
           borderWidth={1}
           bg="transparent"
           alignSelf="center"
           w="90%"
           rounded={4}
-          onPress={onPressAddWorkout}>
-          <Text color={theme.primary.onColor} fontSize={14}>
+          onPress={onPressAddWorkout}
+        >
+          <Text color={theme.primary.onColor} fontSize={16}>
             Add workout
           </Text>
         </Button>
         <B.Spacer h={32} />
         {selectedWorkouts &&
-          selectedWorkouts.map((selectedWorkout) => (
-            <WorkoutSection workout={selectedWorkout} onPress={onPressEditWorkout} /> // TODO: typing here
+          selectedWorkouts.map((selectedWorkout, i) => (
+            <WorkoutSection workout={selectedWorkout} onPress={onPressEditWorkout} key={i} /> // TODO: typing here
           ))}
       </ScrollView>
     </Div>
