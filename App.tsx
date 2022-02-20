@@ -1,4 +1,5 @@
 import 'reflect-metadata'
+import 'react-native-gesture-handler'
 import { NavigationContainer } from '@react-navigation/native'
 import React, { FunctionComponent, useEffect } from 'react'
 import { ThemeProvider } from 'react-native-magnus'

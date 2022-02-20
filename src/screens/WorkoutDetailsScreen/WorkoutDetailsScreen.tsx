@@ -47,17 +47,15 @@ const truncateSets = (sets: SetModel[]): string => {
   // if any following weight is the same, return 12x12,9 etc
   // 12 4x10, 9
   const uniformSets =
-    sets.filter(
-      (set) => set.repetitions === sets[0].repetitions && set.weight_kg === sets[0].weight_kg
-    ).length === sets.length
+    sets.filter((set) => set.repetitions === sets[0].repetitions && set.weight_kg === sets[0].weight_kg).length ===
+    sets.length
 
   if (uniformSets) {
     const str = `${sets[0].weight_kg}kg ${sets.length}x${sets[0].repetitions}`
     return str
   }
 
-  const unformWeight =
-    sets.filter((set) => set.weight_kg === sets[0].weight_kg).length === sets.length
+  const unformWeight = sets.filter((set) => set.weight_kg === sets[0].weight_kg).length === sets.length
   if (unformWeight) {
     const weight = `${sets[0].weight_kg}kg `
     let str = `${weight}x`
@@ -87,19 +85,20 @@ type Props = OwnProps & {
 
 export const WorkoutDetailsScreen: FunctionComponent<Props> = ({
   route: {
-    params: { workout },
-  },
+    params: { workout }
+  }
 }) => {
   const navigation = useNavigation()
   const [modalVisible, setModalVisible] = useState<number | null>(null)
-
-  // console.log(workout.exercises[0].sets, 'SSSSSSSSSSSSEEEEEEEEEEETTTTTTTTTTTSSSSSSS')
 
   useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity
-          onPress={() => navigation.navigate(ScreenRoute.WORKOUT_EDIT, { workout })}>
+          onPress={() => {
+            navigation.navigate('yaya', { screen: ScreenRoute.WORKOUT_EDIT, params: { workout } })
+          }}
+        >
           <Div mr={20} pb={8} flexDir="row">
             <B.Spacer w={8} />
             <Icon name="edit" fontFamily="AntDesign" color={theme.primary.onColor} fontSize={22} />
@@ -112,9 +111,9 @@ export const WorkoutDetailsScreen: FunctionComponent<Props> = ({
             16:32 12th June 21
           </Text>
         </Div>
-      ),
+      )
     })
-  }, [navigation])
+  }, [navigation, workout])
 
   const handleModal = (index: number): void => {
     modalVisible === index ? setModalVisible(null) : setModalVisible(index)
@@ -150,12 +149,7 @@ export const WorkoutDetailsScreen: FunctionComponent<Props> = ({
 
                   {/* ))} */}
                   <B.Spacer h={16} />
-                  <WorkoutModal
-                    exercise={exercise}
-                    i={i}
-                    modalVisible={modalVisible}
-                    handleModal={handleModal}
-                  />
+                  <WorkoutModal exercise={exercise} i={i} modalVisible={modalVisible} handleModal={handleModal} />
                 </Div>
               ))}
           </Div>

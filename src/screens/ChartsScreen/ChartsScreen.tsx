@@ -17,7 +17,6 @@ export const ChartsScreen: FunctionComponent<Props> = () => {
       const res = await getData(NEW_INSTALL)
       if (!res) {
         exerciseSelectRepository.createMany(exercisesSelect)
-        // storeData(NEW_INSTALL, String(Date.now()))
       }
       return res
     }

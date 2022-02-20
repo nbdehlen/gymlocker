@@ -1,12 +1,9 @@
-import format from 'date-fns/format'
 import React, { FunctionComponent, useCallback } from 'react'
 import { TouchableOpacity } from 'react-native'
 import { WorkoutModel } from '../data/entities/WorkoutModel'
 import theme, { B } from '../utils/theme'
-import { Div, Icon, Text } from 'react-native-magnus'
+import { Div, Text } from 'react-native-magnus'
 import { differenceInMinutes } from 'date-fns'
-import { useNavigation } from '@react-navigation/core'
-import { ScreenRoute } from '../navigation/NAV_CONSTANTS'
 
 // TODO: Cardio and sets/exercises can't be ordered by time.
 // This would be for details/edit page I guess
@@ -36,57 +33,37 @@ type OwnProps = {
 type Props = OwnProps
 
 const WorkoutSection: FunctionComponent<Props> = ({ workout, onPress }) => {
-  const navigation = useNavigation()
+  const getTotalSets = useCallback((workout: WorkoutModel, i: number) => {
+    const exercises =
+      workout?.exercises && workout.exercises.map((exercise) => exercise.sets).reduce((acc, cur) => acc.concat(cur), [])
 
-  const getTotalSets = useCallback(
-    (workout: WorkoutModel) => {
-      const exercises =
-        workout?.exercises &&
-        workout.exercises.map((exercise) => exercise.sets).reduce((acc, cur) => acc.concat(cur), [])
-      // console.log(workout?.exercises[0])
+    const data = exercises ? exercises?.length : '-'
+    const title = 'sets'
 
-      // console.log(exercises, 'FDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD')
-      const data = exercises ? exercises?.length : '-'
-      const title = 'sets'
-      // return { data, title }
-      return <RenderItem data={data} title={title} />
-    },
-    [workout.exercises]
-  )
+    return <RenderItem data={data} title={title} key={i} />
+  }, [])
 
-  const getTotalCalories = useCallback(
-    (workout: WorkoutModel) => {
-      const data =
-        workout?.cardios &&
-        workout.cardios.map((cardio) => cardio.calories).reduce((acc, cur) => acc + cur)
-      const title = 'cal'
-      // return { data: data || '-', title }
-      return <RenderItem data={data || '-'} title={title} />
-    },
-    [workout.cardios]
-  )
+  const getTotalCalories = useCallback((workout: WorkoutModel, i: number) => {
+    const data = workout?.cardios && workout.cardios.map((cardio) => cardio.calories).reduce((acc, cur) => acc + cur)
+    const title = 'cal'
 
-  const getTotalDistance = useCallback(
-    (workout: WorkoutModel) => {
-      const data =
-        workout?.cardios &&
-        workout.cardios.map((cardio) => cardio.distance_m).reduce((acc, cur) => acc + cur) / 1000
-      const title = 'km'
-      // return { data: data || '- ', title }
-      return <RenderItem data={data || '-'} title={title} />
-    },
-    [workout.cardios]
-  )
+    return <RenderItem data={data || '-'} title={title} key={i} />
+  }, [])
 
-  const getTotalWorkoutDuration = useCallback(
-    (workout: WorkoutModel) => {
-      const data = differenceInMinutes(workout.end, workout.start)
-      const title = 'min'
-      // return { data, title }
-      return <RenderItem data={data} title={title} />
-    },
-    [workout.start, workout.end]
-  )
+  const getTotalDistance = useCallback((workout: WorkoutModel, i: number) => {
+    const data =
+      workout?.cardios && workout.cardios.map((cardio) => cardio.distance_m).reduce((acc, cur) => acc + cur) / 1000
+    const title = 'km'
+
+    return <RenderItem data={data || '-'} title={title} key={i} />
+  }, [])
+
+  const getTotalWorkoutDuration = useCallback((workout: WorkoutModel, i: number) => {
+    const data = differenceInMinutes(workout.end, workout.start)
+    const title = 'min'
+
+    return <RenderItem data={data} title={title} key={i} />
+  }, [])
 
   const workoutHandler = [getTotalSets, getTotalCalories, getTotalDistance, getTotalWorkoutDuration]
 
@@ -101,18 +78,9 @@ const WorkoutSection: FunctionComponent<Props> = ({ workout, onPress }) => {
           borderBottomWidth={1}
           borderColor="rgba(255,255,255,0.4)"
           w="90%"
-          pb={4}>
-          {workoutHandler.map((fn) => fn(workout))}
-          {/* <Div alignItems="flex-end" justifyContent="center">
-          <TouchableOpacity onPress={() => onPressEditWorkout(workout)}>
-            <Icon
-              fontFamily="SimpleLineIcons"
-              name="arrow-right"
-              color={theme.primary.onColor}
-              fontSize={16}
-            />
-          </TouchableOpacity>
-        </Div> */}
+          pb={4}
+        >
+          {workoutHandler.map((fn, i) => fn(workout, i))}
         </Div>
         <B.Spacer h={16} />
       </TouchableOpacity>
@@ -120,4 +88,4 @@ const WorkoutSection: FunctionComponent<Props> = ({ workout, onPress }) => {
   )
 }
 
-export default WorkoutSection
+export default React.memo(WorkoutSection)
