@@ -18,7 +18,6 @@ export const ChartsScreen: FunctionComponent<Props> = () => {
       if (!res) {
         exerciseSelectRepository.createMany(exercisesSelect)
       }
-      return res
     }
     checkInstall()
   }, [exerciseSelectRepository])

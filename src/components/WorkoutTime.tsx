@@ -52,6 +52,7 @@ const WorkoutTime: FunctionComponent<Props> = ({ forwardedRef }) => {
       if (mode === 'date') {
         setStartDate(selectedDate)
         // Update endDate to same day as start date but keep endDate time of day.
+        // TODO: This is not updating end time correctly
         const newEndDateNum = selectedDate.setHours(
           endDate.getHours(),
           endDate.getMinutes(),

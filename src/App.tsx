@@ -18,7 +18,6 @@ export const App: FunctionComponent = () => {
       if (!res) {
         storeData(NEW_INSTALL, String(Date.now()))
       }
-      return res
     }
     checkInstall()
   }, [])
