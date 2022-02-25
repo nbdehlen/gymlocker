@@ -16,10 +16,13 @@ type Props = OwnProps & {
   route: RouteProp<WorkoutParamList, ScreenRoute.WORKOUT_EDIT>
 }
 
-// Both exercises and sets:
+// TODO: For performance - remove onLongPress animation?
+// TODO: For performance - move state to parent component?
+
+// Both exercises and sets
 // OnLongPress -> re-arrange order?
 // onSwipeRight - edit
-//
+// onSwipeLeft - delete button, undo?
 export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
   const { workout } = route.params
   const dateRef = useRef({

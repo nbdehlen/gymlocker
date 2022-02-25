@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useState } from 'react'
 import { useDatabaseConnection } from '../../data/Connection'
-import { Button, Div, Input, Text } from 'react-native-magnus'
+import { Button, Div, Icon, Input, Text } from 'react-native-magnus'
 import sampleData from '../../data/seeding/sampleData'
 import theme, { B } from '../../utils/theme'
 import getRandomDateWithinPeriod from '../../data/seeding/utils/getRandomDateWithinPeriod'
@@ -13,8 +13,7 @@ type OwnProps = {}
 type Props = OwnProps
 
 export const SettingsScreen: FunctionComponent<Props> = () => {
-  const { cardioRepository, workoutRepository, exerciseRepository, setRepository } =
-    useDatabaseConnection()
+  const { cardioRepository, workoutRepository, exerciseRepository, setRepository } = useDatabaseConnection()
   const [id, setId] = useState<number>(1)
   const [error, setError] = useState('')
   const { cardios, exercises, sets } = sampleData
@@ -31,7 +30,7 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
       if (workout) {
         const newExercises = exercises.map((exercise) => ({
           ...exercise,
-          workout_id: workout.id,
+          workout_id: workout.id
         }))
 
         const createExercises = await exerciseRepository.createMany(newExercises)
@@ -134,17 +133,8 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
     <Div flex={1} justifyContent="center" alignItems="center" bg={theme.primary.color}>
       <Div flexDir="row">
         {error ? <Text> {error} </Text> : <B.Spacer h={40} />}
-        <Button
-          onPress={onPressInc}
-          w={40}
-          h={40}
-          p={0}
-          m={0}
-          bg={theme.primary.onColor}
-          rounded="circle">
-          <Text color="white" fontSize={34}>
-            +
-          </Text>
+        <Button onPress={onPressInc} w={40} h={40} p={0} m={0} bg={theme.primary.onColor} rounded="circle">
+          <Icon fontSize={24} fontFamily="AntDesign" name="plus" color={theme.light_1} />
         </Button>
         <B.Spacer w={8} />
         <Text color="white" fontSize={24}>
@@ -152,9 +142,7 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
         </Text>
         <B.Spacer w={8} />
         <Button onPress={onPressDec} w={40} h={40} p={0} m={0} rounded="circle">
-          <Text color="white" fontSize={50}>
-            -
-          </Text>
+          <Icon fontSize={24} fontFamily="AntDesign" name="minus" color={theme.light_1} />
         </Button>
       </Div>
       <B.Spacer h={16} />

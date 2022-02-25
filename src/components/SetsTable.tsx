@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react'
 import { Text, Div, Icon } from 'react-native-magnus'
 import { SetModel } from '../data/entities/SetModel'
-import theme, { B } from '../utils/theme'
+import theme from '../utils/theme'
 
 type ExerciseTableProps = {
   sets: SetModel[]

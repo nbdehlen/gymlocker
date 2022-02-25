@@ -8,6 +8,7 @@ import BottomTabNavigation from './navigation/BottomTabNavigation'
 import { getData, storeData } from './utils/asyncStorage'
 import { NEW_INSTALL } from './storageConstants'
 import { registerRootComponent } from 'expo'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 const theme = {}
 // TODO: Move this into src folder
@@ -25,9 +26,11 @@ export const App: FunctionComponent = () => {
   return (
     <ThemeProvider theme={theme}>
       <DatabaseConnectionProvider>
-        <NavigationContainer>
-          <BottomTabNavigation />
-        </NavigationContainer>
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <NavigationContainer>
+            <BottomTabNavigation />
+          </NavigationContainer>
+        </GestureHandlerRootView>
       </DatabaseConnectionProvider>
     </ThemeProvider>
   )
