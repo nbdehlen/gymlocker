@@ -9,6 +9,8 @@ interface ICreateWorkoutData {
   // cardios?: Promise<CardioModel[]>
 }
 
+// TODO: Sort by order: exercises and cardio. Order as joint FK for them and one for set?
+
 export class WorkoutRepository {
   private ormRepository: Repository<WorkoutModel>
 
@@ -23,11 +25,7 @@ export class WorkoutRepository {
   }
 
   // TODO: Pagination
-  public async getBatch(
-    from: number = 0,
-    limit = 10,
-    relations?: string[]
-  ): Promise<WorkoutModel[]> {
+  public async getBatch(from: number = 0, limit = 10, relations?: string[]): Promise<WorkoutModel[]> {
     return await this.ormRepository.find({
       ...(relations && { relations }),
     })
@@ -56,22 +54,10 @@ export class WorkoutRepository {
     })
   }
 
-  public async getBetweenDates(
-    start: string,
-    end: string,
-    relations?: string[]
-  ): Promise<WorkoutModel[]> {
-    // console.log(
-    //   Between(startOfDay(new Date(start)).toISOString(), endOfDay(new Date(end)).toISOString())
-    // )
-
+  public async getBetweenDates(start: string, end: string, relations?: string[]): Promise<WorkoutModel[]> {
     const where = {
-      start: Between(
-        startOfDay(new Date(start)).toISOString(),
-        endOfDay(new Date(end)).toISOString()
-      ),
+      start: Between(startOfDay(new Date(start)).toISOString(), endOfDay(new Date(end)).toISOString()),
     }
-    // console.log('WHERE', where)
 
     return await this.ormRepository.find({
       where,

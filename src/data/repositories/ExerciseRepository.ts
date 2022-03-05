@@ -1,12 +1,15 @@
 import { Connection, Repository } from 'typeorm'
 import { ExerciseModel } from '../entities/ExerciseModel'
+import { SetModel } from '../entities/SetModel'
+import { ICreateSetData } from './SetRepository'
 
-interface ICreateExerciseData {
+export interface ICreateExerciseData {
   exercise: string
   muscles: string
   assistingMuscles?: string
   order: number
   workout_id?: number
+  sets?: Array<SetModel | ICreateSetData> // TODO: Not sure this is viable
 }
 
 export class ExerciseRepository {
@@ -25,7 +28,7 @@ export class ExerciseRepository {
   public async getById(id: number, relations?: string[]): Promise<ExerciseModel[]> {
     return await this.ormRepository.find({
       where: { id },
-      ...(relations && { relations }),
+      ...(relations && { relations })
     })
   }
 
@@ -44,6 +47,7 @@ export class ExerciseRepository {
     assistingMuscles,
     order,
     workout_id,
+    sets
   }: ICreateExerciseData): Promise<ExerciseModel> {
     const data = this.ormRepository.create({
       exercise,
@@ -51,6 +55,7 @@ export class ExerciseRepository {
       assistingMuscles,
       order,
       workout_id,
+      sets
     })
 
     await this.ormRepository.save(data)

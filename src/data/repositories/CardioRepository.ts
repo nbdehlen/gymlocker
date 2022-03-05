@@ -2,7 +2,7 @@ import { Connection, Repository } from 'typeorm'
 import { CardioModel } from '../entities/CardioModel'
 import { WorkoutModel } from '../entities/WorkoutModel'
 
-interface ICreateCardioData {
+export interface ICreateCardioData {
   cardioType?: string
   duration_minutes: number
   calories?: number
@@ -24,14 +24,18 @@ export class CardioRepository {
     return cardios
   }
 
+  public async createMany(cardios: ICreateCardioData[]): Promise<CardioModel[]> {
+    const data = this.ormRepository.create(cardios)
+
+    await this.ormRepository.save(data)
+
+    return data
+  }
+
   public async tableColumns(): Promise<CardioModel[]> {
     // const metadata = await this.ormRepository.metadata
-    const cardios = await this.ormRepository.query(`DESC cardios`)
-    console.log(
-      '____________________________________',
-      cardios,
-      '____________________________________'
-    )
+    const cardios = await this.ormRepository.query('DESC cardios')
+    console.log('____________________________________', cardios, '____________________________________')
     return cardios
   }
 

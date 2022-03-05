@@ -3,24 +3,24 @@ import { Div, Icon, Text } from 'react-native-magnus'
 import { useDatabaseConnection } from '../data/Connection'
 import { ExerciseSelectModel } from '../data/entities/ExerciseSelectModel'
 import theme from '../utils/theme'
-import ListItem from '../components/ListItem'
 import { useNavigation } from '@react-navigation/core'
 import { WorkoutModel } from '../data/entities/WorkoutModel'
 import { ScreenRoute } from '../navigation/NAV_CONSTANTS'
+import CustomButton, { ButtonEnum } from './CustomButton'
 
 const muscles = [
   {
     title: 'Biceps',
-    type: 'biceps'
+    type: 'biceps',
   },
   {
     title: 'Triceps',
-    type: 'triceps'
+    type: 'triceps',
   },
   {
     title: 'Chest',
-    type: 'chest'
-  }
+    type: 'chest',
+  },
 ]
 
 const WorkoutDrawer: FunctionComponent<{ workout: WorkoutModel }> = ({ workout }) => {
@@ -47,12 +47,12 @@ const WorkoutDrawer: FunctionComponent<{ workout: WorkoutModel }> = ({ workout }
       exercise: exercise.exercise,
       muscles: exercise.muscles,
       order: workout?.exercises?.length ?? 0,
-      sets: []
+      sets: [],
     }
 
     const newWorkout = {
       ...workout,
-      exercises: [...workout?.exercises, selectedExercise]
+      exercises: [...workout?.exercises, selectedExercise],
     }
 
     navigation.navigate(ScreenRoute.WORKOUT_EDIT, { workout: newWorkout })
@@ -68,36 +68,46 @@ const WorkoutDrawer: FunctionComponent<{ workout: WorkoutModel }> = ({ workout }
     <Div bg={theme.primary.color} h="100%">
       {drawerIndex === 0 && (
         <Div>
-          <Text fontSize={16} color={theme.light_1} fontWeight="700" py={4} pl={2}>
+          <Text fontSize="xl" color={theme.light_1} fontWeight="700" pl="xs">
             EXERCISES
           </Text>
-          <ListItem title="Create new" onPress={() => { }} />
-          <ListItem title="Cardio" onPress={() => { }} />
+          <CustomButton text="Create new" onPress={() => { }} preset={ButtonEnum.LIST_ITEM} />
+          <CustomButton text="Cardio" onPress={() => { }} preset={ButtonEnum.LIST_ITEM} />
 
           {muscles.map((muscle, i) => (
-            <ListItem
+            <CustomButton
               onPress={() => onPressMuscle(muscle.type)}
               key={i}
-              title={muscle.title}
-              ListIcon={() => <Icon name="right" fontFamily="AntDesign" fontSize={16} color={theme.light_1} />}
+              text={muscle.title}
+              IconComponent={() => (
+                <Icon name="right" fontFamily="AntDesign" fontSize="md" color={theme.light_1} mr={4} />
+              )}
               iconSuffix
+              preset={ButtonEnum.LIST_ITEM}
               containerProps={{ justifyContent: 'space-between' }}
             />
           ))}
-          <ListItem title="Edit" onPress={() => { }} />
-          <ListItem title="Delete" onPress={() => { }} />
+          <CustomButton text="Edit" onPress={() => { }} preset={ButtonEnum.LIST_ITEM} />
+          <CustomButton text="Delete" onPress={() => { }} preset={ButtonEnum.LIST_ITEM} />
         </Div>
       )}
       {drawerIndex === 1 && (
         <Div>
-          <ListItem
-            title="Back"
+          <CustomButton
+            text="Back"
             onPress={() => setDrawerIndex(0)}
-            ListIcon={() => <Icon name="left" fontFamily="AntDesign" fontSize={16} color={theme.light_border} />}
-            textProps={{ fontSize: 16 }}
+            IconComponent={() => (
+              <Icon name="left" fontFamily="AntDesign" fontSize={16} color={theme.light_border} mr={4} />
+            )}
+            preset={ButtonEnum.LIST_ITEM}
           />
           {exercises.map((exercise) => (
-            <ListItem title={exercise.exercise} onPress={() => onPressExercise(exercise)} key={exercise.id} />
+            <CustomButton
+              text={exercise.exercise}
+              onPress={() => onPressExercise(exercise)}
+              key={exercise.id}
+              preset={ButtonEnum.LIST_ITEM}
+            />
           ))}
         </Div>
       )}
@@ -105,4 +115,4 @@ const WorkoutDrawer: FunctionComponent<{ workout: WorkoutModel }> = ({ workout }
   )
 }
 
-export default WorkoutDrawer
+export default React.memo(WorkoutDrawer)

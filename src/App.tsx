@@ -11,7 +11,7 @@ import { registerRootComponent } from 'expo'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 
 const theme = {}
-// TODO: Move this into src folder
+
 export const App: FunctionComponent = () => {
   useEffect(() => {
     const checkInstall = async () => {

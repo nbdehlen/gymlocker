@@ -1,8 +1,7 @@
 import { Connection, Repository } from 'typeorm'
-import { ExerciseModel } from '../entities/ExerciseModel'
 import { SetModel } from '../entities/SetModel'
 
-interface ICreateSetData {
+export interface ICreateSetData {
   weight_kg: number
   repetitions: number
   order: number
@@ -22,12 +21,7 @@ export class SetRepository {
     return setRepository
   }
 
-  public async create({
-    weight_kg,
-    repetitions,
-    order,
-    exercise_id,
-  }: ICreateSetData): Promise<SetModel> {
+  public async create({ weight_kg, repetitions, order, exercise_id }: ICreateSetData): Promise<SetModel> {
     const set = this.ormRepository.create({
       weight_kg,
       repetitions,

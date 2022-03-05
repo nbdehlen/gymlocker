@@ -21,15 +21,15 @@ const SetsTable: FunctionComponent<ExerciseTableProps> = ({ sets, headers }) => 
           ))}
       </Div>
       {sets.map((set, i) => (
-        <Div mb={8} flexDir="row" flex={1} key={set.id}>
-          <Div style={{ alignItems: 'center', flex: 1 }} py={8}>
-            <Text style={{ fontSize: 14, color: theme.light_1 }}>{`${set.weight_kg} kg`}</Text>
+        <Div mb={i === sets?.length - 1 ? 'md' : 'sm'} mt={i === 0 ? 'sm' : 0} flexDir="row" flex={1} key={i}>
+          <Div alignItems="center" flex={1} py="md">
+            <Text style={{ fontSize: 14, color: theme.light_1 }}>{set?.weight_kg} kg</Text>
           </Div>
-          <Div style={{ alignItems: 'center', flex: 1 }} py={8}>
-            <Text style={{ fontSize: 14, color: theme.light_1 }}>{set.repetitions}</Text>
+          <Div alignItems="center" flex={1} py="md">
+            <Text style={{ fontSize: 14, color: theme.light_1 }}>{set?.repetitions}</Text>
           </Div>
-          <Div style={{ alignItems: 'center', flex: 1 }} py={8}>
-            <Icon name="edit" fontFamily="FontAwesome" fontSize={16} />
+          <Div style={{ alignItems: 'center', flex: 1 }} py="md">
+            <Icon name="lock" fontFamily="FontAwesome" fontSize="xl" color={theme.primary.border} />
           </Div>
         </Div>
       ))}
@@ -37,4 +37,4 @@ const SetsTable: FunctionComponent<ExerciseTableProps> = ({ sets, headers }) => 
   )
 }
 
-export default SetsTable
+export default React.memo(SetsTable)

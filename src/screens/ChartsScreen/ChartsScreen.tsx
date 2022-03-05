@@ -33,7 +33,7 @@ const initialData: Item[] = [...Array(NUM_ITEMS)].map((d, index) => {
     label: String(index) + '',
     height: 100,
     width: 60 + Math.random() * 40,
-    backgroundColor
+    backgroundColor,
   }
 })
 
@@ -44,7 +44,7 @@ const initialNested = [...Array(NUM_ITEMS_TWO)].map((d, index) => {
     label: String(index) + 'YAYAAOOO',
     height: 100,
     width: 60 + Math.random() * 40,
-    backgroundColor
+    backgroundColor,
   }
 })
 
@@ -101,7 +101,7 @@ export const ChartsScreen: FunctionComponent<Props> = () => {
       if (expanded.includes(i)) {
         const newExpanded = [
           ...expanded.slice(0, expanded.indexOf(i)),
-          ...expanded.slice(expanded.indexOf(i) + 1, expanded.length)
+          ...expanded.slice(expanded.indexOf(i) + 1, expanded.length),
         ]
         setExpanded(newExpanded)
       } else {
@@ -132,14 +132,15 @@ export const ChartsScreen: FunctionComponent<Props> = () => {
     [expanded, toggleExpand]
   )
 
-  return (
-    <DraggableFlatList
-      data={data}
-      onDragEnd={({ data }) => setData(data)}
-      keyExtractor={(item) => item.key}
-      renderItem={renderItem}
-    />
-  )
+  // return (
+  //   <DraggableFlatList
+  //     data={data}
+  //     onDragEnd={({ data }) => setData(data)}
+  //     keyExtractor={(item) => item.key}
+  //     renderItem={renderItem}
+  //   />
+  // )
+  return <Text>charttttttttttttttt</Text>
 }
 
 const styles = StyleSheet.create({
@@ -147,14 +148,14 @@ const styles = StyleSheet.create({
     // height: 100,
     // width: 100,
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   text: {
     color: 'white',
     fontSize: 24,
     fontWeight: 'bold',
-    textAlign: 'center'
-  }
+    textAlign: 'center',
+  },
 })
 
 export default React.memo(ChartsScreen)
