@@ -12,7 +12,7 @@ import {
   getDaysInMonth,
   isFirstDayOfMonth,
   startOfDay,
-  startOfWeek
+  startOfWeek,
 } from 'date-fns'
 import { WorkoutModel } from '../../data/entities/WorkoutModel'
 import { useDatabaseConnection } from '../../data/Connection'
@@ -20,8 +20,9 @@ import { Between } from 'typeorm'
 import { nextSunday } from 'date-fns/esm'
 import { useNavigation } from '@react-navigation/core'
 import { DrawerRoute, ScreenRoute } from '../../navigation/NAV_CONSTANTS'
-import WorkoutSection from '../../components/WorkoutSection'
 import DrawerNavigation from '../../navigation/DrawerNavigation'
+import WorkoutSummary from '../../components/WorkoutSummary'
+import CustomButton, { ButtonEnum } from '../../components/CustomButton'
 
 type OwnProps = {}
 
@@ -31,6 +32,7 @@ type Props = OwnProps
 const dotColor = (color: string) => (color = 'white')
 
 //TODO: Update dots when workout is removed/added
+//TODO: calendar entries are not shown on first render
 
 const cardio = { key: 'cardio', color: 'red' }
 // const exercise = {key:'exercise', color: 'blue', selectedDotColor: 'blue'};
@@ -53,8 +55,6 @@ const getCalendarSpan = (today: string) => {
 
   return { start: String(prevMon), end: String(nextSun) }
 }
-// TODO: Sets are undefined in WorkoutSection. Maybe query them when workoutSelected?
-
 // TODO: on month swipe/click - new workout fetch and set date to 1st? ???
 
 // TODO: think about how to send the data?
@@ -75,8 +75,8 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
 
   useEffect(() => {
     // TODO: merge this somehow
-    workoutRepository.getBetweenDates(start, end, ['exercises']).then(setWorkouts)
-  }, [workoutRepository, selected])
+    workoutRepository.getBetweenDates(start, end, ['exercises', 'exercises.sets', 'cardios']).then(setWorkouts)
+  }, [workoutRepository, selected, start, end])
 
   useEffect(() => {
     if (workouts?.length > 0) {
@@ -103,12 +103,11 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
     const todaysWorkouts = workouts.filter((workout) => format(new Date(workout?.start), 'yyyy-MM-dd') === day)
     const todaysWorkoutIds = todaysWorkouts.map((workout) => workout.id)
     workoutRepository
-      .getManyById(todaysWorkoutIds, ['exercises', 'exercises.sets'])
+      .getManyById(todaysWorkoutIds, ['exercises', 'exercises.sets', 'cardios'])
       .then((data) => data && setSelectedWorkouts(data))
   }
 
   const updateDots = (selected: string) => {
-    // console.log('NEW MARKED DATES', markedDates)
     if (!markedDates[selected] || !markedDates[selected]?.dots) {
       return null
     }
@@ -157,9 +156,9 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
               selected: true,
               dots: updateDots(selected),
               // dots: [{ key: 'temp-25', color: 'red' }],
-              disableTouchEvent: true
+              disableTouchEvent: true,
               // ...(markedDates.hasOwnProperty(selected) ? markedDates[selected] : {}),
-            }
+            },
             // '2021-06-03': {
             //   selected: false,
             //   dots: [{ key: 'temp-25', color: 'white' }],
@@ -192,33 +191,25 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
             // textDayHeaderFontFamily: font.Nunito_400Regular,
             textDayFontSize: 12,
             textMonthFontSize: 16,
-            textDayHeaderFontSize: 13
+            textDayHeaderFontSize: 13,
           }}
         />
-        <B.Spacer h={16} />
-        {/* <Button alignSelf="center" w="90%" rounded={6} onPress={() => onPressAddWorkout()}>
-          <Text color={theme.light_1} fontSize={14}>
-            Add workout
-          </Text>
-        </Button> */}
-        <Button
-          borderColor="rgba(60, 161, 242, 0.6)"
-          borderWidth={1}
-          bg="transparent"
-          alignSelf="center"
-          w="90%"
-          rounded={4}
-          onPress={onPressAddWorkout}
-        >
-          <Text color={theme.primary.onColor} fontSize={16}>
-            Add workout
-          </Text>
-        </Button>
-        <B.Spacer h={32} />
-        {selectedWorkouts &&
-          selectedWorkouts.map((selectedWorkout, i) => (
-            <WorkoutSection workout={selectedWorkout} onPress={onPressEditWorkout} key={i} /> // TODO: typing here
-          ))}
+        <Div mt="2xl" />
+        <Div mx="lg">
+          <CustomButton
+            text="Add workout"
+            preset={ButtonEnum.PRIMARY}
+            IconComponent={() => (
+              <Icon fontSize="xl" fontFamily="AntDesign" name="plus" ml="sm" color={theme.primary.onColor} />
+            )}
+            iconSuffix
+          />
+          <Div mt="2xl" />
+          {selectedWorkouts &&
+            selectedWorkouts.map((selectedWorkout, i) => (
+              <WorkoutSummary workout={selectedWorkout} onPress={onPressEditWorkout} key={i} /> // TODO: typing here
+            ))}
+        </Div>
       </ScrollView>
     </Div>
   )

@@ -52,6 +52,7 @@ const WorkoutTime: FunctionComponent<Props> = ({ forwardedRef }) => {
       if (mode === 'date') {
         setStartDate(selectedDate)
         // Update endDate to same day as start date but keep endDate time of day.
+        // TODO: This is not updating end time correctly
         const newEndDateNum = selectedDate.setHours(
           endDate.getHours(),
           endDate.getMinutes(),
@@ -93,8 +94,8 @@ const WorkoutTime: FunctionComponent<Props> = ({ forwardedRef }) => {
   }
 
   return (
-    <Div flexDir="row" mx={20} mt={20}>
-      <Div flex={1} alignItems="center">
+    <Div flexDir="row" mt={20}>
+      <Div flex={1} alignItems="flex-start">
         <TouchableWithoutFeedback onPress={showDatepicker}>
           <B.LightText fontSize={12}>Start date</B.LightText>
           <B.LightText fontSize={16} rounded={4} px={6} py={2} borderWidth={1} borderColor={theme.primary.border}>

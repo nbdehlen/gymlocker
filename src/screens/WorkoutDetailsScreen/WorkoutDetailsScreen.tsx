@@ -2,12 +2,19 @@ import { RouteProp, useNavigation } from '@react-navigation/core'
 import React, { FunctionComponent, useLayoutEffect, useState } from 'react'
 import { ScrollView, TouchableOpacity } from 'react-native'
 import { Button, Div, Icon, Text } from 'react-native-magnus'
-import WorkoutSection from '../../components/WorkoutSection'
+import WorkoutSummary from '../../components/WorkoutSummary'
 import { SetModel } from '../../data/entities/SetModel'
 import { WorkoutParamList } from '../../navigation/navigationTypes'
 import { DrawerRoute, ScreenRoute } from '../../navigation/NAV_CONSTANTS'
 import theme, { B } from '../../utils/theme'
 import WorkoutModal from './WorkoutModal'
+
+const ucFirst = (str: string) => {
+  if (typeof str === 'string') {
+    return str.charAt(0).toUpperCase() + str.slice(1, str.length)
+  }
+  return str
+}
 
 const truncateSets = (sets: SetModel[]): string => {
   // if all sets are the same, return 12 4x10
@@ -45,6 +52,8 @@ const truncateSets = (sets: SetModel[]): string => {
   return str
 }
 
+// TODO: Interesting statistic at the top of each workout (or quote if no stat?)
+
 type OwnProps = {}
 
 type Props = OwnProps & {
@@ -53,8 +62,8 @@ type Props = OwnProps & {
 
 export const WorkoutDetailsScreen: FunctionComponent<Props> = ({
   route: {
-    params: { workout }
-  }
+    params: { workout },
+  },
 }) => {
   const navigation = useNavigation()
   const [modalVisible, setModalVisible] = useState<number | null>(null)
@@ -81,16 +90,16 @@ export const WorkoutDetailsScreen: FunctionComponent<Props> = ({
             16:32 12th June 21
           </Text>
         </Div>
-      )
+      ),
     })
   }, [navigation, workout])
 
-  // TODO: grey container tag thingy for KG and around reps and/or around 5x10 etc
-  // TODO: Fix padding for this and WorkoutSection
+  // IDEA: Move DetailsScreen into CalendarScreen?
+  // IDEA: Move DetailSScreen to a modal? -> I like this idea
   return (
     <Div flex={1} bg={theme.background} pt={24}>
       <ScrollView>
-        <WorkoutSection workout={workout} />
+        {/* <WorkoutSummary workout={workout} /> */}
         <Div mx={16}>
           <Div flexWrap="wrap" alignItems="flex-start">
             {workout?.exercises &&
@@ -105,6 +114,56 @@ export const WorkoutDetailsScreen: FunctionComponent<Props> = ({
                   <Text color={theme.light_1}> {truncateSets(exercise.sets)} </Text>
                   <B.Spacer h={16} />
                   <WorkoutModal exercise={exercise} i={i} modalVisible={modalVisible} handleModal={handleModal} />
+                </Div>
+              ))}
+          </Div>
+          <Div flexWrap="wrap" alignItems="flex-start">
+            {workout?.exercises &&
+              workout.cardios.map((cardio) => (
+                <Div key={cardio.id} ml={0} mb={20} flexDir="row">
+                  <Button bg="transparent" p={0} m={0} /* onPress={() => handleModal(i)} */>
+                    <Text color={theme.primary.onColor} fontWeight="bold">
+                      {ucFirst(cardio.cardioType)}
+                    </Text>
+                  </Button>
+                  <B.Spacer w={16} />
+                  {cardio?.duration_minutes > 0 && (
+                    <Div
+                      px={8}
+                      mb={16}
+                      w="20%"
+                      borderLeftWidth={1}
+                      borderLeftColor={theme.light_border}
+                      alignItems="center"
+                    >
+                      <B.LightText>{cardio.duration_minutes} min</B.LightText>
+                    </Div>
+                  )}
+                  {cardio?.calories > 0 && (
+                    <Div
+                      px={8}
+                      mb={16}
+                      w="20%"
+                      borderLeftWidth={1}
+                      borderLeftColor={theme.light_border}
+                      alignItems="center"
+                    >
+                      <B.LightText>{cardio.calories} kcal</B.LightText>
+                    </Div>
+                  )}
+                  {cardio?.distance_m > 0 && (
+                    <Div
+                      px={8}
+                      mb={16}
+                      w="20%"
+                      borderLeftWidth={1}
+                      borderLeftColor={theme.light_border}
+                      alignItems="center"
+                    >
+                      <B.LightText>{cardio.distance_m / 1000} km</B.LightText>
+                    </Div>
+                  )}
+                  {/* <WorkoutModal cardio={cardio} i={i} modalVisible={modalVisible} handleModal={handleModal} /> */}
                 </Div>
               ))}
           </Div>
