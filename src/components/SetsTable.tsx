@@ -21,7 +21,7 @@ const SetsTable: FunctionComponent<ExerciseTableProps> = ({ sets, headers }) => 
           ))}
       </Div>
       {sets.map((set, i) => (
-        <Div mb={i === sets?.length - 1 ? 'md' : 'sm'} mt={i === 0 ? 'sm' : 0} flexDir="row" flex={1} key={i}>
+        <Div mb={i === sets?.length - 1 ? 0 : 'sm'} mt={i === 0 ? 'sm' : 0} flexDir="row" flex={1} key={i}>
           <Div alignItems="center" flex={1} py="md">
             <Text style={{ fontSize: 14, color: theme.light_1 }}>{set?.weight_kg} kg</Text>
           </Div>

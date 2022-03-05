@@ -132,6 +132,7 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
           <B.Spacer h={16} />
           {/* <InnerDraggable sets={item.sets} /> */}
           <SetsTable sets={item?.sets} headers={['WEIGHT', 'REPS', 'EDIT']} />
+          <B.Spacer h={16} />
           <Div flexDir="row" justifyContent="center">
             <CustomButton
               text="Add set"
