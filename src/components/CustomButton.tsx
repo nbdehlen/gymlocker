@@ -20,7 +20,8 @@ xl 	17
 
 export enum ButtonEnum {
   LIST_ITEM = 'list_item',
-  PRIMARY = 'primary'
+  PRIMARY = 'primary',
+  CANCEL = 'cancel',
 }
 
 const styles = {
@@ -32,13 +33,14 @@ const styles = {
       borderBottomColor: theme.light_border,
       pt: 'md',
       pb: 1,
-      my: 'md'
+      my: 'md',
     },
     textStyle: {
-      pl: 'xs'
-    }
+      pl: 'xs',
+    },
   },
   [ButtonEnum.PRIMARY]: {
+    touchableStyle: {},
     containerStyle: {
       borderStyle: 'solid',
       borderWidth: 1,
@@ -47,10 +49,25 @@ const styles = {
       flexDir: 'row',
       rounded: 'md',
       py: 'md',
-      px: 'lg'
+      px: 'lg',
     },
-    textStyle: { color: theme.primary.onColor }
-  }
+    textStyle: { color: theme.primary.onColor },
+  },
+  [ButtonEnum.CANCEL]: {
+    touchableStyle: {},
+    containerStyle: {
+      borderStyle: 'solid',
+      borderWidth: 1,
+      borderColor: '#8b3535',
+      justifyContent: 'center',
+      flexDir: 'row',
+      rounded: 'md',
+      py: 'md',
+      px: 'lg',
+      mb: 'sm',
+    },
+    textStyle: { color: '#8b3535' },
+  },
 }
 
 type OwnProps = {
@@ -85,10 +102,10 @@ const CustomButton: FunctionComponent<Props> = ({
 
   return (
     <TouchableWithoutFeedback onPress={onPress} style={touchableStyle} {...touchableProps}>
-      <Div {...(IconComponent && { flexDir: 'row' })} {...containerProps} {...containerStyle}>
+      <Div {...(IconComponent && { flexDir: 'row' })} {...containerStyle} {...containerProps}>
         {!!IconComponent && !iconSuffix && <IconComponent {...iconProps} />}
         {text && (
-          <Text color={theme.light_1} fontSize="xl" {...textProps} {...textStyle}>
+          <Text color={theme.light_1} fontSize="xl" {...textStyle} {...textProps}>
             {text}
           </Text>
         )}

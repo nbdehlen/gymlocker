@@ -91,9 +91,9 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
         }
       })
 
-      const newMarkedDates = { ...markedDates, ...final }
+      // const newMarkedDates = { ...markedDates, ...final }
       // TODO: !!!!!!!!!!!!! set workouts and markedDates on month change
-      setMarkedDates(newMarkedDates)
+      setMarkedDates((prev) => ({ ...prev, ...final }))
     } else {
       setMarkedDates({})
     }

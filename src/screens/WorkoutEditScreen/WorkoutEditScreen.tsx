@@ -1,16 +1,13 @@
 import { RouteProp } from '@react-navigation/core'
 import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react'
-import { TouchableOpacity } from 'react-native'
-import { Div, Icon } from 'react-native-magnus'
+import { Collapse, Div, Icon } from 'react-native-magnus'
 import { WorkoutParamList } from '../../navigation/navigationTypes'
 import { ScreenRoute } from '../../navigation/NAV_CONSTANTS'
 import theme, { B } from '../../utils/theme'
 import WorkoutTime from '../../components/WorkoutTime'
-import Collapsible from 'react-native-collapsible'
 import SetsTable from '../../components/SetsTable'
-import DraggableFlatList, { OpacityDecorator } from 'react-native-draggable-flatlist'
+import DraggableFlatList, { OpacityDecorator, RenderItemParams } from 'react-native-draggable-flatlist'
 import { ExerciseModel } from '../../data/entities/ExerciseModel'
-import InnerDraggable from '../../components/InnerDraggable'
 import CustomButton, { ButtonEnum } from '../../components/CustomButton'
 import { ICreateExerciseData } from '../../data/repositories/ExerciseRepository'
 
@@ -33,7 +30,6 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
     endDate: new Date(workout.start.getTime() + 60 * 60 * 1000),
   })
   const [exercises, setExercises] = useState<(ExerciseModel | ICreateExerciseData)[]>(workout?.exercises || [])
-  const [expanded, setExpanded] = useState<number[]>([])
   const workoutExercisesLen = workout?.exercises?.length > 0 ? workout.exercises.length : 0
   const exerciseLen = exercises?.length > 0 ? exercises.length : 0
 
@@ -41,12 +37,9 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
     // new exercises are added through the drawer and delivered through navigation, inside the workout object.
     // TODO: Similar logic for cardio
     if (workoutExercisesLen > exerciseLen) {
-      const lastExercise = workout?.exercises?.[workoutExercisesLen - 1]
       // Ids are created when exercises are added to db. Creating a random one
       // to use as key for keeping track of expanded.
       const newId = Math.floor(Math.random() * 100000000 + 100000)
-      const exerciseId = lastExercise?.id ?? newId
-      setExpanded((prev) => [...prev, exerciseId])
       const workoutExercises = workout?.exercises.concat()
 
       if (workoutExercises[workoutExercises.length - 1]?.id == null) {
@@ -57,23 +50,8 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
     }
   }, [workout, workoutExercisesLen, exerciseLen])
 
-  const toggleExpand = useCallback(
-    (i: number) => {
-      if (expanded.includes(i)) {
-        const newExpanded = [
-          ...expanded.slice(0, expanded.indexOf(i)),
-          ...expanded.slice(expanded.indexOf(i) + 1, expanded.length),
-        ]
-        setExpanded(newExpanded)
-      } else {
-        setExpanded((prev) => [...prev, i])
-      }
-    },
-    [expanded]
-  )
-
   const addSet = useCallback(
-    (exercise: ExerciseModel, exerciseIndex: number) => {
+    (exercise: ExerciseModel | ICreateExerciseData, exerciseIndex: number) => {
       const newSet = {
         id: 88888888888,
         weight_kg: 300,
@@ -82,73 +60,73 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
         exercise_id: exercise.id || 0,
         exercise,
       }
-      const modifiedExercise: ExerciseModel | ICreateExerciseData = exercise
-      if (modifiedExercise.sets?.length > 0) {
-        modifiedExercise.sets.push(newSet)
+      const exerciseCopy: ExerciseModel | ICreateExerciseData = exercise
+      if (exerciseCopy.sets && exerciseCopy.sets?.length > 0) {
+        exerciseCopy.sets.push(newSet)
       } else {
-        modifiedExercise.sets = [newSet]
+        exerciseCopy.sets = [newSet]
       }
 
       if (exercises?.length > 0) {
         setExercises((prev) => [
           ...prev.slice(0, exerciseIndex),
-          modifiedExercise,
+          exerciseCopy,
           ...prev.slice(exerciseIndex + 1, prev?.length),
         ])
       }
     },
-    [exercises?.length]
+    [exercises]
   )
 
-  const renderItem = (props): any => {
-    const { item, drag, isActive, index } = props
-    return (
-      <OpacityDecorator>
-        <TouchableOpacity
-          onLongPress={drag}
-          onPress={() => toggleExpand(item.id)}
-          disabled={isActive}
-          style={{ backgroundColor: theme.background }}
-        >
-          <Div flex={1} flexDir="row">
-            <B.LightText fontWeight="bold" fontSize={14}>
-              {item.exercise}
-            </B.LightText>
-            <B.Spacer w={8} />
-            <Icon
-              name={expanded.includes(item.id) ? 'up' : 'down'}
-              fontFamily="AntDesign"
-              fontSize={14}
-              color={theme.light_1}
-              mr={12}
-            />
-          </Div>
-        </TouchableOpacity>
+  const renderItem = useCallback(
+    ({ item, drag, isActive, index }: RenderItemParams<ExerciseModel | ICreateExerciseData>) => {
+      const onPressAddSet = () => index != null && addSet(item, index)
+      const IconUp = () => <Icon name="up" fontFamily="AntDesign" fontSize="sm" color={theme.light_1} mr="xl" />
+      const IconDown = () => <Icon name="down" fontFamily="AntDesign" fontSize="sm" color={theme.light_1} mr="xl" />
 
-        {/* https://github.com/oblador/react-native-collapsible/issues/420 */}
-        {/* TODO: Calculate height or try magnus/different collapisble.
-        Animation not seen now due to the constant re-rendering  */}
-        <Collapsible collapsed={!expanded.includes(item.id)} key={Math.random()}>
-          <B.Spacer h={16} />
-          {/* <InnerDraggable sets={item.sets} /> */}
-          <SetsTable sets={item?.sets} headers={['WEIGHT', 'REPS', 'EDIT']} />
-          <B.Spacer h={16} />
-          <Div flexDir="row" justifyContent="center">
-            <CustomButton
-              text="Add set"
-              onPress={() => addSet(item, index)}
-              preset={ButtonEnum.PRIMARY}
-              IconComponent={() => (
-                <Icon fontSize="xl" fontFamily="AntDesign" name="plus" ml="sm" color={theme.primary.onColor} />
-              )}
-              iconSuffix
-            />
-          </Div>
-        </Collapsible>
-        <B.Spacer h={16} />
-      </OpacityDecorator>
-    )
-  }
+      return (
+        <OpacityDecorator>
+          <Collapse bg="transparent">
+            <Collapse.Header
+              bg="transparent"
+              px="none"
+              py="none"
+              m="none"
+              prefix={null}
+              suffix={<IconDown />}
+              activeSuffix={<IconUp />}
+              onLongPress={drag}
+              disabled={isActive}
+              flexDir="row"
+              justifyContent="space-between"
+            >
+              <B.LightText fontWeight="bold" fontSize={14}>
+                {item.exercise}
+              </B.LightText>
+              <B.Spacer w={8} />
+            </Collapse.Header>
+            <Collapse.Body pt={32} mt={0} pb={0}>
+              {item?.sets && <SetsTable sets={item.sets} headers={['WEIGHT', 'REPS', 'EDIT']} />}
+              <Div py="md" />
+              <Div flexDir="row" justifyContent="center">
+                <CustomButton
+                  text="Add set"
+                  onPress={onPressAddSet}
+                  preset={ButtonEnum.PRIMARY}
+                  IconComponent={() => (
+                    <Icon fontSize="xl" fontFamily="AntDesign" name="plus" ml="sm" color={theme.primary.onColor} />
+                  )}
+                  iconSuffix
+                />
+              </Div>
+            </Collapse.Body>
+          </Collapse>
+          <Div py="lg" />
+        </OpacityDecorator>
+      )
+    },
+    [addSet]
+  )
 
   return (
     <DraggableFlatList
