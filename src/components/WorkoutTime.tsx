@@ -94,8 +94,8 @@ const WorkoutTime: FunctionComponent<Props> = ({ forwardedRef }) => {
   }
 
   return (
-    <Div flexDir="row" mt={20}>
-      <Div flex={1} alignItems="flex-start">
+    <Div flexDir="row" mt={20} justifyContent="space-between">
+      <Div alignItems="flex-start">
         <TouchableWithoutFeedback onPress={showDatepicker}>
           <B.LightText fontSize={12}>Start date</B.LightText>
           <B.LightText fontSize={16} rounded={4} px={6} py={2} borderWidth={1} borderColor={theme.primary.border}>
@@ -104,7 +104,7 @@ const WorkoutTime: FunctionComponent<Props> = ({ forwardedRef }) => {
         </TouchableWithoutFeedback>
       </Div>
 
-      <Div flex={1} alignItems="center">
+      <Div alignItems="center">
         <TouchableWithoutFeedback onPress={() => showTimepicker(0)}>
           <B.LightText fontSize={12}>Start time</B.LightText>
           <B.LightText fontSize={16} borderWidth={1} borderColor={theme.primary.border} rounded={4} px={6} py={2}>
@@ -113,7 +113,7 @@ const WorkoutTime: FunctionComponent<Props> = ({ forwardedRef }) => {
         </TouchableWithoutFeedback>
       </Div>
 
-      <Div flex={1} alignItems="center">
+      <Div alignItems="center">
         <TouchableWithoutFeedback onPress={() => showTimepicker(1)}>
           <B.LightText fontSize={12}>End time</B.LightText>
           <B.LightText fontSize={16} borderWidth={1} borderColor={theme.primary.border} rounded={4} px={6} py={2}>
@@ -122,7 +122,7 @@ const WorkoutTime: FunctionComponent<Props> = ({ forwardedRef }) => {
         </TouchableWithoutFeedback>
       </Div>
 
-      <Div flex={1} alignItems="center">
+      <Div alignItems="flex-end">
         <Div>
           <B.LightText fontSize={12}>Minutes</B.LightText>
           <Input

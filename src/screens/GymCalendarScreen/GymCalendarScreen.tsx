@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useCallback, useEffect, useMemo, useState } from 'react'
-import { ScrollView, TouchableOpacity } from 'react-native'
+import { ScrollView, TextComponent, TouchableOpacity } from 'react-native'
 import { Button, Div, Icon, Text } from 'react-native-magnus'
 import theme, { B } from '../../utils/theme'
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars'
@@ -127,7 +127,17 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
     updateSelectedWorkout(day)
   }
 
-  const onPressAddWorkout = () => navigation.navigate(DrawerRoute.GYM_DRAWER)
+  const onPressAddWorkout = () =>
+    // NOTE: Id used as rendering key. The actual workout id is always set by the database.
+    addWorkout({
+      id: Math.random(),
+      start: new Date(),
+      end: new Date(Date.now() + 2 * 60 * 60 * 1000),
+      cardios: [],
+      exercises: [],
+    })
+  const addWorkout = (workout: WorkoutModel) =>
+    navigation.navigate(DrawerRoute.GYM_DRAWER, { screen: ScreenRoute.WORKOUT_EDIT, params: { workout } })
   const onPressEditWorkout = (workout: WorkoutModel) => navigation.navigate(ScreenRoute.WORKOUT_DETAILS, { workout })
 
   return (
@@ -197,6 +207,7 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
         <Div mt="2xl" />
         <Div mx="lg">
           <CustomButton
+            onPress={onPressAddWorkout}
             text="Add workout"
             preset={ButtonEnum.PRIMARY}
             IconComponent={() => (

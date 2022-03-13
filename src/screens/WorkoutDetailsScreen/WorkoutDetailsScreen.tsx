@@ -2,7 +2,6 @@ import { RouteProp, useNavigation } from '@react-navigation/core'
 import React, { FunctionComponent, useLayoutEffect, useState } from 'react'
 import { ScrollView, TouchableOpacity } from 'react-native'
 import { Button, Div, Icon, Text } from 'react-native-magnus'
-import WorkoutSummary from '../../components/WorkoutSummary'
 import { SetModel } from '../../data/entities/SetModel'
 import { WorkoutParamList } from '../../navigation/navigationTypes'
 import { DrawerRoute, ScreenRoute } from '../../navigation/NAV_CONSTANTS'
@@ -111,19 +110,19 @@ export const WorkoutDetailsScreen: FunctionComponent<Props> = ({
                     </Text>
                   </Button>
                   <B.Spacer w={8} />
-                  <Text color={theme.light_1}> {truncateSets(exercise.sets)} </Text>
+                  {exercise?.sets && <Text color={theme.light_1}> {truncateSets(exercise.sets)} </Text>}
                   <B.Spacer h={16} />
                   <WorkoutModal exercise={exercise} i={i} modalVisible={modalVisible} handleModal={handleModal} />
                 </Div>
               ))}
           </Div>
           <Div flexWrap="wrap" alignItems="flex-start">
-            {workout?.exercises &&
+            {workout?.cardios &&
               workout.cardios.map((cardio) => (
                 <Div key={cardio.id} ml={0} mb={20} flexDir="row">
                   <Button bg="transparent" p={0} m={0} /* onPress={() => handleModal(i)} */>
                     <Text color={theme.primary.onColor} fontWeight="bold">
-                      {ucFirst(cardio.cardioType)}
+                      {ucFirst(cardio?.cardioType)}
                     </Text>
                   </Button>
                   <B.Spacer w={16} />

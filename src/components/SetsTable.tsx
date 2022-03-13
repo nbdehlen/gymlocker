@@ -1,24 +1,43 @@
-import React, { FunctionComponent, useState } from 'react'
-import { TouchableOpacity } from 'react-native'
+import React, { FunctionComponent, useEffect, useState } from 'react'
+import { TouchableWithoutFeedback } from 'react-native'
 import { Text, Div, Icon } from 'react-native-magnus'
-import { SetModel } from '../data/entities/SetModel'
-import { ICreateSetData } from '../data/repositories/SetRepository'
+import { ExerciseModel } from '../data/entities/ExerciseModel'
+import { ICreateExerciseData } from '../data/repositories/ExerciseRepository'
 import theme from '../utils/theme'
 import CustomButton, { ButtonEnum } from './CustomButton'
 import CustomInput, { InputEnum } from './CustomInput'
 
 type ExerciseTableProps = {
-  sets: (SetModel | ICreateSetData)[]
+  exercise: ExerciseModel | ICreateExerciseData
+  exerciseIndex: number
   headers?: string[]
+  editSet: any
 }
 
-const SetsTable: FunctionComponent<ExerciseTableProps> = ({ sets, headers }) => {
+const SetsTable: FunctionComponent<ExerciseTableProps> = ({ exercise, exerciseIndex, headers, editSet }) => {
   const [editable, setEditable] = useState<number | null>(null)
+  const [sets, setSets] = useState(exercise?.sets)
+
+  useEffect(() => {
+    setSets(exercise?.sets)
+  }, [exercise])
+
   const toggleEditSet = (i: number) => {
     setEditable(i)
   }
-  const onPressSave = (i: number) => {
+  const onPressSave = (setIndex: number) => {
+    editSet(exercise, exerciseIndex, setIndex, sets[setIndex])
     setEditable(null)
+  }
+
+  const onChange = (e: string, i: number, type: string) => {
+    // TODO: separate one for onChangeWeight and onChangeRep?
+    const isWeight = type === 'weight'
+    const newSet = {
+      weight_kg: isWeight ? Number(e) : sets[i].weight_kg,
+      repetitions: isWeight ? sets[i].repetitions : Number(e),
+    }
+    setSets((prev) => [...prev.slice(0, i), { ...prev[i], ...newSet }, ...prev.slice(i + 1, prev?.length)])
   }
 
   return (
@@ -42,21 +61,25 @@ const SetsTable: FunctionComponent<ExerciseTableProps> = ({ sets, headers }) => 
               mb={i === sets?.length - 1 ? 0 : 'sm'}
               mt={i === 0 ? 'sm' : 0}
               flexDir="row"
-              // key={i}
-              // borderWidth={1}
-              // borderColor={editable === i ? theme.primary.border : theme.background}
               rounded="sm"
-              // bg={inputMode ? '#2e2c2c' : theme.background}
               bg={theme.background}
             >
               {inputMode && (
                 <Div alignItems="center" flex={1} py="md">
-                  <CustomInput initialValue={String(set.weight_kg)} preset={InputEnum.SET_INPUT} />
+                  <CustomInput
+                    value={sets[i].weight_kg > 0 ? String(sets[i].weight_kg) : ''}
+                    preset={InputEnum.SET_INPUT}
+                    onChangeText={(e) => onChange(e, i, 'weight')}
+                  />
                 </Div>
               )}
               {inputMode && (
                 <Div alignItems="center" flex={1} py="md">
-                  <CustomInput initialValue={String(set.repetitions)} preset={InputEnum.SET_INPUT} />
+                  <CustomInput
+                    value={sets[i].repetitions > 0 ? String(sets[i].repetitions) : ''}
+                    onChangeText={(e) => onChange(e, i, 'repetitions')}
+                    preset={InputEnum.SET_INPUT}
+                  />
                 </Div>
               )}
               {!inputMode && (
@@ -69,7 +92,7 @@ const SetsTable: FunctionComponent<ExerciseTableProps> = ({ sets, headers }) => 
                   <Text style={{ fontSize: 14, color: theme.light_1 }}>{set?.repetitions}</Text>
                 </Div>
               )}
-              <TouchableOpacity
+              <Div
                 style={{
                   alignItems: 'center',
                   flex: 1,
@@ -78,17 +101,16 @@ const SetsTable: FunctionComponent<ExerciseTableProps> = ({ sets, headers }) => 
                   borderBottomWidth: inputMode ? 1 : 0,
                   borderBottomColor: theme.light_1,
                 }}
-                onPress={inputMode ? () => onPressSave(i) : () => toggleEditSet(i)}
               >
-                <Icon
-                  name={inputMode ? 'unlock' : 'lock'}
-                  fontFamily="FontAwesome"
-                  fontSize={inputMode ? '5xl' : 'xl'}
-                  // fontSize="xl"
-                  // color={inputMode ? '#38bb3f' : theme.primary.border}
-                  color={theme.primary.border}
-                />
-              </TouchableOpacity>
+                <TouchableWithoutFeedback onPress={inputMode ? () => onPressSave(i) : () => toggleEditSet(i)}>
+                  <Icon
+                    name={inputMode ? 'unlock' : 'lock'}
+                    fontFamily="FontAwesome"
+                    fontSize={inputMode ? '5xl' : 'xl'}
+                    color={theme.primary.border}
+                  />
+                </TouchableWithoutFeedback>
+              </Div>
             </Div>
             {inputMode && (
               <Div flexDir="row" justifyContent="center" my="md">
