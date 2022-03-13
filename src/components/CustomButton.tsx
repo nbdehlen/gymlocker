@@ -80,10 +80,9 @@ type OwnProps = {
   iconProps?: IconProps
   containerProps?: DivProps
   children?: ReactNode
-  touchableProps?: TouchableWithoutFeedbackProps
 }
 
-type Props = OwnProps
+type Props = OwnProps & TouchableWithoutFeedbackProps
 
 const CustomButton: FunctionComponent<Props> = ({
   text,
