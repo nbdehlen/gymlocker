@@ -83,24 +83,23 @@ const SetsTable: FunctionComponent<ExerciseTableProps> = ({ exercise, exerciseIn
                 </Div>
               )}
               {!inputMode && (
-                <Div alignItems="center" flex={1} py="md">
+                <Div alignItems="center" flex={1} pt="md" pb={i === sets?.length - 1 ? 'xl' : 'md'}>
                   <Text style={{ fontSize: 14, color: theme.light_1 }}>{set?.weight_kg} kg</Text>
                 </Div>
               )}
               {!inputMode && (
-                <Div alignItems="center" flex={1} py="md">
+                <Div alignItems="center" flex={1} pt="md" pb={i === sets?.length - 1 ? 'xl' : 'md'}>
                   <Text style={{ fontSize: 14, color: theme.light_1 }}>{set?.repetitions}</Text>
                 </Div>
               )}
               <Div
-                style={{
-                  alignItems: 'center',
-                  flex: 1,
-                  marginVertical: 8,
-                  paddingVertical: 1,
-                  borderBottomWidth: inputMode ? 1 : 0,
-                  borderBottomColor: theme.light_1,
-                }}
+                alignItems="center"
+                flex={1}
+                mt={'sm'}
+                mb={i === sets?.length - 1 ? 0 : 'sm'}
+                py={1}
+                borderBottomWidth={inputMode ? 1 : 0}
+                borderBottomColor={theme.light_1}
               >
                 <TouchableWithoutFeedback onPress={inputMode ? () => onPressSave(i) : () => toggleEditSet(i)}>
                   <Icon
