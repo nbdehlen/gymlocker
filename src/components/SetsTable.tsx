@@ -83,12 +83,12 @@ const SetsTable: FunctionComponent<ExerciseTableProps> = ({ exercise, exerciseIn
                 </Div>
               )}
               {!inputMode && (
-                <Div alignItems="center" flex={1} pt="md" pb={i === sets?.length - 1 ? 'xl' : 'md'}>
+                <Div alignItems="center" flex={1} pt="md" pb={i === sets?.length - 1 ? 'lg' : 'md'}>
                   <Text style={{ fontSize: 14, color: theme.light_1 }}>{set?.weight_kg} kg</Text>
                 </Div>
               )}
               {!inputMode && (
-                <Div alignItems="center" flex={1} pt="md" pb={i === sets?.length - 1 ? 'xl' : 'md'}>
+                <Div alignItems="center" flex={1} pt="md" pb={i === sets?.length - 1 ? 'lg' : 'md'}>
                   <Text style={{ fontSize: 14, color: theme.light_1 }}>{set?.repetitions}</Text>
                 </Div>
               )}

@@ -160,7 +160,7 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
           <Collapse bg="transparent" defaultActive={expand} mt="none">
             <Collapse.Header
               bg="transparent"
-              py="xl"
+              py="lg"
               prefix={null}
               suffix={<IconDown />}
               activeSuffix={<IconUp />}
@@ -173,7 +173,7 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
               </B.LightText>
               <B.Spacer w={8} />
             </Collapse.Header>
-            <Collapse.Body pt="xl" pb="none">
+            <Collapse.Body pt="lg" pb="none">
               {item?.sets && (
                 <SetsTable
                   exerciseIndex={index}
@@ -183,7 +183,7 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
                 />
               )}
               {/* <Div py="lg" /> */}
-              <Div flexDir="row" justifyContent="center" my="xl">
+              <Div flexDir="row" justifyContent="center" my="lg">
                 <CustomButton
                   text="Add set"
                   onPress={onPressAddSet}
