@@ -1,31 +1,20 @@
-import React, { FunctionComponent, useCallback, useEffect, useState } from 'react'
-import { Div, Text } from 'react-native-magnus'
-import { useDatabaseConnection } from '../../data/Connection'
-import exercisesSelect from '../../data/seeding/starter/exercisesSelect'
-import { NEW_INSTALL } from '../../storageConstants'
-import { getData } from '../../utils/asyncStorage'
+import React, { FunctionComponent } from 'react'
+import { Text } from 'react-native-magnus'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import theme from '../../utils/theme'
 
 type OwnProps = {}
 
 type Props = OwnProps
 
-export const ChartsScreen: FunctionComponent<Props> = () => {
-  const { exerciseSelectRepository } = useDatabaseConnection()
-
-  useEffect(() => {
-    const checkInstall = async () => {
-      const res = await getData(NEW_INSTALL)
-      if (!res) {
-        exerciseSelectRepository.createMany(exercisesSelect)
-      }
-    }
-    checkInstall()
-  }, [exerciseSelectRepository])
-  return (
-    <Div>
-      <Text>DAFDF</Text>
-    </Div>
-  )
-}
+export const ChartsScreen: FunctionComponent<Props> = () => (
+  <SafeAreaView
+    style={{ alignItems: 'center', justifyContent: 'center', backgroundColor: theme.primary.color, flex: 1 }}
+  >
+    <Text fontSize={40} color={theme.primary.onColor}>
+      Charts
+    </Text>
+  </SafeAreaView>
+)
 
 export default ChartsScreen
