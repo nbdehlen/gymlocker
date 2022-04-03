@@ -14,6 +14,7 @@ import { WorkoutRepository } from './repositories/WorkoutRepository'
 import { migrations } from '../data/migrations'
 import { getData } from '../utils/asyncStorage'
 import { NEW_INSTALL } from '../storageConstants'
+import { seedDatabase } from '../utils/seedDatabase'
 
 interface DatabaseConnectionContextData {
   workoutRepository: WorkoutRepository
@@ -32,18 +33,13 @@ export const DatabaseConnectionProvider: React.FC = ({ children }) => {
     const installDate = await getData(NEW_INSTALL)
     const createdConnection = await createConnection({
       type: 'expo',
-      database: '@workouts.db',
+      database: '@workout.db',
       driver: require('expo-sqlite'),
-      entities: [ExerciseSelectModel, WorkoutModel, ExerciseModel, CardioModel, SetModel],
+      entities: [WorkoutModel, ExerciseSelectModel, ExerciseModel, CardioModel, SetModel],
       migrations,
       // dropSchema: true,
-      // migrationsRun: true, // TODO: set based on asyncStorage
-      // synchronize: true, // TODO: set based on asyncStorage
-      migrationsRun: !installDate, // TODO: set based on asyncStorage
-      synchronize: !installDate // TODO: set based on asyncStorage
-      // cli: {
-      //   migrationsDir: 'src/migrations',
-      // },
+      // synchronize: !installDate, // TODO: set based on asyncStorage
+      migrationsRun: !installDate,
     })
 
     setConnection(createdConnection)
@@ -52,6 +48,8 @@ export const DatabaseConnectionProvider: React.FC = ({ children }) => {
   useEffect(() => {
     if (!connection) {
       connect()
+    } else {
+      seedDatabase(connection)
     }
   }, [connect, connection])
 
@@ -66,7 +64,7 @@ export const DatabaseConnectionProvider: React.FC = ({ children }) => {
         exerciseSelectRepository: new ExerciseSelectRepository(connection),
         exerciseRepository: new ExerciseRepository(connection),
         setRepository: new SetRepository(connection),
-        cardioRepository: new CardioRepository(connection)
+        cardioRepository: new CardioRepository(connection),
       }}
     >
       {children}

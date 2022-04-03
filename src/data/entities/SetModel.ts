@@ -1,7 +1,7 @@
 import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { ExerciseModel } from './ExerciseModel'
 
-@Entity('sets')
+@Entity({ name: 'sets', schema: 'public' })
 export class SetModel {
   @PrimaryGeneratedColumn('increment')
   id: number

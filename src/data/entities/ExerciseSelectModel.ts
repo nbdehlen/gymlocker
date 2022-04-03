@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
-@Entity('exercisesSelect')
+@Entity({ name: 'exercisesselect', schema: 'public' })
 export class ExerciseSelectModel {
   @PrimaryGeneratedColumn('uuid')
   id: string

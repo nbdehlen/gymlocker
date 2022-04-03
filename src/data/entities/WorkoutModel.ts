@@ -11,7 +11,7 @@ import {
 import { CardioModel } from './CardioModel'
 import { ExerciseModel } from './ExerciseModel'
 
-@Entity('workouts')
+@Entity({ name: 'workouts', schema: 'public' })
 export class WorkoutModel {
   @PrimaryGeneratedColumn('increment')
   id: number
@@ -36,9 +36,9 @@ export class WorkoutModel {
   // cardios?: Promise<CardioModel[]>
   @OneToMany(() => CardioModel, (cardio) => cardio.workout)
   @JoinTable()
-  cardios: CardioModel[]
+  cardios?: CardioModel[]
 
   @OneToMany(() => ExerciseModel, (exercise) => exercise.workout)
   @JoinTable()
-  exercises: ExerciseModel[]
+  exercises?: ExerciseModel[]
 }

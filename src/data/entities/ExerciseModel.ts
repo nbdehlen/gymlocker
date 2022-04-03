@@ -14,7 +14,7 @@ import {
 import { SetModel } from './SetModel'
 import { WorkoutModel } from './WorkoutModel'
 
-@Entity('exercises')
+@Entity({ name: 'exercises', schema: 'public' })
 export class ExerciseModel {
   @PrimaryGeneratedColumn('increment')
   id: number

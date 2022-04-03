@@ -1,14 +1,14 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import { TouchableWithoutFeedback } from 'react-native'
 import { Text, Div, Icon } from 'react-native-magnus'
+import { DeepPartial } from 'typeorm'
 import { ExerciseModel } from '../data/entities/ExerciseModel'
-import { ICreateExerciseData } from '../data/repositories/ExerciseRepository'
 import theme from '../utils/theme'
 import CustomButton, { ButtonEnum } from './CustomButton'
 import CustomInput, { InputEnum } from './CustomInput'
 
 type ExerciseTableProps = {
-  exercise: ExerciseModel | ICreateExerciseData
+  exercise: ExerciseModel | DeepPartial<ExerciseModel>
   exerciseIndex: number
   headers?: string[]
   editSet: any

@@ -15,5 +15,5 @@ export const migrations = [
   CreateSetsTable1622070173991,
   CreateWorkoutToCardioFK1622328685466,
   CreateWorkoutToExerciseFK1622328667572,
-  CreateExerciseToSetFK1622328699766
+  CreateExerciseToSetFK1622328699766,
 ]

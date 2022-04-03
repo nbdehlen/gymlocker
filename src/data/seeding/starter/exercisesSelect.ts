@@ -6,7 +6,7 @@ export const exercisesSelect = [
     muscles: 'biceps',
     assistingMuscles: '',
     // tool: 'dumbbell',
-    custom: false
+    custom: false,
   },
   {
     // exercise: 'barbell curl',
@@ -15,7 +15,7 @@ export const exercisesSelect = [
     muscles: 'biceps',
     assistingMuscles: '',
     // tool: 'barbell',
-    custom: false
+    custom: false,
   },
   {
     // exercise: 'dumbbell alternate curl',
@@ -24,7 +24,7 @@ export const exercisesSelect = [
     muscles: 'biceps',
     assistingMuscles: '',
     // tool: 'dumbbell',
-    custom: false
+    custom: false,
   },
   {
     // exercise: 'dumbbell concentration curl',
@@ -33,7 +33,7 @@ export const exercisesSelect = [
     muscles: 'biceps',
     assistingMuscles: '',
     // tool: 'dumbbell',
-    custom: false
+    custom: false,
   },
   {
     // exercise: 'dumbbell hammer curl',
@@ -42,7 +42,7 @@ export const exercisesSelect = [
     muscles: 'biceps',
     assistingMuscles: '',
     // tool: 'dumbbell',
-    custom: false
+    custom: false,
   },
   {
     // exercise: 'ez barbell curl',
@@ -51,8 +51,8 @@ export const exercisesSelect = [
     muscles: 'biceps',
     assistingMuscles: '',
     // tool: 'barbell',
-    custom: false
-  }
+    custom: false,
+  },
 ]
 
 export default exercisesSelect

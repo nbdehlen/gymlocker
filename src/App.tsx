@@ -9,8 +9,11 @@ import { getData, storeData } from './utils/asyncStorage'
 import { NEW_INSTALL } from './storageConstants'
 import { registerRootComponent } from 'expo'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import { StatusBar } from 'expo-status-bar'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
+import theme from './utils/theme'
 
-const theme = {}
+const magnusTheme = {}
 
 export const App: FunctionComponent = () => {
   useEffect(() => {
@@ -24,13 +27,16 @@ export const App: FunctionComponent = () => {
   }, [])
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={magnusTheme}>
       <DatabaseConnectionProvider>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <NavigationContainer>
-            <BottomTabNavigation />
-          </NavigationContainer>
-        </GestureHandlerRootView>
+        <SafeAreaProvider>
+          <GestureHandlerRootView style={{ flex: 1 }}>
+            <StatusBar style="light" backgroundColor={theme.primary.color} />
+            <NavigationContainer>
+              <BottomTabNavigation />
+            </NavigationContainer>
+          </GestureHandlerRootView>
+        </SafeAreaProvider>
       </DatabaseConnectionProvider>
     </ThemeProvider>
   )

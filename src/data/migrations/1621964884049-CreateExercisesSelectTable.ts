@@ -4,7 +4,7 @@ export class CreateExercisesSelectTable1621964884049 implements MigrationInterfa
     console.log('ExercisesSelect created')
     await queryRunner.createTable(
       new Table({
-        name: 'exercisesSelect',
+        name: 'exercisesselect',
         columns: [
           {
             name: 'id',
@@ -49,6 +49,6 @@ export class CreateExercisesSelectTable1621964884049 implements MigrationInterfa
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('exercisesSelect')
+    await queryRunner.dropTable('exercisesselect')
   }
 }

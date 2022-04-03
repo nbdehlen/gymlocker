@@ -11,7 +11,7 @@ import {
 } from 'typeorm'
 import { WorkoutModel } from './WorkoutModel'
 
-@Entity('cardios')
+@Entity({ name: 'cardios', schema: 'public' })
 export class CardioModel {
   @PrimaryGeneratedColumn('increment')
   id: number
