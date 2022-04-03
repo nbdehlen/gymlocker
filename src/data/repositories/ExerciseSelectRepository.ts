@@ -25,13 +25,13 @@ export class ExerciseSelectRepository {
     exercise,
     muscles,
     assistingMuscles,
-    custom
+    custom,
   }: ICreateExerciseSelectData): Promise<ExerciseSelectModel> {
     const exerciseSelect = this.ormRepository.create({
       exercise,
       muscles,
       assistingMuscles,
-      custom
+      custom,
     })
 
     await this.ormRepository.save(exerciseSelect)

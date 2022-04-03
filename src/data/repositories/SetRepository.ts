@@ -1,4 +1,4 @@
-import { Connection, Repository } from 'typeorm'
+import { Connection, DeepPartial, Repository } from 'typeorm'
 import { SetModel } from '../entities/SetModel'
 
 export interface ICreateSetData {
@@ -35,10 +35,7 @@ export class SetRepository {
   }
 
   public async createMany(sets: ICreateSetData[]): Promise<SetModel[]> {
-    const data = this.ormRepository.create(sets)
-
-    await this.ormRepository.save(data)
-
+    const data = await this.ormRepository.save(sets)
     return data
   }
 
@@ -48,5 +45,20 @@ export class SetRepository {
 
   public async deleteAll(): Promise<void> {
     await this.ormRepository.clear()
+  }
+
+  // Using Math.random() as id on frontend for sets that haven't been
+  // created yet. A unique identifier is required for react keys.
+  // Yes, it might not have been a good idea ;-)
+  public async createOrUpdate(setData: DeepPartial<SetModel>): Promise<SetModel> {
+    let set = setData
+
+    if (!Number.isInteger(setData.id)) {
+      delete set.id
+      set = await this.ormRepository.create(set)
+    }
+    const res = await this.ormRepository.save(set)
+
+    return res
   }
 }

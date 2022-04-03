@@ -1,12 +1,14 @@
-import { endOfDay, isSameDay, startOfDay } from 'date-fns'
-import { Between, Connection, In, Repository } from 'typeorm'
+import { endOfDay, startOfDay } from 'date-fns'
+import { Between, Connection, DeepPartial, In, Repository } from 'typeorm'
 import { WorkoutModel } from '../entities/WorkoutModel'
+import { ICreateCardioData } from './CardioRepository'
+import { ICreateExerciseData } from './ExerciseRepository'
 
-interface ICreateWorkoutData {
+export type ICreateWorkoutData = {
   start?: Date
   end?: Date
-  // exercises?: Promise<ExerciseModel[]>
-  // cardios?: Promise<CardioModel[]>
+  exercises?: Promise<ICreateExerciseData[]>
+  cardios?: Promise<ICreateCardioData[]>
 }
 
 // TODO: Sort by order: exercises and cardio. Order as joint FK for them and one for set?
@@ -65,16 +67,41 @@ export class WorkoutRepository {
     })
   }
 
-  public async create({ start, end }: ICreateWorkoutData): Promise<WorkoutModel> {
-    const workout = this.ormRepository.create({ start, end })
+  // Using Math.random() as id on frontend for workouts that haven't been
+  // created yet. A unique identifier is required for react keys.
+  // Yes, it might not have been a good idea ;-)
+  public async createOrUpdate(workoutData: DeepPartial<WorkoutModel>): Promise<WorkoutModel> {
+    let newWorkoutData = workoutData
+
+    if (!Number.isInteger(newWorkoutData.id)) {
+      delete newWorkoutData.id
+      newWorkoutData = await this.ormRepository.create(newWorkoutData)
+    }
+
+    const res = await this.ormRepository.save(newWorkoutData)
+    return res
+  }
+
+  public async create(workoutData: DeepPartial<WorkoutModel>): Promise<WorkoutModel> {
+    const workout = this.ormRepository.create(workoutData)
     await this.ormRepository.save(workout)
     return workout
   }
 
-  public async createMany(workouts: ICreateWorkoutData[]): Promise<WorkoutModel[]> {
-    const data = this.ormRepository.create(workouts)
-    await this.ormRepository.save(data)
+  public async createMany(workouts: DeepPartial<WorkoutModel>[]): Promise<WorkoutModel[]> {
+    const data = await this.ormRepository.save(workouts)
     return data
+  }
+
+  public async save(workoutData: DeepPartial<WorkoutModel>): Promise<WorkoutModel> {
+    const workout = await this.ormRepository.save(workoutData)
+    console.log(JSON.stringify(workout, null, 2), 'SAVED WORKOUT')
+    return workout
+  }
+
+  public async saveMany(workoutData: DeepPartial<WorkoutModel>[]): Promise<WorkoutModel[]> {
+    const workouts = await this.ormRepository.save(workoutData)
+    return workouts
   }
   //   public async toggle(id: number): Promise<void> {
   //     await this.ormRepository.query(

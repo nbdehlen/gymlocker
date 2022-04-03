@@ -6,13 +6,13 @@ import { ScreenRoute } from '../../navigation/NAV_CONSTANTS'
 import theme, { B } from '../../utils/theme'
 import WorkoutTime from '../../components/WorkoutTime'
 import SetsTable from '../../components/SetsTable'
-import DraggableFlatList, { OpacityDecorator, RenderItemParams, ScaleDecorator } from 'react-native-draggable-flatlist'
+import DraggableFlatList, { OpacityDecorator, RenderItemParams } from 'react-native-draggable-flatlist'
 import { ExerciseModel } from '../../data/entities/ExerciseModel'
 import CustomButton, { ButtonEnum } from '../../components/CustomButton'
-import { ICreateExerciseData } from '../../data/repositories/ExerciseRepository'
 import { SetModel } from '../../data/entities/SetModel'
-import { ICreateSetData } from '../../data/repositories/SetRepository'
 import { useDatabaseConnection } from '../../data/Connection'
+import { WorkoutModel } from '../../data/entities/WorkoutModel'
+import { DeepPartial } from 'typeorm'
 
 /**
  * fix order
@@ -38,17 +38,18 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
   const { workoutRepository, exerciseRepository, setRepository } = useDatabaseConnection()
   const { workout } = route.params
   const dateRef = useRef({
+    // TODO: use ISOString?
     startDate: workout.start,
     endDate: new Date(workout.start.getTime() + 60 * 60 * 1000),
   })
-  const [exercises, setExercises] = useState<(ExerciseModel | ICreateExerciseData)[]>(workout?.exercises || [])
+  const [exercises, setExercises] = useState<DeepPartial<ExerciseModel[]>>(workout.exercises || [])
   const workoutExercisesLen = workout?.exercises?.length > 0 ? workout.exercises.length : 0
   const [expand, setExpand] = useState(false)
 
   useEffect(() => {
-    if (workout?.exercises?.length > 0 && workout?.exercises[workoutExercisesLen - 1]?.id == null) {
-      const newId = Math.floor(Math.random() * 100000000 + 100000)
-      const workoutExercises = workout?.exercises.concat()
+    if (workout.exercises?.length > 0 && workout.exercises[workoutExercisesLen - 1]?.id == null) {
+      const newId = Math.random()
+      const workoutExercises = workout.exercises?.concat()
       workoutExercises[workoutExercises.length - 1].id = newId
 
       setExercises((prev) => [...prev, workoutExercises[workoutExercises.length - 1]])
@@ -57,62 +58,69 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
   }, [workout, exercises, workoutExercisesLen])
 
   const onPressSaveWorkout = async () => {
-    const isNewWorkout = !!(await workoutRepository.getById(workout?.id))
-    if (isNewWorkout) {
-      const { start, end, cardios } = workout
-      const newWorkout = await workoutRepository.create({
-        start,
-        end,
-      })
+    const newWorkoutData: DeepPartial<WorkoutModel> = {
+      start: dateRef.current?.startDate,
+      end: dateRef.current?.endDate,
+      ...(exercises && { exercises }),
+      // ...(cardios && { cardios }),
+      id: workout?.id,
+    }
 
-      const newWorkoutExercises = exercises.map((ex, i) => ({
-        workout_id: newWorkout?.id,
-        assistingMuscles: ex.assistingMuscles,
-        exercise: ex.exercise,
-        muscles: ex.muscles,
-        // TODO: Order based on flatlist drag
-        order: ex.order ?? i,
-      }))
-      const addedExercises = await exerciseRepository.createMany(newWorkoutExercises)
-
-      const addSetsToExercises = async (exerciseState: ExerciseModel[], savedExercises: ExerciseModel[]) => {
-        let setsWithExerciseIds: ICreateSetData[] = []
-        exerciseState.forEach((ex, i) => {
-          ex.sets.forEach((set) => {
-            // TODO: Do I even need this id?
-            const { id, ...rest } = set
-            setsWithExerciseIds.push({ ...rest, exercise_id: savedExercises[i].id })
-          })
-        })
-        console.log(JSON.stringify(setsWithExerciseIds, null, 2))
-        const sets = await setRepository.createMany(setsWithExerciseIds)
-        return sets
-      }
-
-      addSetsToExercises(exercises, addedExercises)
-    } else {
-      // TODO: edit sets here
+    try {
+      saveWorkout(newWorkoutData)
+      /**
+       * Toast pre success
+       */
+    } catch (e) {
+      console.log(e)
+      /**
+       * Toast fail
+       * there was an error -> your workout couldn't be saved
+       */
     }
   }
 
+  const saveWorkout = async (workoutData: DeepPartial<WorkoutModel>) => {
+    const { id: workoutId } = await workoutRepository.createOrUpdate(workoutData)
+
+    const exercisePromises = exercises.map(async (ex, i) => {
+      const res = await exerciseRepository.createOrUpdate({
+        // TODO: Order based on flatlist drag
+        ...ex,
+        workout_id: workoutId,
+        order: ex?.order ?? i,
+      })
+      return res
+    })
+
+    const exerciseP = await Promise.all(exercisePromises)
+
+    // TODO: Restructure state since we have to call things one by one like this. Especially sets as its own state
+    const setPromises = exerciseP.map(async (ex) =>
+      ex.sets.map(async (set) => {
+        await setRepository.createOrUpdate({ ...set, exercise_id: ex?.id })
+      })
+    )
+
+    await Promise.all(setPromises)
+  }
+
   const addSet = useCallback(
-    (exercise: ExerciseModel | ICreateExerciseData, exerciseIndex: number) => {
-      const newSet = {
+    (exercise: ExerciseModel | DeepPartial<ExerciseModel>, exerciseIndex: number) => {
+      const newSet: DeepPartial<SetModel> = {
         id: Math.random(),
         weight_kg: 300,
         repetitions: 99,
         order: 10,
         exercise_id: exercise?.id ?? Math.random(),
-        // exercise,
       }
 
       if (exercises?.length > 0) {
-        console.log('ADD SET')
         setExercises((prev) => [
           ...prev.slice(0, exerciseIndex),
           {
             ...prev[exerciseIndex],
-            sets: [...prev[exerciseIndex].sets, newSet],
+            sets: [...prev[exerciseIndex]!.sets!, newSet],
           },
           ...prev.slice(exerciseIndex + 1, prev?.length),
         ])
@@ -123,30 +131,31 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
 
   const editSet = useCallback(
     (
-      exercise: ExerciseModel | ICreateExerciseData,
+      exercise: ExerciseModel | DeepPartial<ExerciseModel>,
       exerciseIndex: number,
       setIndex: number,
-      set: SetModel | ICreateSetData
+      set: DeepPartial<SetModel>
     ) => {
-      setExercises((prev) => [
-        ...prev.slice(0, exerciseIndex),
-        {
-          ...prev[exerciseIndex],
-          sets: [
-            ...prev[exerciseIndex].sets.slice(0, setIndex),
-            set,
-            ...prev[exerciseIndex].sets.slice(setIndex + 1, prev[exerciseIndex].sets.length),
-          ],
-        },
-        ...prev.slice(exerciseIndex + 1, prev?.length),
-      ])
-      console.log({ setLen: exercises[exerciseIndex].sets.length })
+      setExercises((prev) => {
+        return [
+          ...prev.slice(0, exerciseIndex),
+          {
+            ...prev[exerciseIndex],
+            sets: [
+              ...prev[exerciseIndex]!.sets!.slice(0, setIndex),
+              set,
+              ...prev[exerciseIndex]!.sets!.slice(setIndex + 1, prev[exerciseIndex]!.sets!.length),
+            ],
+          },
+          ...prev.slice(exerciseIndex + 1, prev?.length),
+        ]
+      })
     },
-    [exercises]
+    []
   )
 
   const renderItem = useCallback(
-    ({ item, drag, isActive, index }: RenderItemParams<ExerciseModel | ICreateExerciseData>) => {
+    ({ item, drag, isActive, index }: RenderItemParams<DeepPartial<ExerciseModel>>) => {
       const onPressAddSet = () => index != null && addSet(item, index)
       const IconUp = () => <Icon name="up" fontFamily="AntDesign" fontSize="sm" color={theme.light_1} />
       const IconDown = () => <Icon name="down" fontFamily="AntDesign" fontSize="sm" color={theme.light_1} />
@@ -176,7 +185,7 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
             <Collapse.Body pt="lg" pb="none">
               {item?.sets && (
                 <SetsTable
-                  exerciseIndex={index}
+                  exerciseIndex={index as number}
                   exercise={item}
                   editSet={editSet}
                   headers={['WEIGHT', 'REPS', 'EDIT']}
