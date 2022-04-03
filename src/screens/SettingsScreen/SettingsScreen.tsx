@@ -1,17 +1,20 @@
 import React, { FunctionComponent, useCallback, useState } from 'react'
 import { useDatabaseConnection } from '../../data/Connection'
-import { Button, Div, Icon, Input, Text } from 'react-native-magnus'
+import { Button, Div, Icon, Text } from 'react-native-magnus'
 import sampleData from '../../data/seeding/sampleData'
 import theme, { B } from '../../utils/theme'
 import getRandomDateWithinPeriod from '../../data/seeding/utils/getRandomDateWithinPeriod'
 import { add, sub } from 'date-fns'
 import { SetModel } from '../../data/entities/SetModel'
-import { SetRepository } from '../../data/repositories/SetRepository'
 import { WorkoutModel } from '../../data/entities/WorkoutModel'
 import { ExerciseModel } from '../../data/entities/ExerciseModel'
 import { CardioModel } from '../../data/entities/CardioModel'
 import { ICreateCardioData } from '../../data/repositories/CardioRepository'
 import { ICreateExerciseData } from '../../data/repositories/ExerciseRepository'
+import { clearAsyncStorage, logAsyncStorage } from '../../utils/asyncStorage'
+import { SafeAreaView } from 'react-native-safe-area-context'
+import { FlatList, ListRenderItem } from 'react-native'
+import CustomButton, { ButtonEnum } from '../../components/CustomButton'
 
 const randomIntFromInterval = (min: number, max: number): number => {
   // min and max included
@@ -217,64 +220,111 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
     await setRepository.deleteAll()
   }
 
-  const onPressGetWorkoutById = () => getWorkoutById(workoutCount)
-  const onPressGetExerciseById = () => getExerciseById(workoutCount)
-  const onPressCreateExerciseWorkouts = () => createCompleteWorkoutsInSteps(WorkoutEnum.EXERCISE)
-  const onPressCreateCardioWorkouts = () => createCompleteWorkoutsInSteps(WorkoutEnum.CARDIO)
-  const onPressCreateMixWorkouts = () => createCompleteWorkoutsInSteps(WorkoutEnum.MIX)
   const onPressInc = () => setWorkoutCount((prevState) => prevState + 1)
   const onPressDec = () => setWorkoutCount((prevState) => prevState - 1)
 
-  return (
-    <Div flex={1} justifyContent="center" alignItems="center" bg={theme.primary.color}>
+  const data = [
+    {
+      text: 'Log workout by id',
+      fn: () => getWorkoutById(workoutCount),
+    },
+    {
+      text: 'Log exercise by id',
+      fn: () => getExerciseById(workoutCount),
+    },
+    { text: 'Log all workouts', fn: getAllWorkouts },
+    {
+      text: `Add ${workoutCount} random strength workouts`,
+      fn: () => createCompleteWorkoutsInSteps(WorkoutEnum.EXERCISE),
+    },
+    {
+      text: `Add ${workoutCount} random cardio workouts`,
+      fn: () => createCompleteWorkoutsInSteps(WorkoutEnum.CARDIO),
+    },
+    {
+      text: `Add ${workoutCount} random mixed workouts`,
+      fn: () => createCompleteWorkoutsInSteps(WorkoutEnum.MIX),
+    },
+    {
+      text: 'Delete all workouts',
+      fn: deleteAllWorkouts,
+    },
+    {
+      text: 'Clear Storage',
+      fn: () => clearAsyncStorage(),
+    },
+    {
+      text: 'Log storage',
+      fn: () => logAsyncStorage(),
+    },
+  ]
+
+  const Header = useCallback(
+    () => (
       <Div flexDir="row">
         <B.Spacer h={40} />
-        <Button onPress={onPressInc} w={40} h={40} p={0} m={0} bg={theme.primary.onColor} rounded="circle">
-          <Icon fontSize={24} fontFamily="AntDesign" name="plus" color={theme.light_1} />
+        <Button
+          onPress={onPressInc}
+          w={60}
+          h={60}
+          p={0}
+          m={0}
+          bg={theme.primary.color}
+          borderWidth={1}
+          borderColor={theme.primary.onColor}
+          rounded="circle"
+        >
+          <Icon fontSize={32} fontFamily="AntDesign" name="plus" color={theme.primary.onColor} />
         </Button>
-        <B.Spacer w={8} />
-        <Text color="white" fontSize={24}>
+        <B.Spacer w={16} />
+        <Text color="white" fontSize={40}>
           {workoutCount}
         </Text>
-        <B.Spacer w={8} />
-        <Button onPress={onPressDec} w={40} h={40} p={0} m={0} rounded="circle">
-          <Icon fontSize={24} fontFamily="AntDesign" name="minus" color={theme.light_1} />
+        <B.Spacer w={16} />
+        <Button
+          onPress={onPressDec}
+          w={60}
+          h={60}
+          p={0}
+          m={0}
+          bg={theme.primary.color}
+          borderWidth={1}
+          borderColor={theme.primary.onColor}
+          rounded="circle"
+        >
+          <Icon fontSize={32} fontFamily="AntDesign" name="minus" color={theme.primary.onColor} />
         </Button>
       </Div>
-      <B.Spacer h={16} />
-      <Button onPress={onPressCreateExerciseWorkouts} alignSelf="center">
-        <Text color="white">Add {workoutCount} random strength workouts</Text>
-      </Button>
-      <B.Spacer h={16} />
-      <Button onPress={onPressCreateCardioWorkouts} alignSelf="center">
-        <Text color="white">Add {workoutCount} random cardio workouts</Text>
-      </Button>
-      <B.Spacer h={16} />
-      <Button onPress={onPressCreateMixWorkouts} alignSelf="center">
-        <Text color="white">add {workoutCount} random mixed focus workouts</Text>
-      </Button>
+    ),
+    [workoutCount]
+  )
 
-      <B.Spacer h={16} />
-      <Button onPress={getAllWorkouts} alignSelf="center">
-        <Text color="white">Log all workouts</Text>
-      </Button>
+  type ItemProps = {
+    text: string
+    fn: () => void
+  }
 
-      <B.Spacer h={16} />
-      <Button onPress={onPressGetWorkoutById} alignSelf="center">
-        <Text color="white">log workout by id {workoutCount}</Text>
-      </Button>
+  const renderItem: ListRenderItem<ItemProps> = useCallback(
+    ({ item }) => (
+      <Div alignItems="center">
+        <CustomButton onPress={item.fn} text={item.text} preset={ButtonEnum.PRIMARY} containerProps={{ w: '80%' }} />
+      </Div>
+    ),
+    []
+  )
 
-      <B.Spacer h={16} />
-      <Button onPress={onPressGetExerciseById} alignSelf="center">
-        <Text color="white">Get exercise by id {workoutCount}</Text>
-      </Button>
-
-      <B.Spacer h={16} />
-      <Button onPress={deleteAllWorkouts} alignSelf="center">
-        <Text color="white">Delete all workouts</Text>
-      </Button>
-    </Div>
+  return (
+    <SafeAreaView style={{ backgroundColor: theme.primary.color, flex: 1 }}>
+      <FlatList
+        data={data}
+        ListHeaderComponent={<Header />}
+        ListHeaderComponentStyle={{ alignItems: 'center', marginVertical: 20 }}
+        ItemSeparatorComponent={() => <B.Spacer h={24} />}
+        renderItem={renderItem}
+        keyExtractor={(_, i) => String(i)}
+      />
+    </SafeAreaView>
   )
 }
 
-export default SettingsScreen
+export default React.memo(SettingsScreen)
