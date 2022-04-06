@@ -42,20 +42,20 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
     startDate: workout.start,
     endDate: new Date(workout.start.getTime() + 60 * 60 * 1000),
   })
-  const [exercises, setExercises] = useState<DeepPartial<ExerciseModel[]>>(workout.exercises || [])
-  const workoutExercisesLen = workout?.exercises?.length > 0 ? workout.exercises.length : 0
+  const [exercises, setExercises] = useState<ExerciseModel[]>(workout?.exercises || [])
+  const exercisesLen = workout?.exercises?.length ?? 0
   const [expand, setExpand] = useState(false)
 
   useEffect(() => {
-    if (workout.exercises?.length > 0 && workout.exercises[workoutExercisesLen - 1]?.id == null) {
+    if (exercisesLen > 0 && !workout?.exercises?.[exercisesLen - 1].id) {
       const newId = Math.random()
-      const workoutExercises = workout.exercises?.concat()
+      const workoutExercises = workout.exercises?.concat() || []
       workoutExercises[workoutExercises.length - 1].id = newId
 
       setExercises((prev) => [...prev, workoutExercises[workoutExercises.length - 1]])
       setExpand(true)
     }
-  }, [workout, exercises, workoutExercisesLen])
+  }, [workout, exercises, exercisesLen])
 
   const onPressSaveWorkout = async () => {
     const newWorkoutData: DeepPartial<WorkoutModel> = {
@@ -88,7 +88,7 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
         // TODO: Order based on flatlist drag
         ...ex,
         workout_id: workoutId,
-        order: ex?.order ?? i,
+        order: i,
       })
       return res
     })
@@ -97,8 +97,8 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
 
     // TODO: Restructure state since we have to call things one by one like this. Especially sets as its own state
     const setPromises = exerciseP.map(async (ex) =>
-      ex.sets.map(async (set) => {
-        await setRepository.createOrUpdate({ ...set, exercise_id: ex?.id })
+      ex.sets.map(async (set, i) => {
+        await setRepository.createOrUpdate({ ...set, exercise_id: ex?.id, order: i })
       })
     )
 
@@ -111,7 +111,7 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
         id: Math.random(),
         weight_kg: 300,
         repetitions: 99,
-        order: 10,
+        order: exercise?.sets?.length || 0,
         exercise_id: exercise?.id ?? Math.random(),
       }
 
