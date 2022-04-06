@@ -64,9 +64,14 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
       const newExercises: ICreateExerciseData[] = []
       sampleData.exercises.forEach((exercise, i) => {
         if (exerciseIndexes.includes(i)) {
+          const addLen = newExercises.length
+          const exLen = workout.exercises?.length || 0
+          const order = addLen + exLen
+
           newExercises.push({
             ...exercise,
             workout_id: workout.id,
+            order,
           })
         }
       })
@@ -97,9 +102,14 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
       const newCardios: ICreateCardioData[] = []
       sampleData.cardios.forEach((cardio, i) => {
         if (cardioIndexes.includes(i)) {
+          const addLen = newCardios.length
+          const cardioLen = workout.cardios?.length || 0
+          const order = addLen + cardioLen
+
           newCardios.push({
             ...cardio,
             workout_id: workout.id,
+            order,
           })
         }
       })
