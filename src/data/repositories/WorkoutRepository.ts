@@ -50,10 +50,12 @@ export class WorkoutRepository {
   }
 
   public async getManyById(ids: number[], relations?: string[]): Promise<WorkoutModel[]> {
-    return await this.ormRepository.find({
+    const workouts = await this.ormRepository.find({
       where: { id: In(ids) },
       ...(relations && { relations }),
     })
+
+    return workouts
   }
 
   public async getBetweenDates(start: string, end: string, relations?: string[]): Promise<WorkoutModel[]> {

@@ -98,7 +98,7 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
     // TODO: Restructure state since we have to call things one by one like this. Especially sets as its own state
     const setPromises = exerciseP.map(async (ex) =>
       ex.sets.map(async (set) => {
-        await setRepository.createOrUpdate({ ...set, exercise_id: ex?.id })
+        await setRepository.createOrUpdate({ ...set, exerciseId: ex?.id })
       })
     )
 
@@ -112,7 +112,7 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
         weight_kg: 300,
         repetitions: 99,
         order: 10,
-        exercise_id: exercise?.id ?? Math.random(),
+        exerciseId: exercise?.id ?? Math.random(),
       }
 
       if (exercises?.length > 0) {

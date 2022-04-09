@@ -36,7 +36,14 @@ type OwnProps = {}
 type Props = OwnProps
 
 export const SettingsScreen: FunctionComponent<Props> = () => {
-  const { cardioRepository, workoutRepository, exerciseRepository, setRepository } = useDatabaseConnection()
+  const {
+    cardioRepository,
+    workoutRepository,
+    exerciseRepository,
+    setRepository,
+    exerciseSelectRepository,
+    muscleRepository,
+  } = useDatabaseConnection()
   const [workoutCount, setWorkoutCount] = useState(1)
   const [fromDaysBack, setFromDaysBack] = useState(90)
 
@@ -84,7 +91,7 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
     async (exercise: ExerciseModel, setArray: number): Promise<SetModel[]> => {
       let setsWithExerciseIds: any[] = []
       sampleData.sets[setArray].forEach((set) => {
-        setsWithExerciseIds.push({ exercise_id: exercise.id, ...set })
+        setsWithExerciseIds.push({ exerciseId: exercise.id, ...set })
       })
       const sets = await setRepository.createMany(setsWithExerciseIds)
       return sets
@@ -218,6 +225,8 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
     await exerciseRepository.deleteAll()
     await cardioRepository.deleteAll()
     await setRepository.deleteAll()
+    await exerciseSelectRepository.deleteAll()
+    await muscleRepository.deleteAll()
   }
 
   const onPressInc = () => setWorkoutCount((prevState) => prevState + 1)
