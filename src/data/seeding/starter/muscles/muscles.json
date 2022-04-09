@@ -1,0 +1,61 @@
+{
+  "muscles": [
+    {
+      "muscle": "upper chest"
+    },
+    {
+      "muscle": "middle chest"
+    },
+    {
+      "muscle": "lower chest"
+    },
+    {
+      "muscle": "front delt"
+    },
+    {
+      "muscle": "middle delt"
+    },
+    {
+      "muscle": "rear delt"
+    },
+    {
+      "muscle": "lats"
+    },
+    {
+      "muscle": "traps"
+    },
+    {
+      "muscle": "back"
+    },
+    {
+      "muscle": "glutes"
+    },
+    {
+      "muscle": "hams"
+    },
+    {
+      "muscle": "quads"
+    },
+    {
+      "muscle": "forearm flexors"
+    },
+    {
+      "muscle": "forearm extensors"
+    },
+    {
+      "muscle": "biceps"
+    },
+    {
+      "muscle": "triceps"
+    },
+    {
+      "muscle": "abs"
+    },
+    {
+      "muscle": "side abs"
+    },
+    {
+      "muscle": "calves"
+    }
+  ]
+}

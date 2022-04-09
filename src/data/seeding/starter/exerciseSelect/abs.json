@@ -1,0 +1,67 @@
+{
+  "abs": [
+    {
+      "exercise": "Plank",
+      "muscles": "abs",
+      "assistingMuscles": [],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Side Plank",
+      "muscles": "side abs",
+      "assistingMuscles": [],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "DB Side Pull",
+      "muscles": "side abs",
+      "assistingMuscles": [],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Weighted Situp",
+      "muscles": "abs",
+      "assistingMuscles": [],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Decline Situp",
+      "muscles": "abs",
+      "assistingMuscles": [],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "V Situp",
+      "muscles": "abs",
+      "assistingMuscles": [],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Weighted Russian Twist",
+      "muscles": "abs",
+      "assistingMuscles": ["side abs"],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Leg Raise",
+      "muscles": "abs",
+      "assistingMuscles": [],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Hanging Leg Raise",
+      "muscles": "abs",
+      "assistingMuscles": [],
+      "modifiers": [],
+      "custom": false
+    }
+  ]
+}

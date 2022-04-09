@@ -1,0 +1,46 @@
+{
+  "hams": [
+    {
+      "exercise": "DB Romanian DL",
+      "muscles": "hams",
+      "assistingMuscles": ["back"],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "BB Romanian DL",
+      "muscles": "hams",
+      "assistingMuscles": ["back"],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "DB SLDL",
+      "muscles": "hams",
+      "assistingMuscles": ["back"],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "BB SLDL",
+      "muscles": "hams",
+      "assistingMuscles": ["back"],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Ham Curl",
+      "muscles": "hams",
+      "assistingMuscles": [],
+      "modifiers": ["lying", "seated", "unilateral"],
+      "custom": false
+    },
+    {
+      "exercise": "Ham Slide",
+      "muscles": "hams",
+      "assistingMuscles": [],
+      "modifiers": [],
+      "custom": false
+    }
+  ]
+}

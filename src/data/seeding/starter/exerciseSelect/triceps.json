@@ -1,0 +1,53 @@
+{
+  "triceps": [
+    {
+      "exercise": "DB Kickbacks",
+      "muscles": "triceps",
+      "assistingMuscles": [],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "BB Extension",
+      "muscles": "triceps",
+      "assistingMuscles": [],
+      "modifiers": ["lying", "seated"],
+      "custom": false
+    },
+    {
+      "exercise": "DB Extension",
+      "muscles": "triceps",
+      "assistingMuscles": [],
+      "modifiers": ["seated", "lying", "unilateral"],
+      "custom": false
+    },
+    {
+      "exercise": "Close Grip Bench Press",
+      "muscles": "triceps",
+      "assistingMuscles": [],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Close Grip DB Press",
+      "muscles": "triceps",
+      "assistingMuscles": [],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Close Grip Dips",
+      "muscles": "triceps",
+      "assistingMuscles": [],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Chair Dips",
+      "muscles": "triceps",
+      "assistingMuscles": [],
+      "modifiers": [],
+      "custom": false
+    }
+  ]
+}

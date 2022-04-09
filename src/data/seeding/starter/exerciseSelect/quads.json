@@ -1,0 +1,60 @@
+{
+  "quads": [
+    {
+      "exercise": "BB Squat",
+      "muscles": "quads",
+      "assistingMuscles": ["glutes"],
+      "modifiers": ["wide", "narrow"],
+      "custom": false
+    },
+    {
+      "exercise": "DB Squat",
+      "muscles": "quads",
+      "assistingMuscles": ["glutes"],
+      "modifiers": ["wide", "narrow"],
+      "custom": false
+    },
+    {
+      "exercise": "BB Lunge",
+      "muscles": "quads",
+      "assistingMuscles": ["glutes"],
+      "modifiers": ["wide", "narrow"],
+      "custom": false
+    },
+    {
+      "exercise": "DB Lunge",
+      "muscles": "quads",
+      "assistingMuscles": ["glutes"],
+      "modifiers": ["wide", "narrow"],
+      "custom": false
+    },
+    {
+      "exercise": "BB Bulgarian Squat",
+      "muscles": "quads",
+      "assistingMuscles": ["glutes"],
+      "modifiers": ["wide", "narrow"],
+      "custom": false
+    },
+    {
+      "exercise": "DB Bulgarian Squat",
+      "muscles": "quads",
+      "assistingMuscles": ["glutes"],
+      "modifiers": ["wide", "narrow"],
+      "custom": false
+    },
+    {
+      "exercise": "BB Front Squat",
+      "muscles": "quads",
+      "assistingMuscles": ["glutes"],
+      "modifiers": ["wide", "narrow"],
+      "custom": false
+    },
+    {
+      "exercise": "DB Front Squat",
+      "muscles": "quads",
+      "assistingMuscles": ["glutes"],
+      "modifiers": ["wide", "narrow"],
+      "custom": false
+    }
+  ]
+}

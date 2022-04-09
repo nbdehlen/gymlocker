@@ -1,0 +1,32 @@
+{
+  "back": [
+    {
+      "exercise": "BB DL",
+      "muscles": "back",
+      "assistingMuscles": ["quads", "traps", "forearms"],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "DB DL",
+      "muscles": "back",
+      "assistingMuscles": ["quads", "traps", "forearms"],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Back Raise",
+      "muscles": "back",
+      "assistingMuscles": [],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Back Plank",
+      "muscles": "back",
+      "assistingMuscles": ["rear delt", "hams"],
+      "modifiers": [],
+      "custom": false
+    }
+  ]
+}

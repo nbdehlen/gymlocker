@@ -1,0 +1,11 @@
+{
+  "glutes": [
+    {
+      "exercise": "BB Hip Thrust",
+      "muscles": "glutes",
+      "assistingMuscles": [],
+      "modifiers": [],
+      "custom": false
+    }
+  ]
+}

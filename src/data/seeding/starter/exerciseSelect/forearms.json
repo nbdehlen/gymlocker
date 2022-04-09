@@ -1,0 +1,32 @@
+{
+  "forearms": [
+    {
+      "exercise": "DB Forearm curl",
+      "muscles": "forearm flexors",
+      "assistingMuscles": [],
+      "modifiers": ["unilateral"],
+      "custom": false
+    },
+    {
+      "exercise": "BB Behind Back Forearm Curl",
+      "muscles": "forearm flexors",
+      "assistingMuscles": [],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "DB Behind Back Forearm Curl",
+      "muscles": "forearm flexors",
+      "assistingMuscles": [],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "DB Reverse Forearm Curl",
+      "muscles": "forearm extensors",
+      "assistingMuscles": [],
+      "modifiers": [],
+      "custom": false
+    }
+  ]
+}

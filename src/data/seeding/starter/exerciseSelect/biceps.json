@@ -1,0 +1,60 @@
+{
+  "biceps": [
+    {
+      "exercise": "BB Curl",
+      "muscles": "biceps",
+      "assistingMuscles": [],
+      "modifiers": ["seated"],
+      "custom": false
+    },
+    {
+      "exercise": "DB Curl",
+      "muscles": "biceps",
+      "assistingMuscles": [],
+      "modifiers": ["alternating", "seated"],
+      "custom": false
+    },
+    {
+      "exercise": "DB Concentration Curl",
+      "muscles": "biceps",
+      "assistingMuscles": [],
+      "modifiers": ["unilateral", "seated"],
+      "custom": false
+    },
+    {
+      "exercise": "DB Hammer Curl",
+      "muscles": "biceps",
+      "assistingMuscles": [],
+      "modifiers": ["unilateral", "seated"],
+      "custom": false
+    },
+    {
+      "exercise": "EZ Curl",
+      "muscles": "biceps",
+      "assistingMuscles": [],
+      "modifiers": ["seated"],
+      "custom": false
+    },
+    {
+      "exercise": "BB Preacher Curl",
+      "muscles": "biceps",
+      "assistingMuscles": [],
+      "modifiers": ["seated"],
+      "custom": false
+    },
+    {
+      "exercise": "EZ Preacher Curl",
+      "muscles": "biceps",
+      "assistingMuscles": [],
+      "modifiers": ["seated"],
+      "custom": false
+    },
+    {
+      "exercise": "DB Preacher Curl",
+      "muscles": "biceps",
+      "assistingMuscles": [],
+      "modifiers": ["seated", "unilateral", "alternating"],
+      "custom": false
+    }
+  ]
+}
