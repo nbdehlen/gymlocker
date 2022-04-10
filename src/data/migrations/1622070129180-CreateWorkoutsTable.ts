@@ -1,11 +1,4 @@
-import {
-  MigrationInterface,
-  QueryRunner,
-  Table,
-  TableColumn,
-  TableForeignKey,
-  TableIndex,
-} from 'typeorm'
+import { MigrationInterface, QueryRunner, Table, TableIndex } from 'typeorm'
 
 export class CreateWorkoutTable1622070129180 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -37,8 +30,6 @@ export class CreateWorkoutTable1622070129180 implements MigrationInterface {
         ],
       }),
       true
-      // true,
-      // true
     )
 
     await queryRunner.createIndex(

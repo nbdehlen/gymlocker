@@ -1,14 +1,5 @@
-import { startOfDay } from 'date-fns'
-import {
-  MigrationInterface,
-  QueryRunner,
-  Table,
-  TableColumn,
-  TableForeignKey,
-  TableIndex,
-} from 'typeorm'
+import { MigrationInterface, QueryRunner, Table, TableIndex } from 'typeorm'
 
-//TODO: change genereated ids to text
 export class CreateCardiosTable1622070166549 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     console.log('Cardios created')
@@ -61,26 +52,6 @@ export class CreateCardiosTable1622070166549 implements MigrationInterface {
         columnNames: ['order'],
       })
     )
-
-    // await queryRunner.addColumn(
-    //   'cardios',
-    //   new TableColumn({
-    //     name: 'workoutId',
-    //     type: 'uuid',
-    //     generationStrategy: 'uuid',
-    //   })
-    // )
-
-    // await queryRunner.createForeignKey(
-    //   'cardios',
-    //   new TableForeignKey({
-    //     columnNames: ['workoutId'],
-    //     referencedColumnNames: ['id'],
-    //     referencedTableName: 'workouts',
-    //     onDelete: 'CASCADE',
-    //     // onUpdate: 'CASCADE',
-    //   })
-    // )
   }
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.dropTable('cardios')
