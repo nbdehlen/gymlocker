@@ -1,10 +1,11 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm'
-export class CreateExercisesSelectTable1621964884049 implements MigrationInterface {
+
+export class CreateMusclesTable1649424531604 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    console.log('ExerciseSelect created')
+    console.log('Muscles created')
     await queryRunner.createTable(
       new Table({
-        name: 'exerciseselect',
+        name: 'muscles',
         columns: [
           {
             name: 'id',
@@ -13,15 +14,18 @@ export class CreateExercisesSelectTable1621964884049 implements MigrationInterfa
             isGenerated: true,
             generationStrategy: 'increment',
           },
-          { name: 'exercise', type: 'text' },
-          { name: 'custom', type: 'boolean' },
-          { name: 'musclesId', type: 'integer' },
+          {
+            name: 'muscle',
+            type: 'text',
+            isUnique: true,
+          },
         ],
       })
     )
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('exerciseselect')
+    console.log('Muscles deleted')
+    await queryRunner.dropTable('muscles')
   }
 }

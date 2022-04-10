@@ -17,10 +17,8 @@ export class SetModel {
   order: number
 
   @Column()
-  exercise_id: number
-  // @ManyToOne((type) => ExerciseModel, (exercise) => exercise.sets, { onDelete: 'CASCADE' })
-
+  exerciseId: number
   @ManyToOne(() => ExerciseModel)
-  @JoinColumn({ name: 'exercise_id' })
+  @JoinColumn({ name: 'exerciseId' })
   exercise: ExerciseModel
 }
