@@ -22,7 +22,6 @@ export class ExerciseSelectModel {
   @OneToMany(() => ExSelectAssist, (exSelectAssist) => exSelectAssist.exerciseSelect, {
     onDelete: 'CASCADE',
     onUpdate: 'CASCADE',
-    cascade: true,
   })
   assistingMuscles: ExSelectAssist[]
 }

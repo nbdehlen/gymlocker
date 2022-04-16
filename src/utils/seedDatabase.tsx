@@ -9,6 +9,7 @@ import { MuscleModel } from '../data/entities/MuscleModel'
 // import { ModifierModel } from '../data/entities/ModifierModel'
 import { ExerciseSelectModel } from '../data/entities/ExerciseSelectModel'
 import { ExSelectAssist } from '../data/entities/ExSelectAssist'
+import { WorkoutModel } from '../data/entities/WorkoutModel'
 
 // const seedModifiers = async (connection: Connection) => {
 //   const modifierCon = connection.getRepository<ModifierModel>('modifiers')
@@ -25,7 +26,7 @@ const seedMuscles = async (connection: Connection) => {
   const musclesCon = connection.getRepository<MuscleModel>('muscles')
   const hasMuscles = await musclesCon.findOne()
 
-  if (hasMuscles instanceof MuscleModel) {
+  if (!hasMuscles) {
     const musclesWithIds = await musclesCon.create(muscles.muscles)
     await musclesCon.save(musclesWithIds)
   }
@@ -58,8 +59,7 @@ const seedExerciseSelect = async (connection: Connection) => {
       }))
 
       if (exSelectAssistIds.length > 0) {
-        const res = await exSelectAssistCon.save(exSelectAssistIds)
-        console.log(res)
+        await exSelectAssistCon.save(exSelectAssistIds)
       }
     } catch (e) {
       console.warn(e)
@@ -73,11 +73,18 @@ export const seedDatabase = async (connection: Connection) => {
   const hasInstalled = await getData(NEW_INSTALL)
   const seeded = await getData(NEW_SEED)
 
-  // const exSelectCon = connection.getRepository<ExerciseSelectModel>('exerciseselect')
-  // const currentExercises = await exSelectCon.find({
-  //   relations: ['assistingMuscles', 'muscles'],
+  // const workoutCon = connection.getRepository<WorkoutModel>('workouts')
+  // const currentWorkouts = await workoutCon.find({
+  //   relations: [
+  //     'cardios',
+  //     'exercises',
+  //     'exercises.sets',
+  //     'exercises.muscles',
+  //     'exercises.assistingMuscles',
+  //     'exercises.assistingMuscles.assistingMuscle',
+  //   ],
   // })
-  // console.log(currentExercises.slice(4, 8))
+  // console.log(currentWorkouts)
 
   if (!seeded && hasInstalled && connection) {
     try {

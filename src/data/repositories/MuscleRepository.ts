@@ -1,4 +1,4 @@
-import { Connection, Repository } from 'typeorm'
+import { Connection, In, Repository } from 'typeorm'
 import { MuscleModel } from '../entities/MuscleModel'
 
 export interface ICreateMuscleData {
@@ -21,6 +21,12 @@ export class MuscleRepository {
   public async getById(id: number): Promise<MuscleModel[]> {
     return await this.ormRepository.find({
       where: { id },
+    })
+  }
+
+  public async getByNames(names: string[]): Promise<MuscleModel[]> {
+    return await this.ormRepository.find({
+      where: { muscle: In(names) },
     })
   }
 

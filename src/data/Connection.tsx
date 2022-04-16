@@ -21,6 +21,8 @@ import { MuscleRepository } from './repositories/MuscleRepository'
 import { ExSelectAssistRepository } from './repositories/ExSelectAssistRepository'
 import { ExSelectAssist } from './entities/ExSelectAssist'
 import theme from '../utils/theme'
+import { ExAssistRepository } from './repositories/ExAssistRepository'
+import { ExAssist } from './entities/ExAssist'
 // import { ModifierRepository } from './repositories/ModifierRepository'
 
 interface DatabaseConnectionContextData {
@@ -32,6 +34,7 @@ interface DatabaseConnectionContextData {
   setRepository: SetRepository
   cardioRepository: CardioRepository
   exSelectAssistRepository: ExSelectAssistRepository
+  exAssistRepository: ExAssistRepository
 }
 
 const DatabaseConnectionContext = createContext<DatabaseConnectionContextData>({} as DatabaseConnectionContextData)
@@ -45,12 +48,20 @@ export const DatabaseConnectionProvider: React.FC = ({ children }) => {
       type: 'expo',
       database: '@workout.db',
       driver: require('expo-sqlite'),
-      entities: [MuscleModel, WorkoutModel, ExerciseSelectModel, ExerciseModel, CardioModel, SetModel, ExSelectAssist], // ModifierModel
+      entities: [
+        MuscleModel,
+        WorkoutModel,
+        ExerciseSelectModel,
+        ExerciseModel,
+        CardioModel,
+        SetModel,
+        ExSelectAssist,
+        ExAssist,
+      ], // ModifierModel
       migrations,
       // dropSchema: true,
-      // synchronize: !installDate, // TODO: set based on asyncStorage
       migrationsRun: !installDate,
-      logging: true,
+      logging: __DEV__,
     })
 
     setConnection(createdConnection)
@@ -83,6 +94,7 @@ export const DatabaseConnectionProvider: React.FC = ({ children }) => {
         setRepository: new SetRepository(connection),
         cardioRepository: new CardioRepository(connection),
         exSelectAssistRepository: new ExSelectAssistRepository(connection),
+        exAssistRepository: new ExAssistRepository(connection),
       }}
     >
       {children}

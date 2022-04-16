@@ -2,6 +2,7 @@ import React, { FunctionComponent, useCallback, useState } from 'react'
 import { useDatabaseConnection } from '../../data/Connection'
 import { Button, Div, Icon, Text } from 'react-native-magnus'
 import sampleData from '../../data/seeding/sampleData'
+import { exerciseSelect } from '../../data/seeding/starter/exerciseSelect'
 import theme, { B } from '../../utils/theme'
 import getRandomDateWithinPeriod from '../../data/seeding/utils/getRandomDateWithinPeriod'
 import { add, sub } from 'date-fns'
@@ -15,6 +16,7 @@ import { clearAsyncStorage, logAsyncStorage } from '../../utils/asyncStorage'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { FlatList, ListRenderItem } from 'react-native'
 import CustomButton, { ButtonEnum } from '../../components/CustomButton'
+import { ICreateExAssistData } from '../../data/repositories/ExAssistRepository'
 
 const randomIntFromInterval = (min: number, max: number): number => {
   // min and max included
@@ -43,6 +45,8 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
     setRepository,
     exerciseSelectRepository,
     muscleRepository,
+    exSelectAssistRepository,
+    exAssistRepository,
   } = useDatabaseConnection()
   const [workoutCount, setWorkoutCount] = useState(1)
   const [fromDaysBack, setFromDaysBack] = useState(90)
@@ -69,22 +73,51 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
   const addExercisesToWorkout = useCallback(
     async (workout: WorkoutModel, exerciseIndexes: number[]): Promise<ExerciseModel[]> => {
       const newExercises: ICreateExerciseData[] = []
-      sampleData.exercises.forEach((exercise, i) => {
+      let order = 0
+      const assistingMusclesData: number[][] = []
+
+      const promises = exerciseSelect.map(async (exercise, i) => {
         if (exerciseIndexes.includes(i)) {
+          // Convert muscles string to MuscleModel
+          const musclesData = await muscleRepository.getByNames([exercise.muscles])
+
           newExercises.push({
-            ...exercise,
+            exercise: exercise.exercise,
+            muscles: musclesData[0],
             workout_id: workout.id,
+            order,
           })
+          order += 1
+
+          // Save Ids for assisting muscles
+          const assistingMuscleModels = await muscleRepository.getByNames(exercise.assistingMuscles)
+          assistingMusclesData.push(assistingMuscleModels.map((ast) => ast.id))
         }
       })
+      await Promise.all(promises)
 
       if (newExercises?.length > 0) {
         const createExercises = await exerciseRepository.createMany(newExercises)
+
+        const exAssistIds: ICreateExAssistData[] = []
+
+        assistingMusclesData.forEach((muscleArr, i) => {
+          // Extract the muscleIds from the nested arrays of muscleId and pair with it's exerciseId.
+          muscleArr.forEach((muscleId) => {
+            exAssistIds.push({
+              exerciseId: createExercises[i].id,
+              muscleId,
+            })
+          })
+        })
+
+        await exAssistRepository.saveMany(exAssistIds)
+
         return createExercises
       }
       return []
     },
-    [exerciseRepository]
+    [exerciseRepository, muscleRepository, exAssistRepository]
   )
 
   const addSetsToExercise = useCallback(
@@ -124,7 +157,7 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
     async (workouts: WorkoutModel[]) => {
       const exercisePromises = workouts.map(async (workout) => {
         const exerciseCount = randomIntFromInterval(1, 6)
-        const exerciseIndexes = randomIntsFromInterval(0, sampleData.exercises.length - 1, exerciseCount)
+        const exerciseIndexes = randomIntsFromInterval(0, exerciseSelect.length - 1, exerciseCount)
 
         const exercises = await addExercisesToWorkout(workout, exerciseIndexes)
         return exercises
@@ -172,12 +205,31 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
     [addCardiosToWorkout]
   )
 
-  const getWorkoutsByIds = async (workouts: WorkoutModel[]) => {
-    const promises = workouts.map(async (workout) => await getWorkoutById(workout.id))
-    const res = await Promise.all(promises)
-    const resFlat = res.flat()
-    return resFlat
-  }
+  const getWorkoutById = useCallback(
+    async (id: number) => {
+      await workoutRepository
+        .getById(id, [
+          'exercises',
+          'exercises.sets',
+          'cardios',
+          'exercises.muscles',
+          'exercises.assistingMuscles',
+          'exercises.assistingMuscles.assistingMuscle',
+        ])
+        .then((w) => w && console.log(JSON.stringify(w, null, 2)))
+    },
+    [workoutRepository]
+  )
+
+  const getWorkoutsByIds = useCallback(
+    async (workouts: WorkoutModel[]) => {
+      const promises = workouts.map(async (workout) => await getWorkoutById(workout.id))
+      const res = await Promise.all(promises)
+      const resFlat = res.flat()
+      return resFlat
+    },
+    [getWorkoutById]
+  )
 
   const createCompleteWorkoutsInSteps = useCallback(
     async (type: WorkoutEnum): Promise<void> => {
@@ -190,9 +242,17 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
       if ([WorkoutEnum.CARDIO, WorkoutEnum.MIX].includes(type)) {
         await addCardiosToWorkouts(workouts)
       }
-      // const res = await getWorkoutsByIds(workouts)
+      await getWorkoutsByIds(workouts)
     },
-    [createWorkouts, addExercisesToWorkouts, addSetsToExercises, addCardiosToWorkouts, workoutCount, fromDaysBack]
+    [
+      createWorkouts,
+      addExercisesToWorkouts,
+      addSetsToExercises,
+      addCardiosToWorkouts,
+      getWorkoutsByIds,
+      workoutCount,
+      fromDaysBack,
+    ]
   )
 
   const getExerciseById = async (id: number) => {
@@ -209,15 +269,15 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
 
   const getAllWorkouts = async () => {
     await workoutRepository
-      .getAll(['exercises', 'exercises.sets'])
+      .getAll([
+        'exercises',
+        'exercises.sets',
+        'cardios',
+        'exercises.muscles',
+        'exercises.assistingMuscles',
+        'exercises.assistingMuscles.assistingMuscle',
+      ])
       .then((workouts) => workouts && console.log(JSON.stringify(workouts, null, 4)))
-  }
-
-  const getWorkoutById = async (id: number) => {
-    const workout = await workoutRepository
-      .getById(id, ['exercises', 'exercises.sets', 'cardios'])
-      .then((w) => w && console.log(JSON.stringify(w, null, 4)))
-    return workout
   }
 
   const deleteAllWorkouts = async () => {
@@ -227,6 +287,8 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
     await setRepository.deleteAll()
     await exerciseSelectRepository.deleteAll()
     await muscleRepository.deleteAll()
+    await exSelectAssistRepository.deleteAll()
+    await exAssistRepository.deleteAll()
   }
 
   const onPressInc = () => setWorkoutCount((prevState) => prevState + 1)
