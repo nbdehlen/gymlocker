@@ -13,6 +13,7 @@ import { CreateExAssistTable1649559160302 } from './1649559160302-CreateExAssist
 import { CreateExerciseToMuscleFK1649559186904 } from './1649559186904-CreateExerciseToMuscleFK'
 import { CreateModifiersTable1649424555802 } from './1649424555802-CreateModifiersTable'
 import { CreateExSelectModAvailableTable1650223174728 } from './1650223174728-CreateExSelectModAvailableTable'
+import { CreateExModTable1650227754167 } from './1650227754167-CreateExModTable'
 
 export const migrations = [
   CreateMusclesTable1649424531604,
@@ -30,4 +31,5 @@ export const migrations = [
   CreateExAssistTable1649559160302,
   CreateExerciseToMuscleFK1649559186904,
   CreateExSelectModAvailableTable1650223174728,
+  CreateExModTable1650227754167,
 ]

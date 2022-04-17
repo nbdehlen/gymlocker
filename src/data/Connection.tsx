@@ -26,6 +26,8 @@ import { ExAssist } from './entities/ExAssist'
 import { ModifierRepository } from './repositories/ModifierRepository'
 import { ExSelectModAvailableRepository } from './repositories/ExSelectModAvailableRepository'
 import { ExSelectModAvailable } from './entities/ExSelectModAvailable'
+import { ExModRepository } from './repositories/ExModRepository'
+import { ExMod } from './entities/ExMod'
 
 interface DatabaseConnectionContextData {
   muscleRepository: MuscleRepository
@@ -38,6 +40,7 @@ interface DatabaseConnectionContextData {
   exSelectAssistRepository: ExSelectAssistRepository
   exAssistRepository: ExAssistRepository
   exSelectModAvailableRepository: ExSelectModAvailableRepository
+  exModRepository: ExModRepository
 }
 
 const DatabaseConnectionContext = createContext<DatabaseConnectionContextData>({} as DatabaseConnectionContextData)
@@ -62,6 +65,7 @@ export const DatabaseConnectionProvider: React.FC = ({ children }) => {
         ExAssist,
         ModifierModel,
         ExSelectModAvailable,
+        ExMod,
       ],
       migrations,
       // dropSchema: true,
@@ -101,6 +105,7 @@ export const DatabaseConnectionProvider: React.FC = ({ children }) => {
         exSelectAssistRepository: new ExSelectAssistRepository(connection),
         exAssistRepository: new ExAssistRepository(connection),
         exSelectModAvailableRepository: new ExSelectModAvailableRepository(connection),
+        exModRepository: new ExModRepository(connection),
       }}
     >
       {children}

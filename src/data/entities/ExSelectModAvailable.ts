@@ -14,7 +14,7 @@ export class ExSelectModAvailable {
   @JoinColumn({ name: 'exerciseSelectId' })
   exerciseSelect: ExerciseSelectModel
 
-  @ManyToOne(() => ModifierModel, (ast) => ast.exerciseSelect, { primary: true })
+  @ManyToOne(() => ModifierModel, (exSelectModAvailable) => exSelectModAvailable.exerciseSelect, { primary: true })
   @JoinColumn({ name: 'modifierId' })
   modifier: ModifierModel
 }

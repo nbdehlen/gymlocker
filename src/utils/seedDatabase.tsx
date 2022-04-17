@@ -88,14 +88,16 @@ export const seedDatabase = async (connection: Connection) => {
 
   // const workoutCon = connection.getRepository<WorkoutModel>('workouts')
   // const currentWorkouts = await workoutCon.find({
-  //   relations: [
-  //     // 'cardios',
-  //     // 'exercises',
-  //     // 'exercises.sets',
-  //     // 'exercises.muscles',
-  //     // 'exercises.assistingMuscles',
-  //     // 'exercises.assistingMuscles.assistingMuscle',
-  //   ],
+  // relations: [
+  // 'cardios',
+  // 'exercises',
+  // 'exercises.sets',
+  // 'exercises.muscles',
+  // 'exercises.modifiers',
+  // 'exercises.modifiers.modifier',
+  // 'exercises.assistingMuscles',
+  // 'exercises.assistingMuscles.assistingMuscle',
+  // ],
   // })
   // console.log(currentWorkouts)
 

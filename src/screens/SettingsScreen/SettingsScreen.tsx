@@ -17,6 +17,7 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import { FlatList, ListRenderItem } from 'react-native'
 import CustomButton, { ButtonEnum } from '../../components/CustomButton'
 import { ICreateExAssistData } from '../../data/repositories/ExAssistRepository'
+import { ICreateExModData } from '../../data/repositories/ExModRepository'
 
 const randomIntFromInterval = (min: number, max: number): number => {
   // min and max included
@@ -49,6 +50,7 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
     exAssistRepository,
     modifierRepository,
     exSelectModAvailableRepository,
+    exModRepository,
   } = useDatabaseConnection()
   const [workoutCount, setWorkoutCount] = useState(1)
   const [fromDaysBack, setFromDaysBack] = useState(90)
@@ -77,7 +79,8 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
       const newExercises: ICreateExerciseData[] = []
       // NOTE: Another way of keeping track of order
       // let order = 0
-      const assistingMusclesData: number[][] = []
+      const assistingMusclesArrs: number[][] = []
+      const exSelectModAvailableArrs: number[][] = []
 
       const promises = exerciseSelect.map(async (exercise, i) => {
         if (exerciseIndexes.includes(i)) {
@@ -97,7 +100,11 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
 
           // Save Ids for assisting muscles
           const assistingMuscleModels = await muscleRepository.getByNames(exercise.assistingMuscles)
-          assistingMusclesData.push(assistingMuscleModels.map((ast) => ast.id))
+          assistingMusclesArrs.push(assistingMuscleModels.map((ast) => ast.id))
+
+          // get exSelectModAvailable for exercise
+          const exSelectModAvailableModels = await modifierRepository.getByNames(exercise.modifiers)
+          exSelectModAvailableArrs.push(exSelectModAvailableModels.map((mod) => mod.id))
         }
       })
       await Promise.all(promises)
@@ -105,9 +112,9 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
       if (newExercises?.length > 0) {
         const createExercises = await exerciseRepository.createMany(newExercises)
 
+        // assisting muscles
         const exAssistIds: ICreateExAssistData[] = []
-
-        assistingMusclesData.forEach((muscleArr, i) => {
+        assistingMusclesArrs.forEach((muscleArr, i) => {
           // Extract the muscleIds from the nested arrays of muscleId and pair with it's exerciseId.
           muscleArr.forEach((muscleId) => {
             exAssistIds.push({
@@ -119,11 +126,31 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
 
         await exAssistRepository.saveMany(exAssistIds)
 
+        // modifiers
+        const exModIds: ICreateExModData[] = []
+        exSelectModAvailableArrs.forEach((exModAvailableArr, i) => {
+          // Select some of the modifiers at random since we can select any
+          // that is available in exSelectModsAvailable. Caveat is that
+          // you can select for example 'wide' and 'narrow' on the same
+          // exercise which doesn't make sense.
+          exModAvailableArr.forEach((modifierId) => {
+            // Flip if we want to add it or not:
+            const randomNum = Math.random()
+            if (randomNum > 0.5) {
+              exModIds.push({
+                exerciseId: createExercises[i].id,
+                modifierId,
+              })
+            }
+          })
+        })
+        await exModRepository.saveMany(exModIds)
+
         return createExercises
       }
       return []
     },
-    [exerciseRepository, muscleRepository, exAssistRepository]
+    [exerciseRepository, muscleRepository, exAssistRepository, modifierRepository, exModRepository]
   )
 
   const addSetsToExercise = useCallback(
@@ -302,6 +329,7 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
     await exAssistRepository.deleteAll()
     await modifierRepository.deleteAll()
     await exSelectModAvailableRepository.deleteAll()
+    await exModRepository.deleteAll()
   }
 
   const onPressInc = () => setWorkoutCount((prevState) => prevState + 1)

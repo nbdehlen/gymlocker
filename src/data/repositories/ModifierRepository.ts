@@ -1,4 +1,4 @@
-import { Connection, Repository } from 'typeorm'
+import { Connection, In, Repository } from 'typeorm'
 import { ModifierModel } from '../entities/ModifierModel'
 
 export interface ICreateModifierData {
@@ -21,6 +21,12 @@ export class ModifierRepository {
   public async getById(id: number): Promise<ModifierModel[]> {
     return await this.ormRepository.find({
       where: { id },
+    })
+  }
+
+  public async getByNames(names: string[]): Promise<ModifierModel[]> {
+    return await this.ormRepository.find({
+      where: { modifier: In(names) },
     })
   }
 

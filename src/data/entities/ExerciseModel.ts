@@ -1,6 +1,6 @@
 import { Column, Entity, Index, JoinColumn, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { ExAssist } from './ExAssist'
-// import { ModifierModel } from './ModifierModel'
+import { ExMod } from './ExMod'
 import { MuscleModel } from './MuscleModel'
 import { SetModel } from './SetModel'
 import { WorkoutModel } from './WorkoutModel'
@@ -40,7 +40,10 @@ export class ExerciseModel {
   })
   assistingMuscles?: ExAssist[]
 
-  // @ManyToMany(() => ModifierModel)
-  // @JoinTable()
-  // modifiers: ModifierModel[]
+  @OneToMany(() => ExMod, (exMod) => exMod.exercise, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinTable()
+  modifiers?: ExMod[]
 }
