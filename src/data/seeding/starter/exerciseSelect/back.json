@@ -3,14 +3,14 @@
     {
       "exercise": "BB DL",
       "muscles": "back",
-      "assistingMuscles": ["quads", "traps", "forearms"],
+      "assistingMuscles": ["quads", "traps", "forearm flexors"],
       "modifiers": [],
       "custom": false
     },
     {
       "exercise": "DB DL",
       "muscles": "back",
-      "assistingMuscles": ["quads", "traps", "forearms"],
+      "assistingMuscles": ["quads", "traps", "forearm flexors"],
       "modifiers": [],
       "custom": false
     },

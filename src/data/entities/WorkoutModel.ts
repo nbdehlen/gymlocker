@@ -23,17 +23,6 @@ export class WorkoutModel {
   @Column({ unique: true, default: () => 'CURRENT_TIMESTAMP' })
   end: Date
 
-  // @CreateDateColumn()
-  // createdAt: Date
-
-  // @UpdateDateColumn()
-  // updatedAt: Date
-
-  // @OneToMany(() => ExerciseModel, (exercise) => exercise.workout)
-  // exercises?: Promise<ExerciseModel[]>
-
-  // @OneToMany(() => CardioModel, (cardio) => cardio.workout)
-  // cardios?: Promise<CardioModel[]>
   @OneToMany(() => CardioModel, (cardio) => cardio.workout)
   @JoinTable()
   cardios?: CardioModel[]

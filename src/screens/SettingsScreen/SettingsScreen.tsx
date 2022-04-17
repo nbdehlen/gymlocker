@@ -47,6 +47,8 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
     muscleRepository,
     exSelectAssistRepository,
     exAssistRepository,
+    modifierRepository,
+    exSelectModAvailableRepository,
   } = useDatabaseConnection()
   const [workoutCount, setWorkoutCount] = useState(1)
   const [fromDaysBack, setFromDaysBack] = useState(90)
@@ -289,6 +291,8 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
     await muscleRepository.deleteAll()
     await exSelectAssistRepository.deleteAll()
     await exAssistRepository.deleteAll()
+    await modifierRepository.deleteAll()
+    await exSelectModAvailableRepository.deleteAll()
   }
 
   const onPressInc = () => setWorkoutCount((prevState) => prevState + 1)

@@ -16,18 +16,20 @@ import { getData } from '../utils/asyncStorage'
 import { NEW_INSTALL } from '../storageConstants'
 import { seedDatabase } from '../utils/seedDatabase'
 import { MuscleModel } from './entities/MuscleModel'
-// import { ModifierModel } from './entities/ModifierModel'
+import { ModifierModel } from './entities/ModifierModel'
 import { MuscleRepository } from './repositories/MuscleRepository'
 import { ExSelectAssistRepository } from './repositories/ExSelectAssistRepository'
 import { ExSelectAssist } from './entities/ExSelectAssist'
 import theme from '../utils/theme'
 import { ExAssistRepository } from './repositories/ExAssistRepository'
 import { ExAssist } from './entities/ExAssist'
-// import { ModifierRepository } from './repositories/ModifierRepository'
+import { ModifierRepository } from './repositories/ModifierRepository'
+import { ExSelectModAvailableRepository } from './repositories/ExSelectModAvailableRepository'
+import { ExSelectModAvailable } from './entities/ExSelectModAvailable'
 
 interface DatabaseConnectionContextData {
   muscleRepository: MuscleRepository
-  // modifierRepository: ModifierRepository
+  modifierRepository: ModifierRepository
   workoutRepository: WorkoutRepository
   exerciseSelectRepository: ExerciseSelectRepository
   exerciseRepository: ExerciseRepository
@@ -35,6 +37,7 @@ interface DatabaseConnectionContextData {
   cardioRepository: CardioRepository
   exSelectAssistRepository: ExSelectAssistRepository
   exAssistRepository: ExAssistRepository
+  exSelectModAvailableRepository: ExSelectModAvailableRepository
 }
 
 const DatabaseConnectionContext = createContext<DatabaseConnectionContextData>({} as DatabaseConnectionContextData)
@@ -57,7 +60,9 @@ export const DatabaseConnectionProvider: React.FC = ({ children }) => {
         SetModel,
         ExSelectAssist,
         ExAssist,
-      ], // ModifierModel
+        ModifierModel,
+        ExSelectModAvailable,
+      ],
       migrations,
       // dropSchema: true,
       migrationsRun: !installDate,
@@ -87,7 +92,7 @@ export const DatabaseConnectionProvider: React.FC = ({ children }) => {
     <DatabaseConnectionContext.Provider
       value={{
         muscleRepository: new MuscleRepository(connection),
-        // modifierRepository: new ModifierRepository(connection),
+        modifierRepository: new ModifierRepository(connection),
         workoutRepository: new WorkoutRepository(connection),
         exerciseSelectRepository: new ExerciseSelectRepository(connection),
         exerciseRepository: new ExerciseRepository(connection),
@@ -95,6 +100,7 @@ export const DatabaseConnectionProvider: React.FC = ({ children }) => {
         cardioRepository: new CardioRepository(connection),
         exSelectAssistRepository: new ExSelectAssistRepository(connection),
         exAssistRepository: new ExAssistRepository(connection),
+        exSelectModAvailableRepository: new ExSelectModAvailableRepository(connection),
       }}
     >
       {children}

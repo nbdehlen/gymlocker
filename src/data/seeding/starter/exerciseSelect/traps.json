@@ -3,14 +3,14 @@
     {
       "exercise": "DB Shrug",
       "muscles": "traps",
-      "assistingMuscles": ["forearms"],
+      "assistingMuscles": ["forearm flexors"],
       "modifiers": [],
       "custom": false
     },
     {
       "exercise": "BB Shrug",
       "muscles": "traps",
-      "assistingMuscles": ["forearms"],
+      "assistingMuscles": ["forearm flexors"],
       "modifiers": [],
       "custom": false
     }

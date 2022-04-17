@@ -27,6 +27,13 @@
       "assistingMuscles": [],
       "modifiers": [],
       "custom": false
+    },
+    {
+      "exercise": "Gripper",
+      "muscles": "forearm flexors",
+      "assistingMuscles": ["forearm extensors"],
+      "modifiers": [],
+      "custom": false
     }
   ]
 }
