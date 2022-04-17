@@ -75,13 +75,17 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
   const addExercisesToWorkout = useCallback(
     async (workout: WorkoutModel, exerciseIndexes: number[]): Promise<ExerciseModel[]> => {
       const newExercises: ICreateExerciseData[] = []
-      let order = 0
+      // NOTE: Another way of keeping track of order
+      // let order = 0
       const assistingMusclesData: number[][] = []
 
       const promises = exerciseSelect.map(async (exercise, i) => {
         if (exerciseIndexes.includes(i)) {
           // Convert muscles string to MuscleModel
           const musclesData = await muscleRepository.getByNames([exercise.muscles])
+          const addLen = newExercises.length
+          const exLen = workout.exercises?.length || 0
+          const order = addLen + exLen
 
           newExercises.push({
             exercise: exercise.exercise,
@@ -89,7 +93,7 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
             workout_id: workout.id,
             order,
           })
-          order += 1
+          // order += 1
 
           // Save Ids for assisting muscles
           const assistingMuscleModels = await muscleRepository.getByNames(exercise.assistingMuscles)
@@ -139,9 +143,14 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
       const newCardios: ICreateCardioData[] = []
       sampleData.cardios.forEach((cardio, i) => {
         if (cardioIndexes.includes(i)) {
+          const addLen = newCardios.length
+          const cardioLen = workout.cardios?.length || 0
+          const order = addLen + cardioLen
+
           newCardios.push({
             ...cardio,
             workout_id: workout.id,
+            order,
           })
         }
       })

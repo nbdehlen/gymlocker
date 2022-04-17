@@ -136,9 +136,21 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
       cardios: [],
       exercises: [],
     })
+
   const addWorkout = (workout: WorkoutModel) =>
     navigation.navigate(DrawerRoute.GYM_DRAWER, { screen: ScreenRoute.WORKOUT_EDIT, params: { workout } })
-  const onPressEditWorkout = (workout: WorkoutModel) => navigation.navigate(ScreenRoute.WORKOUT_DETAILS, { workout })
+
+  const onPressEditWorkout = (workout: WorkoutModel) => {
+    // NOTE: Typeorm doesn't support sorting of relations.
+    // Might be possible in 0.3 released 20 days ago though.
+    const exercises = workout?.exercises?.sort((a, b) => a.order - b.order)
+    navigation.navigate(ScreenRoute.WORKOUT_DETAILS, {
+      workout: {
+        ...workout,
+        exercises,
+      },
+    })
+  }
 
   return (
     <Div flex={1} bg={theme.background} pt={32}>

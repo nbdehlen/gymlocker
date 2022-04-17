@@ -4,7 +4,6 @@ export const cardios = [
     duration_minutes: 115,
     calories: 0,
     distance_m: 5500,
-    order: 1,
     workout_id: 1,
   },
   {
@@ -12,7 +11,6 @@ export const cardios = [
     duration_minutes: 15,
     calories: 417,
     distance_m: 0,
-    order: 2,
     workout_id: 1,
   },
   {
@@ -20,7 +18,6 @@ export const cardios = [
     duration_minutes: 28,
     calories: 417,
     distance_m: 2500,
-    order: 3,
     workout_id: 1,
   },
   {
@@ -28,7 +25,6 @@ export const cardios = [
     duration_minutes: 65,
     calories: 311,
     distance_m: 3400,
-    order: 4,
     workout_id: 1,
   },
   {
@@ -36,7 +32,6 @@ export const cardios = [
     duration_minutes: 31,
     calories: 141,
     distance_m: 2200,
-    order: 5,
     workout_id: 1,
   },
   {
@@ -44,7 +39,6 @@ export const cardios = [
     duration_minutes: 115,
     calories: 217,
     distance_m: 5500,
-    order: 6,
     workout_id: 1,
   },
 ]
