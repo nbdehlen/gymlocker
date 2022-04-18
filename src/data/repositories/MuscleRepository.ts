@@ -1,4 +1,5 @@
 import { Connection, In, Repository } from 'typeorm'
+import { ExerciseSelectModel } from '../entities/ExerciseSelectModel'
 import { MuscleModel } from '../entities/MuscleModel'
 
 export interface ICreateMuscleData {
@@ -22,6 +23,11 @@ export class MuscleRepository {
     return await this.ormRepository.find({
       where: { id },
     })
+  }
+
+  public async getByName(muscle: string): Promise<MuscleModel | undefined> {
+    const res = await this.ormRepository.findOne({ where: { muscle } })
+    return res
   }
 
   public async getByNames(names: string[]): Promise<MuscleModel[]> {

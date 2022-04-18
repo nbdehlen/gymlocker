@@ -11,7 +11,7 @@ import { ExerciseSelectModel } from '../data/entities/ExerciseSelectModel'
 import { ExSelectAssist } from '../data/entities/ExSelectAssist'
 // import { WorkoutModel } from '../data/entities/WorkoutModel'
 
-const seedModifiers = async (connection: Connection) => {
+async function seedModifiers(connection: Connection) {
   const modifierCon = connection.getRepository<ModifierModel>('modifiers')
   const hasModifiers = await modifierCon.find()
   console.log({ hasModifiers })
@@ -22,7 +22,7 @@ const seedModifiers = async (connection: Connection) => {
   }
 }
 
-const seedMuscles = async (connection: Connection) => {
+async function seedMuscles(connection: Connection) {
   const musclesCon = connection.getRepository<MuscleModel>('muscles')
   const hasMuscles = await musclesCon.findOne()
 
@@ -32,7 +32,7 @@ const seedMuscles = async (connection: Connection) => {
   }
 }
 
-const seedExerciseSelect = async (connection: Connection) => {
+async function seedExerciseSelect(connection: Connection) {
   const exSelectCon = connection.getRepository<ExerciseSelectModel>('exerciseselect')
   // assisting muscles
   const musclesCon = connection.getRepository<MuscleModel>('muscles')
@@ -82,7 +82,7 @@ const seedExerciseSelect = async (connection: Connection) => {
   await Promise.all(exerciseSelectData)
 }
 
-export const seedDatabase = async (connection: Connection) => {
+export async function seedDatabase(connection: Connection) {
   const hasInstalled = await getData(NEW_INSTALL)
   const seeded = await getData(NEW_SEED)
 

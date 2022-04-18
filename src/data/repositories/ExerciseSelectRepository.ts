@@ -41,8 +41,8 @@ export class ExerciseSelectRepository {
     return res
   }
 
-  public async getExercisesByMuscle(muscle: string): Promise<ExerciseSelectModel[]> {
-    const exercises = await this.ormRepository.find({ where: { muscles: muscle } })
+  public async getExercisesByMuscleId(muscleId: number): Promise<ExerciseSelectModel[]> {
+    const exercises = await this.ormRepository.find({ where: { musclesId: muscleId }, relations: ['muscles'] })
     return exercises
   }
 
