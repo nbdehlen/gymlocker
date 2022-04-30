@@ -110,7 +110,7 @@ export const WorkoutDetailsScreen: FunctionComponent<Props> = ({
                     </Text>
                   </Button>
                   <B.Spacer w={8} />
-                  {exercise?.sets && <Text color={theme.light_1}> {truncateSets(exercise.sets)} </Text>}
+                  {exercise?.sets?.length > 0 && <Text color={theme.light_1}> {truncateSets(exercise.sets)} </Text>}
                   <B.Spacer h={16} />
                   <WorkoutModal exercise={exercise} i={i} modalVisible={modalVisible} handleModal={handleModal} />
                 </Div>

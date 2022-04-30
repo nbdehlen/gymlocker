@@ -18,13 +18,11 @@ export class CreateWorkoutTable1622070129180 implements MigrationInterface {
           {
             name: 'start',
             type: 'timestamp',
-            isUnique: true,
             default: 'now()',
           },
           {
             name: 'end',
             type: 'timestamp',
-            isUnique: true,
             default: 'now()',
           },
         ],

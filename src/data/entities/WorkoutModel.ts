@@ -8,10 +8,10 @@ export class WorkoutModel {
   id: number
 
   @Index()
-  @Column({ unique: true, default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
   start: Date
 
-  @Column({ unique: true, default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
   end: Date
 
   @OneToMany(() => CardioModel, (cardio) => cardio.workout)
