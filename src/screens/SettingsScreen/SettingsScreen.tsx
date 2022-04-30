@@ -317,19 +317,21 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
       ])
       .then((workouts) => workouts && console.log(JSON.stringify(workouts, null, 4)))
   }
+  const deleteExerciseSelect = async () => {
+    await exerciseSelectRepository.deleteAll()
+    await exSelectAssistRepository.deleteAll()
+    await exSelectModAvailableRepository.deleteAll()
+    await muscleRepository.deleteAll()
+    await exAssistRepository.deleteAll()
+    await modifierRepository.deleteAll()
+    await exModRepository.deleteAll()
+  }
 
   const deleteAllWorkouts = async () => {
     await workoutRepository.deleteAll()
     await exerciseRepository.deleteAll()
     await cardioRepository.deleteAll()
     await setRepository.deleteAll()
-    await exerciseSelectRepository.deleteAll()
-    await muscleRepository.deleteAll()
-    await exSelectAssistRepository.deleteAll()
-    await exAssistRepository.deleteAll()
-    await modifierRepository.deleteAll()
-    await exSelectModAvailableRepository.deleteAll()
-    await exModRepository.deleteAll()
   }
 
   const onPressInc = () => setWorkoutCount((prevState) => prevState + 1)
@@ -360,6 +362,10 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
     {
       text: 'Delete all workouts',
       fn: deleteAllWorkouts,
+    },
+    {
+      text: 'Delete exerciseSelect',
+      fn: deleteExerciseSelect,
     },
     {
       text: 'Clear Storage',
