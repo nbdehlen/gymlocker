@@ -13,10 +13,9 @@ import { SetModel } from '../../data/entities/SetModel'
 import { useDatabaseConnection } from '../../data/Connection'
 import { WorkoutModel } from '../../data/entities/WorkoutModel'
 import { DeepPartial } from 'typeorm'
+import ButtonGroup from '../../components/ButtonGroup'
 
 /**
- * fix order
- * #################
  * add cardios,
  * #################
  * onPress edit set (lock icon) should scroll to it. Otherwise when you press an input it will scroll when
@@ -111,6 +110,7 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
         id: Math.random(),
         weight_kg: 300,
         repetitions: 99,
+        rir: 99,
         order: exercise?.sets?.length || 0,
         exercise_id: exercise?.id ?? Math.random(),
       }
@@ -183,12 +183,15 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
               <B.Spacer w={8} />
             </Collapse.Header>
             <Collapse.Body pt="lg" pb="none">
+              {item?.modifiersAvailable?.length > 0 && (
+                <ButtonGroup modifiersAvailable={item.modifiersAvailable} modifiers={item?.modifiers} />
+              )}
               {item?.sets && (
                 <SetsTable
-                  exerciseIndex={index as number}
+                  exerciseIndex={index ?? 0}
                   exercise={item}
                   editSet={editSet}
-                  headers={['WEIGHT', 'REPS', 'EDIT']}
+                  headers={['WEIGHT', 'REPS', 'RIR', 'EDIT']}
                 />
               )}
               {/* <Div py="lg" /> */}

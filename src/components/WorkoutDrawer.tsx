@@ -10,6 +10,7 @@ import CustomButton, { ButtonEnum } from './CustomButton'
 import muscles from '../data/seeding/starter/muscles/muscles.json'
 import { ucFirst } from '../helpers/general'
 import { MuscleModel } from '../data/entities/MuscleModel'
+import { ExerciseModel } from '../data/entities/ExerciseModel'
 
 const WorkoutDrawer: FunctionComponent<{ workout: WorkoutModel }> = ({ workout }) => {
   const { exerciseSelectRepository, muscleRepository } = useDatabaseConnection()
@@ -21,7 +22,11 @@ const WorkoutDrawer: FunctionComponent<{ workout: WorkoutModel }> = ({ workout }
     const muscle = await muscleRepository.getByName(name)
 
     if (muscle instanceof MuscleModel) {
-      const exercisesForMuscleGroup = await exerciseSelectRepository.getExercisesByMuscleId(muscle.id)
+      const exercisesForMuscleGroup = await exerciseSelectRepository.getExercisesByMuscleId(muscle.id, [
+        'muscles',
+        'modifiersAvailable',
+        'modifiersAvailable.modifier',
+      ])
 
       if (exercisesForMuscleGroup?.length > 0) {
         setExercises(exercisesForMuscleGroup)
@@ -30,7 +35,7 @@ const WorkoutDrawer: FunctionComponent<{ workout: WorkoutModel }> = ({ workout }
     }
   }
 
-  const onPressExercise = (exercise: ExerciseSelectModel) => {
+  const onPressExercise = (exercise: Partial<ExerciseModel> | ExerciseSelectModel) => {
     // TODO: global state, useRoute or send as navigation Props?
     // Send to which screen if starting out on add/edit?
 
@@ -39,6 +44,7 @@ const WorkoutDrawer: FunctionComponent<{ workout: WorkoutModel }> = ({ workout }
       muscles: exercise.muscles.muscle,
       assistingMuscles: exercise.assistingMuscles,
       modifiersAvailable: exercise.modifiersAvailable,
+      modifiers: exercise.modifiers,
       order: workout?.exercises?.length ?? 0,
       sets: [],
     }

@@ -1,6 +1,7 @@
 import { Connection, DeepPartial, Repository } from 'typeorm'
 import { ExAssist } from '../entities/ExAssist'
 import { ExerciseModel } from '../entities/ExerciseModel'
+import { ExMod } from '../entities/ExMod'
 // import { ModifierModel } from '../entities/ModifierModel'
 import { MuscleModel } from '../entities/MuscleModel'
 import { SetModel } from '../entities/SetModel'
@@ -8,12 +9,12 @@ import { ICreateSetData } from './SetRepository'
 
 export interface ICreateExerciseData {
   exercise: string
-  muscles: MuscleModel
-  assistingMuscles?: ExAssist[]
-  // modifiers: ModifierModel[]
   order: number
   workout_id?: number
   sets?: Array<SetModel | ICreateSetData> // TODO: Not sure this is viable
+  muscles: MuscleModel
+  assistingMuscles?: ExAssist[]
+  modifiers?: ExMod[]
 }
 
 export class ExerciseRepository {
@@ -48,20 +49,20 @@ export class ExerciseRepository {
   public async create({
     exercise,
     muscles,
-    assistingMuscles,
-    // modifiers,
     order,
     workout_id,
+    assistingMuscles,
+    modifiers,
     sets,
   }: ICreateExerciseData): Promise<ExerciseModel> {
     const data = this.ormRepository.create({
       exercise,
       muscles,
-      assistingMuscles,
-      // modifiers,
       order,
       workout_id,
-      sets,
+      ...(assistingMuscles && { assistingMuscles }),
+      ...(modifiers && { modifiers }),
+      ...(sets && { sets }),
     })
 
     await this.ormRepository.save(data)
