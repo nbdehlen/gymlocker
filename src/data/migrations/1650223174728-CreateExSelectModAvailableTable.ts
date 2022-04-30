@@ -8,12 +8,12 @@ export class CreateExSelectModAvailableTable1650223174728 implements MigrationIn
         columns: [
           {
             name: 'exerciseSelectId',
-            type: 'integer',
+            type: 'varchar',
             isPrimary: true,
           },
           {
             name: 'modifierId',
-            type: 'integer',
+            type: 'varchar',
             isPrimary: true,
           },
         ],

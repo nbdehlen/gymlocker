@@ -4,8 +4,8 @@ import { ExSelectAssist } from './ExSelectAssist'
 
 @Entity({ name: 'muscles', schema: 'public' })
 export class MuscleModel {
-  @PrimaryGeneratedColumn('increment', { type: 'integer' })
-  id: number
+  @PrimaryGeneratedColumn('uuid')
+  id: string
 
   @Column({ unique: true })
   muscle: string

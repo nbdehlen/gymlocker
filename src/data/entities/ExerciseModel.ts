@@ -7,8 +7,8 @@ import { WorkoutModel } from './WorkoutModel'
 
 @Entity({ name: 'exercises', schema: 'public' })
 export class ExerciseModel {
-  @PrimaryGeneratedColumn('increment')
-  id: number
+  @PrimaryGeneratedColumn('uuid')
+  id: string
 
   @Column()
   exercise: string
@@ -18,7 +18,7 @@ export class ExerciseModel {
   order: number
 
   @Column()
-  workout_id: number
+  workout_id: string
 
   @ManyToOne(() => WorkoutModel)
   @JoinColumn({ name: 'workout_id' })
@@ -32,7 +32,7 @@ export class ExerciseModel {
   muscles: MuscleModel
 
   @Column()
-  musclesId: number
+  musclesId: string
 
   @OneToMany(() => ExAssist, (exAssist) => exAssist.exercise, {
     onDelete: 'CASCADE',

@@ -10,7 +10,7 @@ import { ICreateSetData } from './SetRepository'
 export interface ICreateExerciseData {
   exercise: string
   order: number
-  workout_id?: number
+  workout_id?: string
   sets?: Array<SetModel | ICreateSetData> // TODO: Not sure this is viable
   muscles: MuscleModel
   assistingMuscles?: ExAssist[]
@@ -30,14 +30,14 @@ export class ExerciseRepository {
     return exercises
   }
 
-  public async getById(id: number, relations?: string[]): Promise<ExerciseModel[]> {
+  public async getById(id: string, relations?: string[]): Promise<ExerciseModel[]> {
     return await this.ormRepository.find({
       where: { id },
       ...(relations && { relations }),
     })
   }
 
-  public async exerciseIdExists(id: number): Promise<boolean> {
+  public async exerciseIdExists(id: string): Promise<boolean> {
     const exercise = await this.ormRepository.find({ where: { id } })
     if (exercise) {
       console.log(exercise)
@@ -107,7 +107,7 @@ export class ExerciseRepository {
   //     )
   //   }
 
-  public async delete(id: number): Promise<void> {
+  public async delete(id: string): Promise<void> {
     await this.ormRepository.delete(id)
   }
 

@@ -8,12 +8,12 @@ export class CreateExSelectAssistTable1649529609371 implements MigrationInterfac
         columns: [
           {
             name: 'exerciseSelectId',
-            type: 'integer',
+            type: 'varchar',
             isPrimary: true,
           },
           {
             name: 'muscleId',
-            type: 'integer',
+            type: 'varchar',
             isPrimary: true,
           },
         ],

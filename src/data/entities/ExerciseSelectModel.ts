@@ -5,8 +5,8 @@ import { MuscleModel } from './MuscleModel'
 
 @Entity({ name: 'exerciseselect', schema: 'public' })
 export class ExerciseSelectModel {
-  @PrimaryGeneratedColumn('increment', { type: 'integer' })
-  id: number
+  @PrimaryGeneratedColumn('uuid')
+  id: string
 
   @Column({ unique: true })
   exercise: string
@@ -18,7 +18,7 @@ export class ExerciseSelectModel {
   muscles: MuscleModel
 
   @Column()
-  musclesId: number
+  musclesId: string
 
   @OneToMany(() => ExSelectAssist, (exSelectAssist) => exSelectAssist.exerciseSelect, {
     onDelete: 'CASCADE',

@@ -18,7 +18,7 @@ export class ModifierRepository {
     return modifiers
   }
 
-  public async getById(id: number): Promise<ModifierModel[]> {
+  public async getById(id: string): Promise<ModifierModel[]> {
     return await this.ormRepository.find({
       where: { id },
     })
@@ -30,7 +30,7 @@ export class ModifierRepository {
     })
   }
 
-  public async modifierIdExists(id: number): Promise<boolean> {
+  public async modifierIdExists(id: string): Promise<boolean> {
     const modifier = await this.ormRepository.find({ where: { id } })
     if (modifier) {
       console.log(modifier)
@@ -57,7 +57,7 @@ export class ModifierRepository {
     return data
   }
 
-  public async delete(id: number): Promise<void> {
+  public async delete(id: string): Promise<void> {
     await this.ormRepository.delete(id)
   }
 

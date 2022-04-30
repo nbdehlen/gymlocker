@@ -2,8 +2,8 @@ import { Connection, Repository } from 'typeorm'
 import { ExMod } from '../entities/ExMod'
 
 export interface ICreateExModData {
-  exerciseId: number
-  modifierId: number
+  exerciseId: string
+  modifierId: string
 }
 
 export class ExModRepository {

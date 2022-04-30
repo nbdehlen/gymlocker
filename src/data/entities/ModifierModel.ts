@@ -4,8 +4,8 @@ import { ExSelectModAvailable } from './ExSelectModAvailable'
 
 @Entity({ name: 'modifiers', schema: 'public' })
 export class ModifierModel {
-  @PrimaryGeneratedColumn()
-  id: number
+  @PrimaryGeneratedColumn('uuid')
+  id: string
 
   @Column({ unique: true })
   modifier: string
