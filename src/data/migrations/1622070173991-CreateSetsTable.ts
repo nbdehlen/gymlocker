@@ -24,6 +24,10 @@ export class CreateSetsTable1622070173991 implements MigrationInterface {
             type: 'integer',
           },
           {
+            name: 'rir',
+            type: 'integer',
+          },
+          {
             name: 'order',
             type: 'integer',
           },

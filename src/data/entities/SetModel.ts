@@ -12,6 +12,9 @@ export class SetModel {
   @Column()
   repetitions: number
 
+  @Column()
+  rir: number
+
   @Index()
   @Column()
   order: number

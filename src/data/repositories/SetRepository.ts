@@ -4,6 +4,7 @@ import { SetModel } from '../entities/SetModel'
 export interface ICreateSetData {
   weight_kg: number
   repetitions: number
+  rir: number
   order: number
   exerciseId?: number
 }
