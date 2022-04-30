@@ -1,11 +1,13 @@
 import { Connection, Repository } from 'typeorm'
 import { ExerciseSelectModel } from '../entities/ExerciseSelectModel'
+import { ExSelectAssist } from '../entities/ExSelectAssist'
+import { MuscleModel } from '../entities/MuscleModel'
 
-interface ICreateExerciseSelectData {
+export interface ICreateExerciseSelectData {
   exercise: string
-  muscles: string
-  assistingMuscles?: string
-  custom?: boolean
+  muscles: MuscleModel
+  assistingMuscles?: ExSelectAssist[]
+  custom: boolean
 }
 
 export class ExerciseSelectRepository {
@@ -27,34 +29,20 @@ export class ExerciseSelectRepository {
     assistingMuscles,
     custom,
   }: ICreateExerciseSelectData): Promise<ExerciseSelectModel> {
-    const exerciseSelect = this.ormRepository.create({
+    const exerciseSelect = await this.ormRepository.create({
       exercise,
+      custom,
       muscles,
       assistingMuscles,
-      custom,
     })
 
-    await this.ormRepository.save(exerciseSelect)
+    const res = await this.ormRepository.save(exerciseSelect)
 
-    return exerciseSelect
+    return res
   }
 
-  //   public async toggle(id: number): Promise<void> {
-  //     await this.ormRepository.query(
-  //       `
-  //       UPDATE
-  //         todos
-  //       SET
-  //         is_toggled = ((is_toggled | 1) - (is_toggled & 1))
-  //       WHERE
-  //         id = ?;
-  //       `,
-  //       [id]
-  //     )
-  //   }
-
-  public async getExercisesByMuscle(muscle: string): Promise<ExerciseSelectModel[]> {
-    const exercises = await this.ormRepository.find({ where: { muscles: muscle } })
+  public async getExercisesByMuscleId(muscleId: number, relations: string[]): Promise<ExerciseSelectModel[]> {
+    const exercises = await this.ormRepository.find({ where: { musclesId: muscleId }, ...(relations && { relations }) })
     return exercises
   }
 

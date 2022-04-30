@@ -1,0 +1,53 @@
+{
+  "delt": [
+    {
+      "exercise": "BB M Press",
+      "muscles": "front delt",
+      "assistingMuscles": ["middle delt", "triceps"],
+      "modifiers": ["seated"],
+      "custom": false
+    },
+    {
+      "exercise": "BB Push Press",
+      "muscles": "front delt",
+      "assistingMuscles": ["middle delt", "triceps"],
+      "modifiers": ["seated"],
+      "custom": false
+    },
+    {
+      "exercise": "DB Push Press",
+      "muscles": "front delt",
+      "assistingMuscles": ["middle delt", "triceps"],
+      "modifiers": ["alternating", "unilateral"],
+      "custom": false
+    },
+    {
+      "exercise": "DB M Press",
+      "muscles": "front delt",
+      "assistingMuscles": ["middle delt", "triceps"],
+      "modifiers": ["seated", "alternating", "unilateral"],
+      "custom": false
+    },
+    {
+      "exercise": "DB Side Lift",
+      "muscles": "middle delt",
+      "assistingMuscles": ["front delt"],
+      "modifiers": ["seated", "alternating", "unilateral"],
+      "custom": false
+    },
+    {
+      "exercise": "DB Rear Lift",
+      "muscles": "rear delt",
+      "assistingMuscles": ["middle delt"],
+      "modifiers": ["seated", "alternating", "unilateral"],
+      "custom": false
+    },
+    {
+      "exercise": "Band Face Pulls",
+      "muscles": "rear delt",
+      "assistingMuscles": ["middle delt"],
+      "modifiers": [],
+      "custom": false
+    }
+  ]
+}

@@ -7,7 +7,7 @@ export class CreateExerciseToSetFK1622328699766 implements MigrationInterface {
       'sets',
       new TableForeignKey({
         name: 'ExerciseToSets',
-        columnNames: ['exercise_id'],
+        columnNames: ['exerciseId'],
         referencedTableName: 'exercises',
         referencedColumnNames: ['id'],
         onDelete: 'CASCADE',

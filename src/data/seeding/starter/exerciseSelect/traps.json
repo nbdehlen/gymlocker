@@ -1,0 +1,18 @@
+{
+  "traps": [
+    {
+      "exercise": "DB Shrug",
+      "muscles": "traps",
+      "assistingMuscles": ["forearm flexors"],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "BB Shrug",
+      "muscles": "traps",
+      "assistingMuscles": ["forearm flexors"],
+      "modifiers": [],
+      "custom": false
+    }
+  ]
+}

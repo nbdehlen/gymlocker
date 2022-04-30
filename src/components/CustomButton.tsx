@@ -22,9 +22,37 @@ export enum ButtonEnum {
   LIST_ITEM = 'list_item',
   PRIMARY = 'primary',
   CANCEL = 'cancel',
+  OPTION = 'option',
+  SELECTED = 'selected',
 }
 
 const styles = {
+  [ButtonEnum.OPTION]: {
+    touchableStyle: {},
+    containerStyle: {
+      borderStyle: 'solid',
+      borderColor: theme.light_border,
+      justifyContent: 'center',
+      flexDir: 'row',
+      rounded: 'circle',
+      py: 'xs',
+      px: 'md',
+    },
+    textStyle: { color: theme.light_border },
+  },
+  [ButtonEnum.SELECTED]: {
+    touchableStyle: {},
+    containerStyle: {
+      borderStyle: 'solid',
+      borderColor: theme.primary.border,
+      justifyContent: 'center',
+      flexDir: 'row',
+      rounded: 'circle',
+      py: 'xs',
+      px: 'md',
+    },
+    textStyle: { color: theme.primary.onColor },
+  },
   [ButtonEnum.LIST_ITEM]: {
     touchableStyle: {},
     containerStyle: {

@@ -1,0 +1,81 @@
+{
+  "chest": [
+    {
+      "exercise": "Bench Press",
+      "muscles": "middle chest",
+      "assistingMuscles": ["upper chest", "lower chest", "triceps", "front delt"],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "DB Press",
+      "muscles": "middle chest",
+      "assistingMuscles": ["upper chest", "lower chest", "triceps", "front delt"],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Dips",
+      "muscles": "lower chest",
+      "assistingMuscles": ["upper chest", "middle chest", "triceps", "front delt"],
+      "modifiers": ["wide"],
+      "custom": false
+    },
+    {
+      "exercise": "Flyes",
+      "muscles": "middle chest",
+      "assistingMuscles": ["upper chest", "lower chest", "front delt"],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Pushup",
+      "muscles": "middle chest",
+      "assistingMuscles": ["upper chest", "lower chest", "triceps", "front delt"],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Incline Pushup",
+      "muscles": "upper chest",
+      "assistingMuscles": ["middle chest", "lower chest", "triceps", "front delt"],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Decline Bench Press",
+      "muscles": "lower chest",
+      "assistingMuscles": ["middle chest", "upper chest", "triceps", "front delt"],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Incline Bench Press",
+      "muscles": "upper chest",
+      "assistingMuscles": ["middle chest", "lower chest", "triceps", "front delt"],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Decline DB Press",
+      "muscles": "lower chest",
+      "assistingMuscles": ["middle chest", "upper chest", "triceps", "front delt"],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Incline DB Press",
+      "muscles": "upper chest",
+      "assistingMuscles": ["middle chest", "lower chest", "triceps", "front delt"],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Pec-Dec",
+      "muscles": "middle chest",
+      "assistingMuscles": ["upper chest", "lower chest", "front delt"],
+      "modifiers": [],
+      "custom": false
+    }
+  ]
+}

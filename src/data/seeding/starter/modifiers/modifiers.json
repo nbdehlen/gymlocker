@@ -1,0 +1,31 @@
+{
+  "modifiers": [
+    {
+      "modifier": "seated"
+    },
+    {
+      "modifier": "lying"
+    },
+    {
+      "modifier": "unilateral"
+    },
+    {
+      "modifier": "wide"
+    },
+    {
+      "modifier": "narrow"
+    },
+    {
+      "modifier": "band"
+    },
+    {
+      "modifier": "alternating"
+    },
+    {
+      "modifier": "neutral"
+    },
+    {
+      "modifier": "supinated"
+    }
+  ]
+}

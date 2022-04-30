@@ -1,14 +1,4 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  Generated,
-  Index,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm'
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { WorkoutModel } from './WorkoutModel'
 
 @Entity({ name: 'cardios', schema: 'public' })
@@ -36,7 +26,6 @@ export class CardioModel {
   workout_id: number
 
   @ManyToOne(() => WorkoutModel)
-  //  (workout) => workout.cardios, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'workout_id' })
   workout: WorkoutModel
 }

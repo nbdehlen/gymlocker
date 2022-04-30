@@ -1,54 +1,27 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm'
 export class CreateExercisesSelectTable1621964884049 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    console.log('ExercisesSelect created')
+    console.log('ExerciseSelect created')
     await queryRunner.createTable(
       new Table({
-        name: 'exercisesselect',
+        name: 'exerciseselect',
         columns: [
           {
             name: 'id',
-            type: 'string',
+            type: 'integer',
             isPrimary: true,
             isGenerated: true,
-            generationStrategy: 'uuid',
+            generationStrategy: 'increment',
           },
-          {
-            name: 'exercise',
-            type: 'text',
-            isUnique: true,
-          },
-          // {
-          //   name: 'displayName',
-          //   type: 'text',
-          //   isUnique: true,
-          //   isNullable: true,
-          // },
-          {
-            name: 'muscles',
-            type: 'text',
-          },
-          {
-            name: 'assistingMuscles',
-            type: 'text',
-            isNullable: true,
-          },
-          // {
-          //   name: 'tool',
-          //   type: 'text',
-          //   isNullable: true,
-          // },
-          {
-            name: 'custom',
-            type: 'boolean',
-            isNullable: false,
-          },
+          { name: 'exercise', type: 'text' },
+          { name: 'custom', type: 'boolean' },
+          { name: 'musclesId', type: 'integer' },
         ],
       })
     )
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('exercisesselect')
+    await queryRunner.dropTable('exerciseselect')
   }
 }

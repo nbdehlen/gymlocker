@@ -31,11 +31,12 @@ const SetsTable: FunctionComponent<ExerciseTableProps> = ({ exercise, exerciseIn
   }
 
   const onChange = (e: string, i: number, type: string) => {
-    // TODO: separate one for onChangeWeight and onChangeRep?
-    const isWeight = type === 'weight'
+    const getRir = (rir: string): string | number => (rir === '' ? rir : Number(rir))
+
     const newSet = {
-      weight_kg: isWeight ? Number(e) : sets[i].weight_kg,
-      repetitions: isWeight ? sets[i].repetitions : Number(e),
+      weight_kg: type === 'weight' ? Number(e) : sets[i].weight_kg,
+      repetitions: type === 'repetitions' ? Number(e) : sets[i].repetitions,
+      rir: type === 'rir' ? getRir(e) : sets[i].rir,
     }
     setSets((prev) => [...prev.slice(0, i), { ...prev[i], ...newSet }, ...prev.slice(i + 1, prev?.length)])
   }
@@ -65,32 +66,42 @@ const SetsTable: FunctionComponent<ExerciseTableProps> = ({ exercise, exerciseIn
               bg={theme.background}
             >
               {inputMode && (
-                <Div alignItems="center" flex={1} py="md">
-                  <CustomInput
-                    value={sets[i].weight_kg > 0 ? String(sets[i].weight_kg) : ''}
-                    preset={InputEnum.SET_INPUT}
-                    onChangeText={(e) => onChange(e, i, 'weight')}
-                  />
-                </Div>
-              )}
-              {inputMode && (
-                <Div alignItems="center" flex={1} py="md">
-                  <CustomInput
-                    value={sets[i].repetitions > 0 ? String(sets[i].repetitions) : ''}
-                    onChangeText={(e) => onChange(e, i, 'repetitions')}
-                    preset={InputEnum.SET_INPUT}
-                  />
-                </Div>
+                <>
+                  <Div alignItems="center" flex={1} py="md">
+                    <CustomInput
+                      value={sets[i].weight_kg > 0 ? String(sets[i].weight_kg) : ''}
+                      preset={InputEnum.SET_INPUT}
+                      onChangeText={(e) => onChange(e, i, 'weight')}
+                    />
+                  </Div>
+                  <Div alignItems="center" flex={1} py="md">
+                    <CustomInput
+                      value={sets[i].repetitions > 0 ? String(sets[i].repetitions) : ''}
+                      onChangeText={(e) => onChange(e, i, 'repetitions')}
+                      preset={InputEnum.SET_INPUT}
+                    />
+                  </Div>
+                  <Div alignItems="center" flex={1} py="md">
+                    <CustomInput
+                      value={typeof sets[i].rir === 'number' ? String(sets[i].rir) : ''}
+                      onChangeText={(e) => onChange(e, i, 'rir')}
+                      preset={InputEnum.SET_INPUT}
+                    />
+                  </Div>
+                </>
               )}
               {!inputMode && (
-                <Div alignItems="center" flex={1} pt="md" pb={i === sets?.length - 1 ? 'lg' : 'md'}>
-                  <Text style={{ fontSize: 14, color: theme.light_1 }}>{set?.weight_kg} kg</Text>
-                </Div>
-              )}
-              {!inputMode && (
-                <Div alignItems="center" flex={1} pt="md" pb={i === sets?.length - 1 ? 'lg' : 'md'}>
-                  <Text style={{ fontSize: 14, color: theme.light_1 }}>{set?.repetitions}</Text>
-                </Div>
+                <>
+                  <Div alignItems="center" flex={1} pt="md" pb={i === sets?.length - 1 ? 'lg' : 'md'}>
+                    <Text style={{ fontSize: 14, color: theme.light_1 }}>{set?.weight_kg} kg</Text>
+                  </Div>
+                  <Div alignItems="center" flex={1} pt="md" pb={i === sets?.length - 1 ? 'lg' : 'md'}>
+                    <Text style={{ fontSize: 14, color: theme.light_1 }}>{set?.repetitions}</Text>
+                  </Div>
+                  <Div alignItems="center" flex={1} pt="md" pb={i === sets?.length - 1 ? 'lg' : 'md'}>
+                    <Text style={{ fontSize: 14, color: theme.light_1 }}>{set?.rir}</Text>
+                  </Div>
+                </>
               )}
               <Div
                 alignItems="center"

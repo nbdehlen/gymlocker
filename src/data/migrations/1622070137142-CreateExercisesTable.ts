@@ -1,11 +1,4 @@
-import {
-  MigrationInterface,
-  QueryRunner,
-  Table,
-  TableColumn,
-  TableForeignKey,
-  TableIndex,
-} from 'typeorm'
+import { MigrationInterface, QueryRunner, Table, TableIndex } from 'typeorm'
 
 export class CreateExerciseTable1622070137142 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -26,13 +19,8 @@ export class CreateExerciseTable1622070137142 implements MigrationInterface {
             type: 'text',
           },
           {
-            name: 'muscles',
-            type: 'text',
-          },
-          {
-            name: 'assistingMuscles',
-            type: 'text',
-            isNullable: true,
+            name: 'musclesId',
+            type: 'integer',
           },
           {
             name: 'order',
@@ -44,7 +32,6 @@ export class CreateExerciseTable1622070137142 implements MigrationInterface {
           },
         ],
       }),
-      true,
       true
     )
     await queryRunner.createIndex(
@@ -53,26 +40,6 @@ export class CreateExerciseTable1622070137142 implements MigrationInterface {
         columnNames: ['order'],
       })
     )
-
-    // await queryRunner.addColumn(
-    //   'exercises',
-    //   new TableColumn({
-    //     name: 'workoutId',
-    //     type: 'uuid',
-    //     generationStrategy: 'uuid',
-    //   })
-    // )
-
-    // await queryRunner.createForeignKey(
-    //   'exercises',
-    //   new TableForeignKey({
-    //     columnNames: ['workoutId'],
-    //     referencedColumnNames: ['id'],
-    //     referencedTableName: 'workouts',
-    //     onDelete: 'CASCADE',
-    //     // onUpdate: 'CASCADE',
-    //   })
-    // )
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

@@ -1,11 +1,4 @@
-import {
-  MigrationInterface,
-  QueryRunner,
-  Table,
-  TableColumn,
-  TableForeignKey,
-  TableIndex,
-} from 'typeorm'
+import { MigrationInterface, QueryRunner, Table, TableIndex } from 'typeorm'
 
 export class CreateSetsTable1622070173991 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -31,11 +24,15 @@ export class CreateSetsTable1622070173991 implements MigrationInterface {
             type: 'integer',
           },
           {
+            name: 'rir',
+            type: 'integer',
+          },
+          {
             name: 'order',
             type: 'integer',
           },
           {
-            name: 'exercise_id',
+            name: 'exerciseId',
             type: 'integer',
           },
         ],
@@ -49,26 +46,6 @@ export class CreateSetsTable1622070173991 implements MigrationInterface {
         columnNames: ['order'],
       })
     )
-
-    // await queryRunner.addColumn(
-    //   'sets',
-    //   new TableColumn({
-    //     name: 'exerciseId',
-    //     type: 'uuid',
-    //     generationStrategy: 'uuid',
-    //   })
-    // )
-
-    // await queryRunner.createForeignKey(
-    //   'sets',
-    //   new TableForeignKey({
-    //     columnNames: ['exerciseId'],
-    //     referencedColumnNames: ['id'],
-    //     referencedTableName: 'exercises',
-    //     onDelete: 'CASCADE',
-    //     // onUpdate: 'CASCADE',
-    //   })
-    // )
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

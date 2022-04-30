@@ -1,16 +1,7 @@
-import {
-  Column,
-  CreateDateColumn,
-  Entity,
-  Generated,
-  Index,
-  JoinColumn,
-  JoinTable,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-  UpdateDateColumn,
-} from 'typeorm'
+import { Column, Entity, Index, JoinColumn, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { ExAssist } from './ExAssist'
+import { ExMod } from './ExMod'
+import { MuscleModel } from './MuscleModel'
 import { SetModel } from './SetModel'
 import { WorkoutModel } from './WorkoutModel'
 
@@ -22,12 +13,6 @@ export class ExerciseModel {
   @Column()
   exercise: string
 
-  @Column()
-  muscles: string
-
-  @Column({ nullable: true })
-  assistingMuscles: string
-
   @Index()
   @Column()
   order: number
@@ -36,12 +21,29 @@ export class ExerciseModel {
   workout_id: number
 
   @ManyToOne(() => WorkoutModel)
-  // , (workout) => workout.exercises, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'workout_id' })
   workout: WorkoutModel
 
   @OneToMany(() => SetModel, (set) => set.exercise)
   @JoinTable()
-  // sets: Promise<SetModel[]>
   sets: SetModel[]
+
+  @ManyToOne(() => MuscleModel)
+  muscles: MuscleModel
+
+  @Column()
+  musclesId: number
+
+  @OneToMany(() => ExAssist, (exAssist) => exAssist.exercise, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  assistingMuscles?: ExAssist[]
+
+  @OneToMany(() => ExMod, (exMod) => exMod.exercise, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  @JoinTable()
+  modifiers?: ExMod[]
 }

@@ -1,5 +1,5 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
-import { ActivityIndicator } from 'react-native'
+import { ActivityIndicator, View } from 'react-native'
 import { Connection, createConnection } from 'typeorm'
 import { CardioModel } from './entities/CardioModel'
 import { ExerciseModel } from './entities/ExerciseModel'
@@ -15,13 +15,32 @@ import { migrations } from '../data/migrations'
 import { getData } from '../utils/asyncStorage'
 import { NEW_INSTALL } from '../storageConstants'
 import { seedDatabase } from '../utils/seedDatabase'
+import { MuscleModel } from './entities/MuscleModel'
+import { ModifierModel } from './entities/ModifierModel'
+import { MuscleRepository } from './repositories/MuscleRepository'
+import { ExSelectAssistRepository } from './repositories/ExSelectAssistRepository'
+import { ExSelectAssist } from './entities/ExSelectAssist'
+import theme from '../utils/theme'
+import { ExAssistRepository } from './repositories/ExAssistRepository'
+import { ExAssist } from './entities/ExAssist'
+import { ModifierRepository } from './repositories/ModifierRepository'
+import { ExSelectModAvailableRepository } from './repositories/ExSelectModAvailableRepository'
+import { ExSelectModAvailable } from './entities/ExSelectModAvailable'
+import { ExModRepository } from './repositories/ExModRepository'
+import { ExMod } from './entities/ExMod'
 
 interface DatabaseConnectionContextData {
+  muscleRepository: MuscleRepository
+  modifierRepository: ModifierRepository
   workoutRepository: WorkoutRepository
   exerciseSelectRepository: ExerciseSelectRepository
   exerciseRepository: ExerciseRepository
   setRepository: SetRepository
   cardioRepository: CardioRepository
+  exSelectAssistRepository: ExSelectAssistRepository
+  exAssistRepository: ExAssistRepository
+  exSelectModAvailableRepository: ExSelectModAvailableRepository
+  exModRepository: ExModRepository
 }
 
 const DatabaseConnectionContext = createContext<DatabaseConnectionContextData>({} as DatabaseConnectionContextData)
@@ -35,11 +54,23 @@ export const DatabaseConnectionProvider: React.FC = ({ children }) => {
       type: 'expo',
       database: '@workout.db',
       driver: require('expo-sqlite'),
-      entities: [WorkoutModel, ExerciseSelectModel, ExerciseModel, CardioModel, SetModel],
+      entities: [
+        MuscleModel,
+        WorkoutModel,
+        ExerciseSelectModel,
+        ExerciseModel,
+        CardioModel,
+        SetModel,
+        ExSelectAssist,
+        ExAssist,
+        ModifierModel,
+        ExSelectModAvailable,
+        ExMod,
+      ],
       migrations,
       // dropSchema: true,
-      // synchronize: !installDate, // TODO: set based on asyncStorage
       migrationsRun: !installDate,
+      logging: __DEV__,
     })
 
     setConnection(createdConnection)
@@ -54,17 +85,27 @@ export const DatabaseConnectionProvider: React.FC = ({ children }) => {
   }, [connect, connection])
 
   if (!connection) {
-    return <ActivityIndicator />
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator color={theme.primary.onColor} size="large" />
+      </View>
+    )
   }
 
   return (
     <DatabaseConnectionContext.Provider
       value={{
+        muscleRepository: new MuscleRepository(connection),
+        modifierRepository: new ModifierRepository(connection),
         workoutRepository: new WorkoutRepository(connection),
         exerciseSelectRepository: new ExerciseSelectRepository(connection),
         exerciseRepository: new ExerciseRepository(connection),
         setRepository: new SetRepository(connection),
         cardioRepository: new CardioRepository(connection),
+        exSelectAssistRepository: new ExSelectAssistRepository(connection),
+        exAssistRepository: new ExAssistRepository(connection),
+        exSelectModAvailableRepository: new ExSelectModAvailableRepository(connection),
+        exModRepository: new ExModRepository(connection),
       }}
     >
       {children}

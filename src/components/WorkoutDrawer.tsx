@@ -1,5 +1,5 @@
 import React, { FunctionComponent, useState } from 'react'
-import { Div, Icon, Text } from 'react-native-magnus'
+import { Div, Icon, ScrollDiv, Text } from 'react-native-magnus'
 import { useDatabaseConnection } from '../data/Connection'
 import { ExerciseSelectModel } from '../data/entities/ExerciseSelectModel'
 import theme from '../utils/theme'
@@ -7,49 +7,48 @@ import { useNavigation } from '@react-navigation/core'
 import { WorkoutModel } from '../data/entities/WorkoutModel'
 import { ScreenRoute } from '../navigation/NAV_CONSTANTS'
 import CustomButton, { ButtonEnum } from './CustomButton'
-
-const muscles = [
-  {
-    title: 'Biceps',
-    type: 'biceps',
-  },
-  {
-    title: 'Triceps',
-    type: 'triceps',
-  },
-  {
-    title: 'Chest',
-    type: 'chest',
-  },
-]
+import muscles from '../data/seeding/starter/muscles/muscles.json'
+import { ucFirst } from '../helpers/general'
+import { MuscleModel } from '../data/entities/MuscleModel'
+import { ExerciseModel } from '../data/entities/ExerciseModel'
 
 const WorkoutDrawer: FunctionComponent<{ workout: WorkoutModel }> = ({ workout }) => {
-  const { exerciseSelectRepository } = useDatabaseConnection()
+  const { exerciseSelectRepository, muscleRepository } = useDatabaseConnection()
   const [exercises, setExercises] = useState<ExerciseSelectModel[]>([])
   const [drawerIndex, setDrawerIndex] = useState(0)
   const navigation = useNavigation()
 
-  const onPressMuscle = async (muscle: string) => {
-    console.log({ muscle })
-    const exercisesForMuscleGroup = await exerciseSelectRepository.getExercisesByMuscle(muscle)
-    if (exercisesForMuscleGroup?.length > 0) {
-      setExercises(exercisesForMuscleGroup)
-      setDrawerIndex(1)
+  const onPressMuscle = async (name: string) => {
+    const muscle = await muscleRepository.getByName(name)
+
+    if (muscle instanceof MuscleModel) {
+      const exercisesForMuscleGroup = await exerciseSelectRepository.getExercisesByMuscleId(muscle.id, [
+        'muscles',
+        'modifiersAvailable',
+        'modifiersAvailable.modifier',
+      ])
+
+      if (exercisesForMuscleGroup?.length > 0) {
+        setExercises(exercisesForMuscleGroup)
+        setDrawerIndex(1)
+      }
     }
   }
 
-  const onPressExercise = (exercise: ExerciseSelectModel) => {
+  const onPressExercise = (exercise: Partial<ExerciseModel> | ExerciseSelectModel) => {
     // TODO: global state, useRoute or send as navigation Props?
     // Send to which screen if starting out on add/edit?
 
     const selectedExercise = {
-      assistingMuscles: exercise.assistingMuscles,
       exercise: exercise.exercise,
-      muscles: exercise.muscles,
+      muscles: exercise.muscles.muscle,
+      assistingMuscles: exercise.assistingMuscles,
+      modifiersAvailable: exercise.modifiersAvailable,
+      modifiers: exercise.modifiers,
       order: workout?.exercises?.length ?? 0,
       sets: [],
     }
-
+    // TODO: Modifiers AND modifiersAvailable on EditWorkoutScreen
     const newWorkout = {
       ...workout,
       exercises: [...workout?.exercises, selectedExercise],
@@ -65,7 +64,7 @@ const WorkoutDrawer: FunctionComponent<{ workout: WorkoutModel }> = ({ workout }
 
   //TODO: Add animation for back/forth between the drawers
   return (
-    <Div bg={theme.primary.color} h="100%">
+    <ScrollDiv bg={theme.primary.color} h="100%">
       {drawerIndex === 0 && (
         <Div>
           <Text fontSize="xl" color={theme.light_1} fontWeight="700" pl="xs">
@@ -74,11 +73,12 @@ const WorkoutDrawer: FunctionComponent<{ workout: WorkoutModel }> = ({ workout }
           <CustomButton text="Create new" onPress={() => { }} preset={ButtonEnum.LIST_ITEM} />
           <CustomButton text="Cardio" onPress={() => { }} preset={ButtonEnum.LIST_ITEM} />
 
-          {muscles.map((muscle, i) => (
+          {/* TODO: Memoize this */}
+          {muscles.muscles.map((muscle, i) => (
             <CustomButton
-              onPress={() => onPressMuscle(muscle.type)}
+              onPress={() => onPressMuscle(muscle.muscle)}
               key={i}
-              text={muscle.title}
+              text={ucFirst(muscle.muscle)}
               IconComponent={() => (
                 <Icon name="right" fontFamily="AntDesign" fontSize="md" color={theme.light_1} mr={4} />
               )}
@@ -111,7 +111,7 @@ const WorkoutDrawer: FunctionComponent<{ workout: WorkoutModel }> = ({ workout }
           ))}
         </Div>
       )}
-    </Div>
+    </ScrollDiv>
   )
 }
 

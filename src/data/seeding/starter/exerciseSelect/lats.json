@@ -1,0 +1,53 @@
+{
+  "lats": [
+    {
+      "exercise": "Pullup",
+      "muscles": "lats",
+      "assistingMuscles": ["biceps", "rear delt"],
+      "modifiers": ["wide", "narrow", "neutral"],
+      "custom": false
+    },
+    {
+      "exercise": "Chins",
+      "muscles": "lats",
+      "assistingMuscles": ["biceps", "rear delt"],
+      "modifiers": ["wide", "narrow"],
+      "custom": false
+    },
+    {
+      "exercise": "DB Pullover",
+      "muscles": "lats",
+      "assistingMuscles": [],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "BB Pullover",
+      "muscles": "lats",
+      "assistingMuscles": [],
+      "modifiers": ["wide", "narrow"],
+      "custom": false
+    },
+    {
+      "exercise": "DB Row",
+      "muscles": "lats",
+      "assistingMuscles": ["traps", "biceps", "rear delt"],
+      "modifiers": [],
+      "custom": false
+    },
+    {
+      "exercise": "Double DB Row",
+      "muscles": "lats",
+      "assistingMuscles": ["back", "traps", "biceps", "rear delt"],
+      "modifiers": ["wide", "narrow"],
+      "custom": false
+    },
+    {
+      "exercise": "BB Row",
+      "muscles": "lats",
+      "assistingMuscles": ["back", "rear delt", "traps", "biceps", "rear delt"],
+      "modifiers": ["wide", "narrow", "supinated"],
+      "custom": false
+    }
+  ]
+}

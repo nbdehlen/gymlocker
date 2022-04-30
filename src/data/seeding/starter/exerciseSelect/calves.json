@@ -1,0 +1,25 @@
+{
+  "calves": [
+    {
+      "exercise": "BB Calf raise",
+      "muscles": "calves",
+      "assistingMuscles": [],
+      "modifiers": ["unilateral"],
+      "custom": false
+    },
+    {
+      "exercise": "DB Calf raise",
+      "muscles": "calves",
+      "assistingMuscles": [],
+      "modifiers": ["unilateral"],
+      "custom": false
+    },
+    {
+      "exercise": "Donkey Calf raise",
+      "muscles": "calves",
+      "assistingMuscles": [],
+      "modifiers": ["unilateral"],
+      "custom": false
+    }
+  ]
+}

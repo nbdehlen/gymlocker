@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 
-export const getData = async (storageKey: string) => {
+export async function getData(storageKey: string) {
   try {
     const jsonValue = await AsyncStorage.getItem(storageKey)
     return jsonValue != null ? JSON.parse(jsonValue) : null
@@ -9,7 +9,7 @@ export const getData = async (storageKey: string) => {
   }
 }
 
-export const storeData = async (key: string, value: string) => {
+export async function storeData(key: string, value: string) {
   try {
     await AsyncStorage.setItem(key, value)
   } catch (e) {
@@ -17,11 +17,11 @@ export const storeData = async (key: string, value: string) => {
   }
 }
 
-export const clearAsyncStorage = async () => {
+export async function clearAsyncStorage() {
   await AsyncStorage.clear()
 }
 
-export const logAsyncStorage = async () => {
+export async function logAsyncStorage() {
   const all = await AsyncStorage.getAllKeys()
   console.log(JSON.stringify(all, null, 2))
 }

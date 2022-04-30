@@ -1,32 +1,28 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm'
 
-export class CreateTodosTable1621889762076 implements MigrationInterface {
+export class CreateExModTable1650227754167 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'todos',
+        name: 'exmod',
         columns: [
           {
-            name: 'id',
+            name: 'exerciseId',
             type: 'integer',
             isPrimary: true,
-            isGenerated: true,
-            generationStrategy: 'increment',
           },
           {
-            name: 'text',
-            type: 'text',
-          },
-          {
-            name: 'is_toggled',
-            type: 'boolean',
+            name: 'modifierId',
+            type: 'integer',
+            isPrimary: true,
           },
         ],
-      })
+      }),
+      true
     )
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropTable('todos')
+    await queryRunner.dropTable('exmod')
   }
 }

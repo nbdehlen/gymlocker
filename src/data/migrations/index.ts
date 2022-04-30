@@ -6,8 +6,18 @@ import { CreateSetsTable1622070173991 } from './1622070173991-CreateSetsTable'
 import { CreateWorkoutToExerciseFK1622328667572 } from './1622328667572-CreateWorkoutToExerciseFK'
 import { CreateWorkoutToCardioFK1622328685466 } from './1622328685466-CreateWorkoutToCardioFK'
 import { CreateExerciseToSetFK1622328699766 } from './1622328699766-CreateExerciseToSetFK'
+import { CreateMusclesTable1649424531604 } from './1649424531604-CreateMusclesTable'
+import { CreateExerciseSelectToMuscleFK1649522645911 } from './1649522645911-CreateExerciseSelectToMuscleFK'
+import { CreateExSelectAssistTable1649529609371 } from './1649529609371-CreateExSelectAssistTable'
+import { CreateExAssistTable1649559160302 } from './1649559160302-CreateExAssistTable'
+import { CreateExerciseToMuscleFK1649559186904 } from './1649559186904-CreateExerciseToMuscleFK'
+import { CreateModifiersTable1649424555802 } from './1649424555802-CreateModifiersTable'
+import { CreateExSelectModAvailableTable1650223174728 } from './1650223174728-CreateExSelectModAvailableTable'
+import { CreateExModTable1650227754167 } from './1650227754167-CreateExModTable'
 
 export const migrations = [
+  CreateMusclesTable1649424531604,
+  CreateModifiersTable1649424555802,
   CreateExercisesSelectTable1621964884049,
   CreateWorkoutTable1622070129180,
   CreateCardiosTable1622070166549,
@@ -16,4 +26,10 @@ export const migrations = [
   CreateWorkoutToCardioFK1622328685466,
   CreateWorkoutToExerciseFK1622328667572,
   CreateExerciseToSetFK1622328699766,
+  CreateExerciseSelectToMuscleFK1649522645911,
+  CreateExSelectAssistTable1649529609371,
+  CreateExAssistTable1649559160302,
+  CreateExerciseToMuscleFK1649559186904,
+  CreateExSelectModAvailableTable1650223174728,
+  CreateExModTable1650227754167,
 ]
