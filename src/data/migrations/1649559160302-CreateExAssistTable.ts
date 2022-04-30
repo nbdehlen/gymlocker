@@ -8,12 +8,12 @@ export class CreateExAssistTable1649559160302 implements MigrationInterface {
         columns: [
           {
             name: 'exerciseId',
-            type: 'integer',
+            type: 'varchar',
             isPrimary: true,
           },
           {
             name: 'muscleId',
-            type: 'integer',
+            type: 'varchar',
             isPrimary: true,
           },
         ],

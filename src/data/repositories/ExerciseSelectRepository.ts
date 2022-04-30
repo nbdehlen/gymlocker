@@ -41,7 +41,7 @@ export class ExerciseSelectRepository {
     return res
   }
 
-  public async getExercisesByMuscleId(muscleId: number, relations: string[]): Promise<ExerciseSelectModel[]> {
+  public async getExercisesByMuscleId(muscleId: string, relations: string[]): Promise<ExerciseSelectModel[]> {
     const exercises = await this.ormRepository.find({ where: { musclesId: muscleId }, ...(relations && { relations }) })
     return exercises
   }
@@ -50,7 +50,7 @@ export class ExerciseSelectRepository {
     await this.ormRepository.save(exercises)
   }
 
-  public async delete(id: number): Promise<void> {
+  public async delete(id: string): Promise<void> {
     await this.ormRepository.delete(id)
   }
 

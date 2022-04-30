@@ -4,8 +4,8 @@ import { ExerciseModel } from './ExerciseModel'
 
 @Entity({ name: 'workouts', schema: 'public' })
 export class WorkoutModel {
-  @PrimaryGeneratedColumn('increment')
-  id: number
+  @PrimaryGeneratedColumn('uuid')
+  id: string
 
   @Index()
   @Column({ unique: true, default: () => 'CURRENT_TIMESTAMP' })

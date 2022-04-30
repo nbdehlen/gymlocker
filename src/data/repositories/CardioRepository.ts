@@ -8,7 +8,7 @@ export interface ICreateCardioData {
   calories?: number
   distance_m: number
   order: number
-  workout_id?: number
+  workout_id?: string
 }
 
 export class CardioRepository {
@@ -75,7 +75,7 @@ export class CardioRepository {
   //     )
   //   }
 
-  public async delete(id: number): Promise<void> {
+  public async delete(id: string): Promise<void> {
     await this.ormRepository.delete(id)
   }
 

@@ -3,8 +3,8 @@ import { ExerciseModel } from './ExerciseModel'
 
 @Entity({ name: 'sets', schema: 'public' })
 export class SetModel {
-  @PrimaryGeneratedColumn('increment')
-  id: number
+  @PrimaryGeneratedColumn('uuid')
+  id: string
 
   @Column()
   weight_kg: number
@@ -20,7 +20,8 @@ export class SetModel {
   order: number
 
   @Column()
-  exerciseId: number
+  exerciseId: string
+
   @ManyToOne(() => ExerciseModel)
   @JoinColumn({ name: 'exerciseId' })
   exercise: ExerciseModel

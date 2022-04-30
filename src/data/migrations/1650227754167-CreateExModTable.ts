@@ -8,12 +8,12 @@ export class CreateExModTable1650227754167 implements MigrationInterface {
         columns: [
           {
             name: 'exerciseId',
-            type: 'integer',
+            type: 'varchar',
             isPrimary: true,
           },
           {
             name: 'modifierId',
-            type: 'integer',
+            type: 'varchar',
             isPrimary: true,
           },
         ],

@@ -6,7 +6,7 @@ export interface ICreateSetData {
   repetitions: number
   rir: number
   order: number
-  exerciseId?: number
+  exerciseId?: string
 }
 
 export class SetRepository {
@@ -26,6 +26,7 @@ export class SetRepository {
     const set = this.ormRepository.create({
       weight_kg,
       repetitions,
+      rir,
       order,
       exerciseId: exerciseId || 0,
     })
@@ -40,7 +41,7 @@ export class SetRepository {
     return data
   }
 
-  public async delete(id: number): Promise<void> {
+  public async delete(id: string): Promise<void> {
     await this.ormRepository.delete(id)
   }
 

@@ -5,10 +5,10 @@ import { MuscleModel } from './MuscleModel'
 @Entity({ name: 'exselectassist', schema: 'public' })
 export class ExSelectAssist {
   @PrimaryColumn()
-  exerciseSelectId: number
+  exerciseSelectId: string
 
   @PrimaryColumn()
-  muscleId: number
+  muscleId: string
 
   @ManyToOne(() => ExerciseSelectModel, (ex) => ex.assistingMuscles, { primary: true })
   @JoinColumn({ name: 'exerciseSelectId' })

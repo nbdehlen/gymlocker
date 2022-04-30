@@ -5,10 +5,10 @@ import { ModifierModel } from './ModifierModel'
 @Entity({ name: 'exmod', schema: 'public' })
 export class ExMod {
   @PrimaryColumn()
-  exerciseId: number
+  exerciseId: string
 
   @PrimaryColumn()
-  modifierId: number
+  modifierId: string
 
   @ManyToOne(() => ExerciseModel, (exercises) => exercises.modifiers, { primary: true })
   @JoinColumn({ name: 'exerciseId' })

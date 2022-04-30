@@ -33,14 +33,14 @@ export class WorkoutRepository {
     })
   }
 
-  public async getById(id: number, relations?: string[]): Promise<WorkoutModel[]> {
+  public async getById(id: string, relations?: string[]): Promise<WorkoutModel[]> {
     return await this.ormRepository.find({
       where: { id },
       ...(relations && { relations }),
     })
   }
 
-  public async workoutIdExists(id: number): Promise<boolean> {
+  public async workoutIdExists(id: string): Promise<boolean> {
     const workout = await this.ormRepository.find({ where: { id } })
     if (workout) {
       console.log(workout)
@@ -49,7 +49,7 @@ export class WorkoutRepository {
     return false
   }
 
-  public async getManyById(ids: number[], relations?: string[]): Promise<WorkoutModel[]> {
+  public async getManyById(ids: string[], relations?: string[]): Promise<WorkoutModel[]> {
     const workouts = await this.ormRepository.find({
       where: { id: In(ids) },
       ...(relations && { relations }),
@@ -119,7 +119,7 @@ export class WorkoutRepository {
   //     )
   //   }
 
-  public async delete(id: number): Promise<void> {
+  public async delete(id: string): Promise<void> {
     await this.ormRepository.delete(id)
   }
 
