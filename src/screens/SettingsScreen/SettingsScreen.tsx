@@ -211,7 +211,7 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
   const addSetsToExercises = useCallback(
     async (exercises: ExerciseModel[]) => {
       let setArray: number
-      let prevExerciseId: number
+      let prevExerciseId: string
 
       const setsPromises = exercises.map(async (exercise) => {
         // setArray update only on exercise change
@@ -244,7 +244,7 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
   )
 
   const getWorkoutById = useCallback(
-    async (id: number) => {
+    async (id: string) => {
       await workoutRepository
         .getById(id, [
           'exercises',
@@ -293,13 +293,13 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
     ]
   )
 
-  const getExerciseById = async (id: number) => {
+  const getExerciseById = async (id: string) => {
     await exerciseRepository
       .getById(id, ['sets'])
       .then((exercise) => exercise && console.log(JSON.stringify(exercise, null, 4)))
   }
 
-  const getSetById = async (id: number) => {
+  const getSetById = async (id: string) => {
     await workoutRepository
       .getById(id, ['exercises', 'exercises.sets'])
       .then((workout) => workout && console.log(JSON.stringify(workout, null, 4)))

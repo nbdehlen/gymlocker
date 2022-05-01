@@ -14,6 +14,8 @@ import { useDatabaseConnection } from '../../data/Connection'
 import { WorkoutModel } from '../../data/entities/WorkoutModel'
 import { DeepPartial } from 'typeorm'
 import ButtonGroup from '../../components/ButtonGroup'
+import 'react-native-get-random-values'
+import { v4 as uuidv4 } from 'uuid'
 
 /**
  * add cardios,
@@ -48,7 +50,7 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
 
   useEffect(() => {
     if (exercisesLen > 0 && !workout?.exercises?.[exercisesLen - 1].id) {
-      const newId = Math.random()
+      const newId = uuidv4()
       const workoutExercises = workout.exercises?.concat() || []
       workoutExercises[workoutExercises.length - 1].id = newId
 
@@ -120,12 +122,12 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
   const addSet = useCallback(
     (exercise: ExerciseModel | DeepPartial<ExerciseModel>, exerciseIndex: number) => {
       const newSet: DeepPartial<SetModel> = {
-        id: Math.random(),
+        id: uuidv4(),
         weight_kg: 300,
         repetitions: 99,
         rir: 99,
         order: exercise?.sets?.length || 0,
-        exerciseId: exercise?.id ?? Math.random(),
+        exerciseId: exercise?.id,
       }
 
       if (exercises?.length > 0) {

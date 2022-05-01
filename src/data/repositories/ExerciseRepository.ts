@@ -2,12 +2,12 @@ import { Connection, DeepPartial, Repository } from 'typeorm'
 import { ExAssist } from '../entities/ExAssist'
 import { ExerciseModel } from '../entities/ExerciseModel'
 import { ExMod } from '../entities/ExMod'
-// import { ModifierModel } from '../entities/ModifierModel'
 import { MuscleModel } from '../entities/MuscleModel'
 import { SetModel } from '../entities/SetModel'
 import { ICreateSetData } from './SetRepository'
 
 export interface ICreateExerciseData {
+  id?: string
   exercise: string
   order: number
   workout_id?: string
@@ -47,6 +47,7 @@ export class ExerciseRepository {
   }
 
   public async create({
+    id,
     exercise,
     muscles,
     order,
@@ -56,6 +57,7 @@ export class ExerciseRepository {
     sets,
   }: ICreateExerciseData): Promise<ExerciseModel> {
     const data = this.ormRepository.create({
+      ...(id && { id }),
       exercise,
       muscles,
       order,
@@ -74,38 +76,15 @@ export class ExerciseRepository {
   // created yet. A unique identifier is required for react keys.
   // Yes, it might not have been a good idea ;-)
   public async createOrUpdate(exerciseData: DeepPartial<ExerciseModel>): Promise<ExerciseModel> {
-    let exercise = exerciseData
-
-    if (!Number.isInteger(exerciseData.id)) {
-      delete exercise.id
-      exercise = await this.ormRepository.create(exercise)
-    }
-    const result = await this.ormRepository.save(exercise)
-
-    return result
+    const res = await this.ormRepository.save(exerciseData)
+    return res
   }
 
   public async createMany(exercises: ICreateExerciseData[]): Promise<ExerciseModel[]> {
-    // const data = this.ormRepository.create(exercises)
-
     const res = await this.ormRepository.save(exercises)
 
     return res
   }
-
-  //   public async toggle(id: number): Promise<void> {
-  //     await this.ormRepository.query(
-  //       `
-  //       UPDATE
-  //         todos
-  //       SET
-  //         is_toggled = ((is_toggled | 1) - (is_toggled & 1))
-  //       WHERE
-  //         id = ?;
-  //       `,
-  //       [id]
-  //     )
-  //   }
 
   public async delete(id: string): Promise<void> {
     await this.ormRepository.delete(id)

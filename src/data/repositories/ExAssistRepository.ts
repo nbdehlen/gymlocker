@@ -2,8 +2,8 @@ import { Connection, Repository } from 'typeorm'
 import { ExAssist } from '../entities/ExAssist'
 
 export interface ICreateExAssistData {
-  muscleId: number
-  exerciseId: number
+  muscleId: string
+  exerciseId: string
 }
 
 export class ExAssistRepository {
