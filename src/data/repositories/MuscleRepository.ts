@@ -1,5 +1,4 @@
 import { Connection, In, Repository } from 'typeorm'
-import { ExerciseSelectModel } from '../entities/ExerciseSelectModel'
 import { MuscleModel } from '../entities/MuscleModel'
 
 export interface ICreateMuscleData {
@@ -19,7 +18,7 @@ export class MuscleRepository {
     return muscles
   }
 
-  public async getById(id: number): Promise<MuscleModel[]> {
+  public async getById(id: string): Promise<MuscleModel[]> {
     return await this.ormRepository.find({
       where: { id },
     })
@@ -36,7 +35,7 @@ export class MuscleRepository {
     })
   }
 
-  public async muscleIdExists(id: number): Promise<boolean> {
+  public async muscleIdExists(id: string): Promise<boolean> {
     const muscle = await this.ormRepository.find({ where: { id } })
     if (muscle) {
       console.log(muscle)
@@ -63,7 +62,7 @@ export class MuscleRepository {
     return data
   }
 
-  public async delete(id: number): Promise<void> {
+  public async delete(id: string): Promise<void> {
     await this.ormRepository.delete(id)
   }
 

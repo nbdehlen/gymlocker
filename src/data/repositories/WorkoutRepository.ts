@@ -33,14 +33,14 @@ export class WorkoutRepository {
     })
   }
 
-  public async getById(id: number, relations?: string[]): Promise<WorkoutModel[]> {
+  public async getById(id: string, relations?: string[]): Promise<WorkoutModel[]> {
     return await this.ormRepository.find({
       where: { id },
       ...(relations && { relations }),
     })
   }
 
-  public async workoutIdExists(id: number): Promise<boolean> {
+  public async workoutIdExists(id: string): Promise<boolean> {
     const workout = await this.ormRepository.find({ where: { id } })
     if (workout) {
       console.log(workout)
@@ -49,7 +49,7 @@ export class WorkoutRepository {
     return false
   }
 
-  public async getManyById(ids: number[], relations?: string[]): Promise<WorkoutModel[]> {
+  public async getManyById(ids: string[], relations?: string[]): Promise<WorkoutModel[]> {
     const workouts = await this.ormRepository.find({
       where: { id: In(ids) },
       ...(relations && { relations }),
@@ -69,18 +69,8 @@ export class WorkoutRepository {
     })
   }
 
-  // Using Math.random() as id on frontend for workouts that haven't been
-  // created yet. A unique identifier is required for react keys.
-  // Yes, it might not have been a good idea ;-)
   public async createOrUpdate(workoutData: DeepPartial<WorkoutModel>): Promise<WorkoutModel> {
-    let newWorkoutData = workoutData
-
-    if (!Number.isInteger(newWorkoutData.id)) {
-      delete newWorkoutData.id
-      newWorkoutData = await this.ormRepository.create(newWorkoutData)
-    }
-
-    const res = await this.ormRepository.save(newWorkoutData)
+    const res = await this.ormRepository.save(workoutData)
     return res
   }
 
@@ -105,21 +95,8 @@ export class WorkoutRepository {
     const workouts = await this.ormRepository.save(workoutData)
     return workouts
   }
-  //   public async toggle(id: number): Promise<void> {
-  //     await this.ormRepository.query(
-  //       `
-  //       UPDATE
-  //         todos
-  //       SET
-  //         is_toggled = ((is_toggled | 1) - (is_toggled & 1))
-  //       WHERE
-  //         id = ?;
-  //       `,
-  //       [id]
-  //     )
-  //   }
 
-  public async delete(id: number): Promise<void> {
+  public async delete(id: string): Promise<void> {
     await this.ormRepository.delete(id)
   }
 

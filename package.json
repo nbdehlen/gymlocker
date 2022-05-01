@@ -34,6 +34,7 @@
     "react-native-collapsible": "^1.6.0",
     "react-native-draggable-flatlist": "^3.0.6",
     "react-native-gesture-handler": "~2.1.0",
+    "react-native-get-random-values": "~1.7.0",
     "react-native-magnus": "^1.0.62",
     "react-native-modal": "^11.10.0",
     "react-native-reanimated": "~2.3.1",
@@ -43,6 +44,7 @@
     "react-native-web": "0.17.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.31",
+    "uuid": "^8.3.2",
     "validate-color": "^2.2.1"
   },
   "devDependencies": {
@@ -51,6 +53,7 @@
     "@types/react": "~17.0.21",
     "@types/react-native": "~0.64.12",
     "@types/react-native-calendars": "^1.1264.3",
+    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.12.0",
     "@typescript-eslint/parser": "^5.12.0",
     "babel-plugin-transform-typescript-metadata": "^0.3.2",

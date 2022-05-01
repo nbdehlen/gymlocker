@@ -23,6 +23,8 @@ import { DrawerRoute, ScreenRoute } from '../../navigation/NAV_CONSTANTS'
 import DrawerNavigation from '../../navigation/DrawerNavigation'
 import WorkoutSummary from '../../components/WorkoutSummary'
 import CustomButton, { ButtonEnum } from '../../components/CustomButton'
+import 'react-native-get-random-values'
+import { v4 as uuidv4 } from 'uuid'
 
 type OwnProps = {}
 
@@ -130,7 +132,7 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
   const onPressAddWorkout = () =>
     // NOTE: Id used as rendering key. The actual workout id is always set by the database.
     addWorkout({
-      id: Math.random(),
+      id: uuidv4(),
       start: new Date(),
       end: new Date(Date.now() + 2 * 60 * 60 * 1000),
       cardios: [],
@@ -141,8 +143,8 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
     navigation.navigate(DrawerRoute.GYM_DRAWER, { screen: ScreenRoute.WORKOUT_EDIT, params: { workout } })
 
   const onPressEditWorkout = (workout: WorkoutModel) => {
-    // NOTE: Typeorm doesn't support sorting of relations.
-    // Might be possible in 0.3 released 20 days ago though.
+    // TODO: Typeorm doesn't support sorting of relations afaik.
+    // Might be possible in version 0.3
     const exercises = workout?.exercises?.sort((a, b) => a.order - b.order)
     navigation.navigate(ScreenRoute.WORKOUT_DETAILS, {
       workout: {

@@ -1,14 +1,14 @@
 import { Connection, Repository } from 'typeorm'
 import { CardioModel } from '../entities/CardioModel'
-import { WorkoutModel } from '../entities/WorkoutModel'
 
 export interface ICreateCardioData {
+  id?: string
   cardioType?: string
   duration_minutes: number
   calories?: number
   distance_m: number
   order: number
-  workout_id?: number
+  workout_id?: string
 }
 
 export class CardioRepository {
@@ -61,21 +61,7 @@ export class CardioRepository {
     return cardio
   }
 
-  //   public async toggle(id: number): Promise<void> {
-  //     await this.ormRepository.query(
-  //       `
-  //       UPDATE
-  //         todos
-  //       SET
-  //         is_toggled = ((is_toggled | 1) - (is_toggled & 1))
-  //       WHERE
-  //         id = ?;
-  //       `,
-  //       [id]
-  //     )
-  //   }
-
-  public async delete(id: number): Promise<void> {
+  public async delete(id: string): Promise<void> {
     await this.ormRepository.delete(id)
   }
 

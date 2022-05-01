@@ -8,10 +8,11 @@ export class CreateExercisesSelectTable1621964884049 implements MigrationInterfa
         columns: [
           {
             name: 'id',
-            type: 'integer',
+            type: 'varchar',
             isPrimary: true,
             isGenerated: true,
-            generationStrategy: 'increment',
+            generationStrategy: 'uuid',
+            default: 'uuid_generate_v4()',
           },
           { name: 'exercise', type: 'text' },
           { name: 'custom', type: 'boolean' },

@@ -14,6 +14,8 @@ import { useDatabaseConnection } from '../../data/Connection'
 import { WorkoutModel } from '../../data/entities/WorkoutModel'
 import { DeepPartial } from 'typeorm'
 import ButtonGroup from '../../components/ButtonGroup'
+import 'react-native-get-random-values'
+import { v4 as uuidv4 } from 'uuid'
 
 /**
  * add cardios,
@@ -34,8 +36,9 @@ type Props = OwnProps & {
 
 // IDEA: onSwipeLeft/right - delete button, undo?  different for if in edit mode?
 export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
-  const { workoutRepository, exerciseRepository, setRepository } = useDatabaseConnection()
+  const { workoutRepository, exerciseRepository, setRepository, muscleRepository } = useDatabaseConnection()
   const { workout } = route.params
+  console.log('in component', { workoutId: workout?.id })
   const dateRef = useRef({
     // TODO: use ISOString?
     startDate: workout.start,
@@ -47,7 +50,7 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
 
   useEffect(() => {
     if (exercisesLen > 0 && !workout?.exercises?.[exercisesLen - 1].id) {
-      const newId = Math.random()
+      const newId = uuidv4()
       const workoutExercises = workout.exercises?.concat() || []
       workoutExercises[workoutExercises.length - 1].id = newId
 
@@ -80,12 +83,24 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
   }
 
   const saveWorkout = async (workoutData: DeepPartial<WorkoutModel>) => {
+    // TODO: Everytime I press save it creates a new workout
     const { id: workoutId } = await workoutRepository.createOrUpdate(workoutData)
+    console.log('in saveWorkout', { workoutId })
 
     const exercisePromises = exercises.map(async (ex, i) => {
+      // Convert muscles string to MuscleModel
+      let musclesData
+      if (ex?.muscles) {
+        // muscles will exist when adding new exercises
+        musclesData = await muscleRepository.getByNames([ex.muscles])
+      } else {
+        // musclesId will exist when updating exercises
+        musclesData = await muscleRepository.getById(ex.musclesId)
+      }
+
       const res = await exerciseRepository.createOrUpdate({
-        // TODO: Order based on flatlist drag
         ...ex,
+        muscles: musclesData[0],
         workout_id: workoutId,
         order: i,
       })
@@ -95,11 +110,11 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
     const exerciseP = await Promise.all(exercisePromises)
 
     // TODO: Restructure state since we have to call things one by one like this. Especially sets as its own state
-    const setPromises = exerciseP.map(async (ex) =>
+    const setPromises = exerciseP.map(async (ex) => {
       ex.sets.map(async (set, i) => {
-        await setRepository.createOrUpdate({ ...set, exercise_id: ex?.id, order: i })
+        await setRepository.createOrUpdate({ ...set, exerciseId: ex?.id, order: i })
       })
-    )
+    })
 
     await Promise.all(setPromises)
   }
@@ -107,12 +122,12 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
   const addSet = useCallback(
     (exercise: ExerciseModel | DeepPartial<ExerciseModel>, exerciseIndex: number) => {
       const newSet: DeepPartial<SetModel> = {
-        id: Math.random(),
+        id: uuidv4(),
         weight_kg: 300,
         repetitions: 99,
         rir: 99,
         order: exercise?.sets?.length || 0,
-        exercise_id: exercise?.id ?? Math.random(),
+        exerciseId: exercise?.id,
       }
 
       if (exercises?.length > 0) {

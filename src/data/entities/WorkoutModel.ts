@@ -4,14 +4,14 @@ import { ExerciseModel } from './ExerciseModel'
 
 @Entity({ name: 'workouts', schema: 'public' })
 export class WorkoutModel {
-  @PrimaryGeneratedColumn('increment')
-  id: number
+  @PrimaryGeneratedColumn('uuid')
+  id: string
 
   @Index()
-  @Column({ unique: true, default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
   start: Date
 
-  @Column({ unique: true, default: () => 'CURRENT_TIMESTAMP' })
+  @Column({ default: () => 'CURRENT_TIMESTAMP' })
   end: Date
 
   @OneToMany(() => CardioModel, (cardio) => cardio.workout)

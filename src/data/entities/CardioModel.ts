@@ -3,8 +3,8 @@ import { WorkoutModel } from './WorkoutModel'
 
 @Entity({ name: 'cardios', schema: 'public' })
 export class CardioModel {
-  @PrimaryGeneratedColumn('increment')
-  id: number
+  @PrimaryGeneratedColumn('uuid')
+  id: string
 
   @Column({ nullable: true })
   cardioType: string
@@ -23,7 +23,7 @@ export class CardioModel {
   order: number
 
   @Column()
-  workout_id: number
+  workout_id: string
 
   @ManyToOne(() => WorkoutModel)
   @JoinColumn({ name: 'workout_id' })
