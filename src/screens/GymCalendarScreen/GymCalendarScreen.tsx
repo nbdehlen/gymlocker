@@ -130,7 +130,6 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
   }
 
   const onPressAddWorkout = () =>
-    // NOTE: Id used as rendering key. The actual workout id is always set by the database.
     addWorkout({
       id: uuidv4(),
       start: new Date(),
@@ -142,16 +141,32 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
   const addWorkout = (workout: WorkoutModel) =>
     navigation.navigate(DrawerRoute.GYM_DRAWER, { screen: ScreenRoute.WORKOUT_EDIT, params: { workout } })
 
-  const onPressEditWorkout = (workout: WorkoutModel) => {
+  const onPressEditWorkout = async (workout: WorkoutModel) => {
+    const detailedWorkout = await workoutRepository.getById(workout.id, [
+      'cardios',
+      'exercises',
+      'exercises.sets',
+      'exercises.modifiers',
+      'exercises.modifiers.modifier',
+      'exercises.exerciseSelect',
+      'exercises.exerciseSelect.muscles',
+      'exercises.exerciseSelect.assistingMuscles',
+      'exercises.exerciseSelect.modifiersAvailable',
+      'exercises.exerciseSelect.modifiersAvailable.modifier',
+    ])
     // TODO: Typeorm doesn't support sorting of relations afaik.
-    // Might be possible in version 0.3
-    const exercises = workout?.exercises?.sort((a, b) => a.order - b.order)
-    navigation.navigate(ScreenRoute.WORKOUT_DETAILS, {
-      workout: {
-        ...workout,
-        exercises,
-      },
-    })
+    // Should be possible in version 0.3 but ran into issues
+    // updating to newer version of Typeorm.
+    if (detailedWorkout) {
+      const exercises = detailedWorkout.exercises?.sort((a, b) => a.order - b.order)
+
+      navigation.navigate(ScreenRoute.WORKOUT_DETAILS, {
+        workout: {
+          ...detailedWorkout,
+          exercises,
+        },
+      })
+    }
   }
 
   return (

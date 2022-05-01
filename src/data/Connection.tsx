@@ -21,8 +21,6 @@ import { MuscleRepository } from './repositories/MuscleRepository'
 import { ExSelectAssistRepository } from './repositories/ExSelectAssistRepository'
 import { ExSelectAssist } from './entities/ExSelectAssist'
 import theme from '../utils/theme'
-import { ExAssistRepository } from './repositories/ExAssistRepository'
-import { ExAssist } from './entities/ExAssist'
 import { ModifierRepository } from './repositories/ModifierRepository'
 import { ExSelectModAvailableRepository } from './repositories/ExSelectModAvailableRepository'
 import { ExSelectModAvailable } from './entities/ExSelectModAvailable'
@@ -38,7 +36,6 @@ interface DatabaseConnectionContextData {
   setRepository: SetRepository
   cardioRepository: CardioRepository
   exSelectAssistRepository: ExSelectAssistRepository
-  exAssistRepository: ExAssistRepository
   exSelectModAvailableRepository: ExSelectModAvailableRepository
   exModRepository: ExModRepository
 }
@@ -62,7 +59,6 @@ export const DatabaseConnectionProvider: React.FC = ({ children }) => {
         CardioModel,
         SetModel,
         ExSelectAssist,
-        ExAssist,
         ModifierModel,
         ExSelectModAvailable,
         ExMod,
@@ -103,7 +99,6 @@ export const DatabaseConnectionProvider: React.FC = ({ children }) => {
         setRepository: new SetRepository(connection),
         cardioRepository: new CardioRepository(connection),
         exSelectAssistRepository: new ExSelectAssistRepository(connection),
-        exAssistRepository: new ExAssistRepository(connection),
         exSelectModAvailableRepository: new ExSelectModAvailableRepository(connection),
         exModRepository: new ExModRepository(connection),
       }}

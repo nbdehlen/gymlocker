@@ -1,7 +1,6 @@
 import { Column, Entity, Index, JoinColumn, JoinTable, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
-import { ExAssist } from './ExAssist'
+import { ExerciseSelectModel } from './ExerciseSelectModel'
 import { ExMod } from './ExMod'
-import { MuscleModel } from './MuscleModel'
 import { SetModel } from './SetModel'
 import { WorkoutModel } from './WorkoutModel'
 
@@ -22,23 +21,11 @@ export class ExerciseModel {
 
   @ManyToOne(() => WorkoutModel)
   @JoinColumn({ name: 'workout_id' })
-  workout: WorkoutModel
+  workout?: WorkoutModel
 
   @OneToMany(() => SetModel, (set) => set.exercise)
   @JoinTable()
   sets: SetModel[]
-
-  @ManyToOne(() => MuscleModel)
-  muscles: MuscleModel
-
-  @Column()
-  musclesId: string
-
-  @OneToMany(() => ExAssist, (exAssist) => exAssist.exercise, {
-    onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
-  })
-  assistingMuscles?: ExAssist[]
 
   @OneToMany(() => ExMod, (exMod) => exMod.exercise, {
     onDelete: 'CASCADE',
@@ -46,4 +33,11 @@ export class ExerciseModel {
   })
   @JoinTable()
   modifiers?: ExMod[]
+
+  @Column()
+  exerciseSelectId: string
+
+  @ManyToOne(() => ExerciseSelectModel)
+  @JoinColumn({ name: 'exerciseSelectId' })
+  exerciseSelect?: ExerciseSelectModel
 }

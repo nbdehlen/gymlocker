@@ -34,6 +34,7 @@ type Props = OwnProps & {
   route: RouteProp<WorkoutParamList, ScreenRoute.WORKOUT_EDIT>
 }
 
+// TODO: when editing, workouts are not updated in details and calendar
 // IDEA: onSwipeLeft/right - delete button, undo?  different for if in edit mode?
 export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
   const { workoutRepository, exerciseRepository, setRepository, muscleRepository } = useDatabaseConnection()
@@ -49,18 +50,17 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
   const [expand, setExpand] = useState(false)
 
   useEffect(() => {
-    if (exercisesLen > 0 && !workout?.exercises?.[exercisesLen - 1].id) {
-      const newId = uuidv4()
-      const workoutExercises = workout.exercises?.concat() || []
-      workoutExercises[workoutExercises.length - 1].id = newId
-
-      setExercises((prev) => [...prev, workoutExercises[workoutExercises.length - 1]])
+    // NOTE: Not sure this will work
+    if (exercisesLen > 0 && workout.exercises?.length !== exercises.length) {
+      // NOTE: This useEffect is for when adding new exercises through drawer.
+      // It looks like it could break in multiple other cases.
+      setExercises(workout.exercises ?? [])
       setExpand(true)
     }
   }, [workout, exercises, exercisesLen])
 
   const onPressSaveWorkout = async () => {
-    const newWorkoutData: DeepPartial<WorkoutModel> = {
+    const newWorkoutData: WorkoutModel = {
       start: dateRef.current?.startDate,
       end: dateRef.current?.endDate,
       ...(exercises && { exercises }),
@@ -82,26 +82,14 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
     }
   }
 
-  const saveWorkout = async (workoutData: DeepPartial<WorkoutModel>) => {
+  const saveWorkout = async (workoutData: WorkoutModel) => {
     // TODO: Everytime I press save it creates a new workout
     const { id: workoutId } = await workoutRepository.createOrUpdate(workoutData)
     console.log('in saveWorkout', { workoutId })
 
     const exercisePromises = exercises.map(async (ex, i) => {
-      // Convert muscles string to MuscleModel
-      let musclesData
-      if (ex?.muscles) {
-        // muscles will exist when adding new exercises
-        musclesData = await muscleRepository.getByNames([ex.muscles])
-      } else {
-        // musclesId will exist when updating exercises
-        musclesData = await muscleRepository.getById(ex.musclesId)
-      }
-
       const res = await exerciseRepository.createOrUpdate({
         ...ex,
-        muscles: musclesData[0],
-        workout_id: workoutId,
         order: i,
       })
       return res
@@ -119,6 +107,8 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
     await Promise.all(setPromises)
   }
 
+  // TODO: Fix 0kg for bodyweight exercises (like rir maybe?)
+  // TODO: Fix smart default values of previous set or previous this exercise
   const addSet = useCallback(
     (exercise: ExerciseModel | DeepPartial<ExerciseModel>, exerciseIndex: number) => {
       const newSet: DeepPartial<SetModel> = {
@@ -198,8 +188,8 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
               <B.Spacer w={8} />
             </Collapse.Header>
             <Collapse.Body pt="lg" pb="none">
-              {item?.modifiersAvailable?.length > 0 && (
-                <ButtonGroup modifiersAvailable={item.modifiersAvailable} modifiers={item?.modifiers} />
+              {item.exerciseSelect?.modifiersAvailable?.length > 0 && (
+                <ButtonGroup modifiersAvailable={item.exerciseSelect.modifiersAvailable} modifiers={item?.modifiers} />
               )}
               {item?.sets && (
                 <SetsTable

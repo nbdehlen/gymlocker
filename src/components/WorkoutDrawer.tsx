@@ -11,10 +11,12 @@ import muscles from '../data/seeding/starter/muscles/muscles.json'
 import { ucFirst } from '../helpers/general'
 import { MuscleModel } from '../data/entities/MuscleModel'
 import { ExerciseModel } from '../data/entities/ExerciseModel'
+import 'react-native-get-random-values'
+import { v4 as uuidv4 } from 'uuid'
 
 const WorkoutDrawer: FunctionComponent<{ workout: WorkoutModel }> = ({ workout }) => {
   const { exerciseSelectRepository, muscleRepository } = useDatabaseConnection()
-  const [exercises, setExercises] = useState<ExerciseSelectModel[]>([])
+  const [drawerExercises, setDrawerExercises] = useState<ExerciseSelectModel[]>([])
   const [drawerIndex, setDrawerIndex] = useState(0)
   const navigation = useNavigation()
 
@@ -23,46 +25,39 @@ const WorkoutDrawer: FunctionComponent<{ workout: WorkoutModel }> = ({ workout }
 
     if (muscle instanceof MuscleModel) {
       const exercisesForMuscleGroup = await exerciseSelectRepository.getExercisesByMuscleId(muscle.id, [
-        'muscles',
         'modifiersAvailable',
         'modifiersAvailable.modifier',
       ])
 
       if (exercisesForMuscleGroup?.length > 0) {
-        setExercises(exercisesForMuscleGroup)
+        setDrawerExercises(exercisesForMuscleGroup)
         setDrawerIndex(1)
       }
     }
   }
-
-  const onPressExercise = (exercise: Partial<ExerciseModel> | ExerciseSelectModel) => {
-    // TODO: global state, useRoute or send as navigation Props?
-    // Send to which screen if starting out on add/edit?
-
-    const selectedExercise = {
+  const onPressDrawerExercise = (exercise: ExerciseSelectModel) => {
+    // Adding an exercise to the workout from drawer
+    const selectedExercise: ExerciseModel = {
+      id: uuidv4(),
       exercise: exercise.exercise,
-      muscles: exercise.muscles.muscle,
-      assistingMuscles: exercise.assistingMuscles,
-      modifiersAvailable: exercise.modifiersAvailable,
-      modifiers: exercise.modifiers,
       order: workout?.exercises?.length ?? 0,
       sets: [],
+      modifiers: [],
+      workout_id: workout.id,
+      exerciseSelectId: exercise.id,
+      exerciseSelect: exercise,
     }
-    // TODO: Modifiers AND modifiersAvailable on EditWorkoutScreen
+
     const newWorkout = {
       ...workout,
-      exercises: [...workout?.exercises, selectedExercise],
+      exercises: workout.exercises ? [...workout.exercises, selectedExercise] : [selectedExercise],
     }
 
     navigation.navigate(ScreenRoute.WORKOUT_EDIT, { workout: newWorkout })
-
-    // TODO: Think global state makes sense if I'm gonna have 2 screens (add and edit workout).
-    // Also not sure I can "add" to the props becasue the workout is needed for edit screen.
-
-    // TODO: Hide header and simulate back button?
   }
 
-  //TODO: Add animation for back/forth between the drawers
+  // TODO: Hide header and simulate back button?
+  // TODO: Add animation for back/forth between the drawers
   return (
     <ScrollDiv bg={theme.primary.color} h="100%">
       {drawerIndex === 0 && (
@@ -101,11 +96,11 @@ const WorkoutDrawer: FunctionComponent<{ workout: WorkoutModel }> = ({ workout }
             )}
             preset={ButtonEnum.LIST_ITEM}
           />
-          {exercises.map((exercise) => (
+          {drawerExercises.map((drawerExercise) => (
             <CustomButton
-              text={exercise.exercise}
-              onPress={() => onPressExercise(exercise)}
-              key={exercise.id}
+              text={drawerExercise.exercise}
+              onPress={() => onPressDrawerExercise(drawerExercise)}
+              key={drawerExercise.id}
               preset={ButtonEnum.LIST_ITEM}
             />
           ))}

@@ -33,8 +33,8 @@ export class WorkoutRepository {
     })
   }
 
-  public async getById(id: string, relations?: string[]): Promise<WorkoutModel[]> {
-    return await this.ormRepository.find({
+  public async getById(id: string, relations?: string[]): Promise<WorkoutModel | void> {
+    return await this.ormRepository.findOne({
       where: { id },
       ...(relations && { relations }),
     })

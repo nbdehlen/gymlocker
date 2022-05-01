@@ -20,15 +20,15 @@ export class CreateExerciseTable1622070137142 implements MigrationInterface {
             type: 'text',
           },
           {
-            name: 'musclesId',
-            type: 'integer',
-          },
-          {
             name: 'order',
             type: 'integer',
           },
           {
             name: 'workout_id',
+            type: 'integer',
+          },
+          {
+            name: 'exerciseSelectId',
             type: 'integer',
           },
         ],
