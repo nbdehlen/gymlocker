@@ -1,4 +1,5 @@
 import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { ExerciseModel } from './ExerciseModel'
 import { ExSelectAssist } from './ExSelectAssist'
 import { ExSelectModAvailable } from './ExSelectModAvailable'
 import { MuscleModel } from './MuscleModel'
@@ -31,4 +32,10 @@ export class ExerciseSelectModel {
     onUpdate: 'CASCADE',
   })
   modifiersAvailable: ExSelectModAvailable[]
+
+  @OneToMany(() => ExerciseModel, (exercise) => exercise.exerciseSelect, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
+  exercises?: ExerciseModel[]
 }

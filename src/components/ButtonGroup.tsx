@@ -6,32 +6,42 @@ import { ModifierModel } from '../data/entities/ModifierModel'
 import theme from '../utils/theme'
 import CustomButton, { ButtonEnum } from './CustomButton'
 
-const compare = (modifiersSelected: Array<ExMod | ExSelectModAvailable>, modAvailable: ModifierModel) => {
-  const res = modifiersSelected.filter((mod) => mod.modifier.id === modAvailable.id)
+const compare = (modifiersSelected: Array<ModifierModel>, modAvailable: ModifierModel): boolean => {
+  const res = modifiersSelected.filter((mod) => mod.id === modAvailable.id)
   return res?.length > 0
 }
 
 type OwnProps = {
   modifiers: ExMod[]
   modifiersAvailable: ExSelectModAvailable[]
-  modifiersRef?: any
+  addModsToExercise: (exerciseIndex: number, modifiers: ExMod[]) => void
+  exerciseIndex: number
+  exerciseId: string
 }
 
 type Props = OwnProps
 
-const ButtonGroup: FunctionComponent<Props> = ({ modifiersAvailable, modifiers, modifiersRef }) => {
-  const [mods, setMods] = useState<Array<ExMod | ExSelectModAvailable>>(modifiers ?? [])
+const ButtonGroup: FunctionComponent<Props> = ({
+  modifiersAvailable,
+  modifiers,
+  addModsToExercise,
+  exerciseIndex,
+  exerciseId,
+}) => {
+  const modProps = modifiers.map((mod) => mod.modifier!)
+  const [mods, setMods] = useState<ModifierModel[]>(modProps)
 
-  const handleMods = (mod: ExSelectModAvailable, isSelected: boolean) => {
+  const handleMods = (mod: ModifierModel, isSelected: boolean) => {
+    let modsArr: ModifierModel[]
     if (isSelected) {
-      setMods((prevMod) => [
-        ...prevMod.slice(0, prevMod.indexOf(mod)),
-        ...prevMod.slice(prevMod.indexOf(mod) + 1, prevMod.length),
-      ])
+      const selectedModIndex = mods.findIndex((m) => m.id === mod.id)
+      modsArr = [...mods.slice(0, selectedModIndex), ...mods.slice(selectedModIndex + 1, mods.length)]
     } else {
-      setMods((prevMod) => [...prevMod, mod])
+      modsArr = [...mods, mod]
     }
-    // modifiersRef?.current = mods
+    const modsToExMods = modsArr.map((m): ExMod => ({ exerciseId, modifier: m, modifierId: m.id }))
+    setMods(modsArr)
+    addModsToExercise(exerciseIndex, modsToExMods)
   }
 
   return (
@@ -40,10 +50,10 @@ const ButtonGroup: FunctionComponent<Props> = ({ modifiersAvailable, modifiers, 
         Options:
       </Text>
       {modifiersAvailable.map((mod, i) => {
-        const isSelected = mods?.length > 0 && compare(mods, mod.modifier)
+        const isSelected = modifiers?.length > 0 && compare(mods, mod.modifier)
         const buttonPreset = isSelected ? ButtonEnum.SELECTED : ButtonEnum.OPTION
         const marginRight = i < modifiersAvailable.length ? 8 : 0
-        const toggleMods = () => handleMods(mod, isSelected)
+        const toggleMods = () => handleMods(mod.modifier, isSelected)
 
         return (
           <Div mr={marginRight} key={mod.modifier.id}>

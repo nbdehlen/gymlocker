@@ -12,9 +12,9 @@ export class ExMod {
 
   @ManyToOne(() => ExerciseModel, (exercises) => exercises.modifiers, { primary: true })
   @JoinColumn({ name: 'exerciseId' })
-  exercise: ExerciseModel
+  exercise?: ExerciseModel
 
   @ManyToOne(() => ModifierModel, (exMod) => exMod.exercise, { primary: true })
   @JoinColumn({ name: 'modifierId' })
-  modifier: ModifierModel
+  modifier?: ModifierModel
 }

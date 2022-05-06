@@ -1,4 +1,4 @@
-import { Connection, Repository } from 'typeorm'
+import { Connection, In, Not, Repository } from 'typeorm'
 import { ExMod } from '../entities/ExMod'
 
 export interface ICreateExModData {
@@ -37,5 +37,31 @@ export class ExModRepository {
 
   public async deleteAll(): Promise<void> {
     await this.ormRepository.clear()
+  }
+
+  public async updateExModsForExercise(modifiers: ExMod[] = [], exerciseId: string): Promise<void> {
+    const modifierIds = modifiers.map((mod) => mod.modifierId)
+
+    if (modifierIds.length === 0) {
+      // When no modifiers were selected, delete all modifiers/ExMods for the exercise
+      const modsToBeRemoved = await this.ormRepository.find({ exerciseId })
+
+      if (modsToBeRemoved.length > 0) {
+        await this.ormRepository.remove(modsToBeRemoved)
+      }
+    } else {
+      // Mods that are not in the modifiers prop gets deleted
+      const modsToBeRemoved = await this.ormRepository.find({
+        exerciseId,
+        modifierId: Not(In(modifierIds)),
+      })
+
+      if (modsToBeRemoved.length > 0) {
+        await this.ormRepository.remove(modsToBeRemoved)
+      }
+
+      // Create or update mods
+      await this.ormRepository.save(modifiers)
+    }
   }
 }

@@ -17,8 +17,8 @@ export class ExerciseSelectRepository {
     this.ormRepository = connection.getRepository(ExerciseSelectModel)
   }
 
-  public async getAll(): Promise<ExerciseSelectModel[]> {
-    const exercisesSelect = await this.ormRepository.find()
+  public async getAll(relations?: string[]): Promise<ExerciseSelectModel[]> {
+    const exercisesSelect = await this.ormRepository.find({ ...(relations && { relations }) })
 
     return exercisesSelect
   }

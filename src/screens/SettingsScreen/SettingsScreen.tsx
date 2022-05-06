@@ -2,7 +2,7 @@ import React, { FunctionComponent, useCallback, useState } from 'react'
 import { useDatabaseConnection } from '../../data/Connection'
 import { Button, Div, Icon, Text } from 'react-native-magnus'
 import sampleData from '../../data/seeding/sampleData'
-import { exerciseSelect } from '../../data/seeding/starter/exerciseSelect'
+import { exerciseSelect as exerciseSelectJSON } from '../../data/seeding/starter/exerciseSelect'
 import theme, { B } from '../../utils/theme'
 import getRandomDateWithinPeriod from '../../data/seeding/utils/getRandomDateWithinPeriod'
 import { add, sub } from 'date-fns'
@@ -18,6 +18,10 @@ import { FlatList, ListRenderItem } from 'react-native'
 import CustomButton, { ButtonEnum } from '../../components/CustomButton'
 import { ICreateExAssistData } from '../../data/repositories/ExAssistRepository'
 import { ICreateExModData } from '../../data/repositories/ExModRepository'
+import 'react-native-get-random-values'
+import { v4 as uuidv4 } from 'uuid'
+import { ExMod } from '../../data/entities/ExMod'
+import { ExSelectModAvailable } from '../../data/entities/ExSelectModAvailable'
 
 const randomIntFromInterval = (min: number, max: number): number => {
   // min and max included
@@ -76,81 +80,55 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
 
   const addExercisesToWorkout = useCallback(
     async (workout: WorkoutModel, exerciseIndexes: number[]): Promise<ExerciseModel[]> => {
-      const newExercises: ICreateExerciseData[] = []
-      // NOTE: Another way of keeping track of order
-      // let order = 0
-      const assistingMusclesArrs: number[][] = []
-      const exSelectModAvailableArrs: number[][] = []
+      const newExercises: ExerciseModel[] = []
+      const exerciseSelect = await exerciseSelectRepository.getAll(['modifiersAvailable'])
+      let modifiersArr: ExMod[] = []
 
       const promises = exerciseSelect.map(async (exercise, i) => {
         if (exerciseIndexes.includes(i)) {
-          // Convert muscles string to MuscleModel
-          const musclesData = await muscleRepository.getByNames([exercise.muscles])
           const addLen = newExercises.length
           const exLen = workout.exercises?.length || 0
           const order = addLen + exLen
+          const exerciseId = uuidv4()
+          const modifiers = exercise.modifiersAvailable.reduce((acc: ExMod[], cur: ExSelectModAvailable) => {
+            // Flip if we add it or not:
+            const randomNum = Math.random()
+            if (randomNum > 0.5) {
+              const modifier = {
+                exerciseId,
+                modifierId: cur.modifierId,
+              }
+
+              return [...acc, modifier]
+            }
+            return acc
+          }, [])
+
+          // Add all ExMods to an array to save the relationship later
+          modifiersArr = [...modifiersArr, ...modifiers]
 
           newExercises.push({
+            id: exerciseId,
             exercise: exercise.exercise,
-            muscles: musclesData[0],
             workout_id: workout.id,
             order,
+            exerciseSelectId: exercise.id,
+            exerciseSelect: exercise,
+            sets: [],
           })
-          // order += 1
-
-          // Save Ids for assisting muscles
-          const assistingMuscleModels = await muscleRepository.getByNames(exercise.assistingMuscles)
-          assistingMusclesArrs.push(assistingMuscleModels.map((ast) => ast.id))
-
-          // get exSelectModAvailable for exercise
-          const exSelectModAvailableModels = await modifierRepository.getByNames(exercise.modifiers)
-          exSelectModAvailableArrs.push(exSelectModAvailableModels.map((mod) => mod.id))
         }
       })
       await Promise.all(promises)
 
       if (newExercises?.length > 0) {
         const createExercises = await exerciseRepository.createMany(newExercises)
-
-        // assisting muscles
-        const exAssistIds: ICreateExAssistData[] = []
-        assistingMusclesArrs.forEach((muscleArr, i) => {
-          // Extract the muscleIds from the nested arrays of muscleId and pair with it's exerciseId.
-          muscleArr.forEach((muscleId) => {
-            exAssistIds.push({
-              exerciseId: createExercises[i].id,
-              muscleId,
-            })
-          })
-        })
-
-        await exAssistRepository.saveMany(exAssistIds)
-
-        // modifiers
-        const exModIds: ICreateExModData[] = []
-        exSelectModAvailableArrs.forEach((exModAvailableArr, i) => {
-          // Select some of the modifiers at random since we can select any
-          // that is available in exSelectModsAvailable. Caveat is that
-          // you can select for example 'wide' and 'narrow' on the same
-          // exercise which doesn't make sense.
-          exModAvailableArr.forEach((modifierId) => {
-            // Flip if we want to add it or not:
-            const randomNum = Math.random()
-            if (randomNum > 0.5) {
-              exModIds.push({
-                exerciseId: createExercises[i].id,
-                modifierId,
-              })
-            }
-          })
-        })
-        await exModRepository.saveMany(exModIds)
+        await exModRepository.saveMany(modifiersArr)
 
         return createExercises
       }
       return []
     },
-    [exerciseRepository, muscleRepository, exAssistRepository, modifierRepository, exModRepository]
+    [exerciseRepository, exerciseSelectRepository, exModRepository]
   )
 
   const addSetsToExercise = useCallback(
@@ -195,7 +173,7 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
     async (workouts: WorkoutModel[]) => {
       const exercisePromises = workouts.map(async (workout) => {
         const exerciseCount = randomIntFromInterval(1, 6)
-        const exerciseIndexes = randomIntsFromInterval(0, exerciseSelect.length - 1, exerciseCount)
+        const exerciseIndexes = randomIntsFromInterval(0, exerciseSelectJSON.length - 1, exerciseCount)
 
         const exercises = await addExercisesToWorkout(workout, exerciseIndexes)
         return exercises
@@ -246,14 +224,7 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
   const getWorkoutById = useCallback(
     async (id: string) => {
       await workoutRepository
-        .getById(id, [
-          'exercises',
-          'exercises.sets',
-          'cardios',
-          'exercises.muscles',
-          'exercises.assistingMuscles',
-          'exercises.assistingMuscles.assistingMuscle',
-        ])
+        .getById(id, ['exercises', 'exercises.sets', 'cardios', 'exercises.exerciseSelect'])
         .then((w) => w && console.log(JSON.stringify(w, null, 2)))
     },
     [workoutRepository]
@@ -310,12 +281,17 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
       .getAll([
         'exercises',
         'exercises.sets',
-        'cardios',
-        'exercises.muscles',
-        'exercises.assistingMuscles',
-        'exercises.assistingMuscles.assistingMuscle',
+        'exercises.modifiers',
+        'exercises.exerciseSelect',
+        'exercises.exerciseSelect.muscles',
+        'exercises.exerciseSelect.assistingMuscles',
+        'exercises.exerciseSelect.modifiersAvailable',
+        'exercises.exerciseSelect.modifiersAvailable.modifier',
       ])
-      .then((workouts) => workouts && console.log(JSON.stringify(workouts, null, 4)))
+      .then(
+        (workouts) =>
+          workouts && console.log(JSON.stringify(workouts.slice(workouts.length - 5, workouts.length), null, 4))
+      )
   }
   const deleteExerciseSelect = async () => {
     await exerciseSelectRepository.deleteAll()
@@ -338,15 +314,7 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
   const onPressDec = () => setWorkoutCount((prevState) => prevState - 1)
 
   const data = [
-    {
-      text: 'Log workout by id',
-      fn: () => getWorkoutById(workoutCount),
-    },
-    {
-      text: 'Log exercise by id',
-      fn: () => getExerciseById(workoutCount),
-    },
-    { text: 'Log all workouts', fn: getAllWorkouts },
+    { text: 'Log last 5 workouts', fn: getAllWorkouts },
     {
       text: `Add ${workoutCount} random strength workouts`,
       fn: () => createCompleteWorkoutsInSteps(WorkoutEnum.EXERCISE),

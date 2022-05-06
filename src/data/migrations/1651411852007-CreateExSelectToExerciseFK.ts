@@ -1,14 +1,15 @@
 import { MigrationInterface, QueryRunner, TableForeignKey } from 'typeorm'
 
-export class CreateExerciseToMuscleFK1649559186904 implements MigrationInterface {
+export class CreateExSelectToExerciseFK1651411852007 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    console.log('ExerciseToMuscle FK created')
+    console.log('ExerciseSelect FK to exercises created')
+
     await queryRunner.createForeignKey(
       'exercises',
       new TableForeignKey({
-        name: 'ExerciseToMuscle',
-        columnNames: ['musclesId'],
-        referencedTableName: 'muscles',
+        name: 'ExerciseSelectToExercises',
+        columnNames: ['exerciseSelectId'],
+        referencedTableName: 'exerciseselect',
         referencedColumnNames: ['id'],
         onDelete: 'CASCADE',
         onUpdate: 'CASCADE',
@@ -17,6 +18,6 @@ export class CreateExerciseToMuscleFK1649559186904 implements MigrationInterface
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.dropForeignKey('exercises', 'ExerciseToMuscle')
+    await queryRunner.dropForeignKey('exercises', 'ExerciseSelectToExercises')
   }
 }
