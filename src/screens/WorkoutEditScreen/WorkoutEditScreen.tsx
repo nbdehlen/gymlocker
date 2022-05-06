@@ -16,6 +16,7 @@ import { DeepPartial } from 'typeorm'
 import ButtonGroup from '../../components/ButtonGroup'
 import 'react-native-get-random-values'
 import { v4 as uuidv4 } from 'uuid'
+import { ExMod } from '../../data/entities/ExMod'
 
 /**
  * add cardios,
@@ -37,9 +38,8 @@ type Props = OwnProps & {
 // TODO: when editing, workouts are not updated in details and calendar
 // IDEA: onSwipeLeft/right - delete button, undo?  different for if in edit mode?
 export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
-  const { workoutRepository, exerciseRepository, setRepository, muscleRepository } = useDatabaseConnection()
+  const { workoutRepository, exerciseRepository, setRepository, exModRepository } = useDatabaseConnection()
   const { workout } = route.params
-  console.log('in component', { workoutId: workout?.id })
   const dateRef = useRef({
     // TODO: use ISOString?
     startDate: workout.start,
@@ -82,26 +82,46 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
     }
   }
 
-  const saveWorkout = async (workoutData: WorkoutModel) => {
-    // TODO: Everytime I press save it creates a new workout
-    const { id: workoutId } = await workoutRepository.createOrUpdate(workoutData)
-    console.log('in saveWorkout', { workoutId })
+  const addModsToExercise = (exerciseIndex: number, modifiers: ExMod[]) => {
+    setExercises((prev) => {
+      return [
+        ...prev.slice(0, exerciseIndex),
+        {
+          ...prev[exerciseIndex],
+          modifiers,
+        },
+        ...prev.slice(exerciseIndex + 1, prev?.length),
+      ]
+    })
+  }
 
-    const exercisePromises = exercises.map(async (ex, i) => {
+  const saveWorkout = async (workoutData: WorkoutModel) => {
+    const { id: workoutId } = await workoutRepository.createOrUpdate(workoutData)
+
+    const exercisePromises = exercises.map(async (ex: ExerciseModel, i) => {
+      // Modifiers needs to be saved separately as some can be deleted and some added
       const res = await exerciseRepository.createOrUpdate({
-        ...ex,
+        id: ex.id,
+        workout_id: ex.workout_id,
+        exercise: ex.exercise,
+        exerciseSelectId: ex.exerciseSelectId,
         order: i,
+        sets: ex.sets,
       })
       return res
     })
 
     const exerciseP = await Promise.all(exercisePromises)
 
-    // TODO: Restructure state since we have to call things one by one like this. Especially sets as its own state
-    const setPromises = exerciseP.map(async (ex) => {
+    // TODO: Restructure state since we have to call things one by one like this.
+    // Especially sets as its own state
+    const setPromises = exerciseP.map(async (ex, i) => {
       ex.sets.map(async (set, i) => {
         await setRepository.createOrUpdate({ ...set, exerciseId: ex?.id, order: i })
       })
+
+      // Removing unwanted mods and saving the ones selected
+      await exModRepository.updateExModsForExercise(exercises?.[i]?.modifiers, ex?.id)
     })
 
     await Promise.all(setPromises)
@@ -188,8 +208,14 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
               <B.Spacer w={8} />
             </Collapse.Header>
             <Collapse.Body pt="lg" pb="none">
-              {item.exerciseSelect?.modifiersAvailable?.length > 0 && (
-                <ButtonGroup modifiersAvailable={item.exerciseSelect.modifiersAvailable} modifiers={item?.modifiers} />
+              {item?.exerciseSelect?.modifiersAvailable?.length > 0 && (
+                <ButtonGroup
+                  modifiersAvailable={item.exerciseSelect.modifiersAvailable}
+                  modifiers={item?.modifiers}
+                  exerciseIndex={index!}
+                  exerciseId={item.id}
+                  addModsToExercise={addModsToExercise}
+                />
               )}
               {item?.sets && (
                 <SetsTable
