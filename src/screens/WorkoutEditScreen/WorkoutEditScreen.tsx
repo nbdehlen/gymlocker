@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useCallback, useEffect, useRef, useState } from 'react'
-import { RouteProp } from '@react-navigation/core'
-import { Collapse, Div, Icon } from 'react-native-magnus'
+import { RouteProp, useNavigation } from '@react-navigation/core'
+import { Collapse, Div, Icon, Snackbar, SnackbarRef } from 'react-native-magnus'
 import { WorkoutParamList } from '../../navigation/navigationTypes'
 import { ScreenRoute } from '../../navigation/NAV_CONSTANTS'
 import theme, { B } from '../../utils/theme'
@@ -17,6 +17,7 @@ import ButtonGroup from '../../components/ButtonGroup'
 import 'react-native-get-random-values'
 import { v4 as uuidv4 } from 'uuid'
 import { ExMod } from '../../data/entities/ExMod'
+import { TouchableOpacity } from 'react-native'
 
 /**
  * add cardios,
@@ -28,6 +29,8 @@ import { ExMod } from '../../data/entities/ExMod'
  * onPress to open modal from bottom
  * onPress or something on exercise to see the muscles involved etc
  */
+
+const snackbarRef = React.createRef<SnackbarRef>()
 
 type OwnProps = {}
 
@@ -46,18 +49,19 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
     endDate: new Date(workout.start.getTime() + 60 * 60 * 1000),
   })
   const [exercises, setExercises] = useState<ExerciseModel[]>(workout?.exercises || [])
-  const exercisesLen = workout?.exercises?.length ?? 0
   const [expand, setExpand] = useState(false)
+  const navigation = useNavigation()
 
   useEffect(() => {
-    // NOTE: Not sure this will work
-    if (exercisesLen > 0 && workout.exercises?.length !== exercises.length) {
-      // NOTE: This useEffect is for when adding new exercises through drawer.
-      // It looks like it could break in multiple other cases.
-      setExercises(workout.exercises ?? [])
+    const hasExercises = exercises?.length > 0 || workout.exercises?.length > 0
+    const lastExerciseId = exercises[exercises?.length - 1]?.id
+    const lastWorkoutExerciseId = workout?.exercises[workout?.exercises.length - 1]?.id
+
+    if (hasExercises && lastExerciseId !== lastWorkoutExerciseId) {
+      setExercises((prevExercises) => [...prevExercises, workout?.exercises[workout?.exercises.length - 1]])
       setExpand(true)
     }
-  }, [workout, exercises, exercisesLen])
+  }, [workout, exercises])
 
   const onPressSaveWorkout = async () => {
     const newWorkoutData: WorkoutModel = {
@@ -70,6 +74,12 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
 
     try {
       saveWorkout(newWorkoutData)
+      if (snackbarRef.current) {
+        snackbarRef.current.show('Workout saved!', {
+          duration: 2000,
+          suffix: <Icon name="checkcircle" color="white" fontSize="2xl" fontFamily="AntDesign" />,
+        })
+      }
       /**
        * Toast pre success
        */
@@ -96,7 +106,7 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
   }
 
   const saveWorkout = async (workoutData: WorkoutModel) => {
-    const { id: workoutId } = await workoutRepository.createOrUpdate(workoutData)
+    await workoutRepository.createOrUpdate(workoutData)
 
     const exercisePromises = exercises.map(async (ex: ExerciseModel, i) => {
       // Modifiers needs to be saved separately as some can be deleted and some added
@@ -246,24 +256,48 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
   )
 
   return (
-    <DraggableFlatList
-      containerStyle={{ flex: 1, backgroundColor: theme.primary.color, paddingHorizontal: 20 }}
-      ListHeaderComponentStyle={{ marginBottom: 20 }}
-      ListHeaderComponent={<WorkoutTime forwardedRef={dateRef} />}
-      ListFooterComponentStyle={{ flex: 1, flexDirection: 'row', justifyContent: 'center', marginTop: 20 }}
-      ListFooterComponent={
-        <CustomButton
-          onPress={onPressSaveWorkout}
-          text="Save workout"
-          preset={ButtonEnum.PRIMARY}
-          containerProps={{ flex: 1 }}
-        />
-      }
-      data={exercises}
-      onDragEnd={({ data }) => setExercises(data)}
-      keyExtractor={(item, index) => `${item?.id ?? ''} ${item.exercise} ${index}`}
-      renderItem={renderItem}
-    />
+    <Div flex={1}>
+      <DraggableFlatList
+        containerStyle={{ flex: 1, backgroundColor: theme.primary.color, paddingHorizontal: 20 }}
+        ListHeaderComponentStyle={{ marginBottom: 20 }}
+        ListHeaderComponent={<WorkoutTime forwardedRef={dateRef} />}
+        ListFooterComponentStyle={{
+          flex: 1,
+          flexDirection: 'row',
+          justifyContent: 'center',
+          marginTop: 20,
+        }}
+        ListFooterComponent={
+          <CustomButton
+            onPress={onPressSaveWorkout}
+            text="Save workout"
+            preset={ButtonEnum.PRIMARY}
+            containerProps={{ flex: 1 }}
+          />
+        }
+        data={exercises}
+        onDragEnd={({ data }) => setExercises(data)}
+        keyExtractor={(item, index) => `${item?.id ?? ''} ${item.exercise} ${index}`}
+        renderItem={renderItem}
+      />
+      <TouchableOpacity
+        onPress={() => navigation.openDrawer()}
+        style={{
+          borderRadius: 100,
+          width: 60,
+          height: 60,
+          backgroundColor: theme.primary.onColor,
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'absolute',
+          bottom: 16,
+          right: 16,
+        }}
+      >
+        <Icon name="plus" fontFamily="AntDesign" fontSize={28} color={theme.primary.color} />
+      </TouchableOpacity>
+      <Snackbar fontSize={16} ref={snackbarRef} bg="green700" color="white" />
+    </Div>
   )
 }
 

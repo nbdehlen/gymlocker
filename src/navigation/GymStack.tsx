@@ -1,11 +1,12 @@
 import React, { FunctionComponent } from 'react'
 import { createStackNavigator } from '@react-navigation/stack'
 import { DrawerRoute, ScreenRoute } from './NAV_CONSTANTS'
-import theme from '../utils/theme'
+import theme, { B } from '../utils/theme'
 import { Div, Icon, Text } from 'react-native-magnus'
 import GymCalendarScreen from '../screens/GymCalendarScreen'
 import { TouchableOpacity } from 'react-native'
 import { CommonActions, RouteProp, useNavigation } from '@react-navigation/native'
+import { DrawerActions } from '@react-navigation/core'
 import WorkoutAddScreen from '../screens/WorkoutAddScreen'
 import WorkoutEditScreen from '../screens/WorkoutEditScreen'
 import WorkoutDetailsScreen from '../screens/WorkoutDetailsScreen'
@@ -22,7 +23,9 @@ type Props = {
 
 const Stack = createStackNavigator<WorkoutParamList>()
 //TODO: Cardio workout relstions broken?
-export const GymStack: FunctionComponent<Props> = ({ route, navigation }) => {
+export const GymStack: FunctionComponent<Props> = ({ route }) => {
+  // const onPressDrawerMenu = () => nav.openDrawer()
+
   return (
     <Stack.Navigator
       screenOptions={{
@@ -43,13 +46,13 @@ export const GymStack: FunctionComponent<Props> = ({ route, navigation }) => {
           backgroundColor: theme.primary.color,
           // backgroundColor: 'transparent',
           // height: 0,
-          elevation: 0
+          elevation: 0,
         },
         headerLeftContainerStyle: {
           marginBottom: 8,
-          marginLeft: 4
+          marginLeft: 4,
         },
-        headerTintColor: theme.primary.onColor
+        headerTintColor: theme.primary.onColor,
       }}
     >
       <Stack.Screen name={ScreenRoute.CALENDAR} component={GymCalendarScreen} options={{ headerShown: false }} />
@@ -108,9 +111,22 @@ export const GymStack: FunctionComponent<Props> = ({ route, navigation }) => {
       <Stack.Screen
         name={DrawerRoute.GYM_DRAWER}
         component={DrawerNavigation}
-        options={() => ({
-          headerRight: () => <Div />,
-          headerTitle: () => null
+        options={({ navigation }) => ({
+          headerRight: () => {
+            const onPress = () => {
+              navigation.dispatch(DrawerActions.toggleDrawer())
+            }
+
+            return (
+              <TouchableOpacity onPress={onPress}>
+                <Div mr={20} pb={8} flexDir="row">
+                  <B.Spacer w={8} />
+                  <Icon name="menu" fontFamily="Feather" color={theme.primary.onColor} fontSize={28} />
+                </Div>
+              </TouchableOpacity>
+            )
+          },
+          headerTitle: () => null,
         })}
       />
       <Stack.Screen name={ScreenRoute.WORKOUT_DETAILS} component={WorkoutDetailsScreen} />
