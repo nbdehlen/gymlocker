@@ -1,5 +1,5 @@
 import React, { FunctionComponent, ReactNode } from 'react'
-import { TouchableWithoutFeedback, TouchableWithoutFeedbackProps } from 'react-native'
+import { TouchableOpacity, TouchableWithoutFeedback, TouchableWithoutFeedbackProps } from 'react-native'
 import { Div, DivProps, IconProps, Text, TextProps } from 'react-native-magnus'
 import theme from '../utils/theme'
 
@@ -128,7 +128,9 @@ const CustomButton: FunctionComponent<Props> = ({
   const { touchableStyle = {}, containerStyle = {}, textStyle = {} } = preset ? styles[preset] : {}
 
   return (
-    <TouchableWithoutFeedback onPress={onPress} style={touchableStyle} {...touchableProps}>
+    // TouchableWithoutFeedback
+    // TouchableOpacity breaks styling - why?
+    <TouchableWithoutFeedback TouchableWithoutFeedback onPress={onPress} style={touchableStyle} {...touchableProps}>
       <Div {...(IconComponent && { flexDir: 'row' })} {...containerStyle} {...containerProps}>
         {!!IconComponent && !iconSuffix && <IconComponent {...iconProps} />}
         {text && (

@@ -53,6 +53,7 @@ const WorkoutDrawer: FunctionComponent<{ workout: WorkoutModel }> = ({ workout }
       exercises: workout.exercises ? [...workout.exercises, selectedExercise] : [selectedExercise],
     }
 
+    setDrawerIndex(0)
     navigation.navigate(ScreenRoute.WORKOUT_EDIT, { workout: newWorkout })
   }
 
