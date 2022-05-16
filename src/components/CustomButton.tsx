@@ -1,5 +1,6 @@
 import React, { FunctionComponent, ReactNode } from 'react'
-import { TouchableOpacity, TouchableWithoutFeedback, TouchableWithoutFeedbackProps } from 'react-native'
+import { TouchableOpacityProps } from 'react-native'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 import { Div, DivProps, IconProps, Text, TextProps } from 'react-native-magnus'
 import theme from '../utils/theme'
 
@@ -70,11 +71,12 @@ const styles = {
   [ButtonEnum.PRIMARY]: {
     touchableStyle: {},
     containerStyle: {
+      flexDir: 'row',
+      alignSelf: 'center',
       borderStyle: 'solid',
       borderWidth: 1,
       borderColor: theme.primary.border,
       justifyContent: 'center',
-      flexDir: 'row',
       rounded: 'md',
       py: 'md',
       px: 'lg',
@@ -110,7 +112,7 @@ type OwnProps = {
   children?: ReactNode
 }
 
-type Props = OwnProps & TouchableWithoutFeedbackProps
+type Props = OwnProps & TouchableOpacityProps
 
 const CustomButton: FunctionComponent<Props> = ({
   text,
@@ -124,13 +126,10 @@ const CustomButton: FunctionComponent<Props> = ({
   children,
   ...touchableProps
 }) => {
-  // const { touchableStyle = {}, containerStyle = {}, textStyle = {} } = getStyles(preset)
   const { touchableStyle = {}, containerStyle = {}, textStyle = {} } = preset ? styles[preset] : {}
 
   return (
-    // TouchableWithoutFeedback
-    // TouchableOpacity breaks styling - why?
-    <TouchableWithoutFeedback TouchableWithoutFeedback onPress={onPress} style={touchableStyle} {...touchableProps}>
+    <TouchableOpacity onPress={onPress} style={touchableStyle} {...touchableProps}>
       <Div {...(IconComponent && { flexDir: 'row' })} {...containerStyle} {...containerProps}>
         {!!IconComponent && !iconSuffix && <IconComponent {...iconProps} />}
         {text && (
@@ -138,10 +137,10 @@ const CustomButton: FunctionComponent<Props> = ({
             {text}
           </Text>
         )}
-        {children && { children }}
+        {children && children}
         {!!IconComponent && iconSuffix && <IconComponent {...iconProps} />}
       </Div>
-    </TouchableWithoutFeedback>
+    </TouchableOpacity>
   )
 }
 export default CustomButton

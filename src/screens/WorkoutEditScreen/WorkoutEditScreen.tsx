@@ -42,7 +42,7 @@ type Props = OwnProps & {
 // IDEA: onSwipeLeft/right - delete button, undo?  different for if in edit mode?
 export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
   const { workoutRepository, exerciseRepository, setRepository, exModRepository } = useDatabaseConnection()
-  const { workout } = route.params
+  const { workout, type } = route.params
   const dateRef = useRef({
     // TODO: use ISOString?
     startDate: workout.start,
@@ -54,14 +54,18 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
 
   useEffect(() => {
     const hasExercises = exercises?.length > 0 || workout.exercises?.length > 0
-    const lastExerciseId = exercises[exercises?.length - 1]?.id
     const lastWorkoutExerciseId = workout?.exercises[workout?.exercises.length - 1]?.id
 
-    if (hasExercises && lastExerciseId !== lastWorkoutExerciseId) {
+    // TODO: separate new exercise and workout when sending from drawer?
+    if (hasExercises && !exercises.find((ex) => ex?.id === lastWorkoutExerciseId) && type === 'add_exercise') {
       setExercises((prevExercises) => [...prevExercises, workout?.exercises[workout?.exercises.length - 1]])
       setExpand(true)
     }
-  }, [workout, exercises])
+  }, [workout, exercises, type])
+
+  const onPressAddMenu = () => {
+    navigation.openDrawer()
+  }
 
   const onPressSaveWorkout = async () => {
     const newWorkoutData: WorkoutModel = {
@@ -73,22 +77,23 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
     }
 
     try {
-      saveWorkout(newWorkoutData)
+      await saveWorkout(newWorkoutData)
       if (snackbarRef.current) {
         snackbarRef.current.show('Workout saved!', {
           duration: 2000,
           suffix: <Icon name="checkcircle" color="white" fontSize="2xl" fontFamily="AntDesign" />,
+          style: { backgroundColor: '#27a731' },
         })
       }
-      /**
-       * Toast pre success
-       */
     } catch (e) {
       console.log(e)
-      /**
-       * Toast fail
-       * there was an error -> your workout couldn't be saved
-       */
+      if (snackbarRef.current) {
+        snackbarRef.current.show('There was an error saving your workout, please try again!', {
+          duration: 2000,
+          suffix: <Icon name="closecircleo" color="white" fontSize="2xl" fontFamily="AntDesign" />,
+          style: { backgroundColor: '#a32222' },
+        })
+      }
     }
   }
 
@@ -235,18 +240,16 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
                   headers={['WEIGHT', 'REPS', 'RIR', 'EDIT']}
                 />
               )}
-              {/* <Div py="lg" /> */}
-              <Div flexDir="row" justifyContent="center" my="lg">
-                <CustomButton
-                  text="Add set"
-                  onPress={onPressAddSet}
-                  preset={ButtonEnum.PRIMARY}
-                  IconComponent={() => (
-                    <Icon fontSize="xl" fontFamily="AntDesign" name="plus" ml="sm" color={theme.primary.onColor} />
-                  )}
-                  iconSuffix
-                />
-              </Div>
+              <CustomButton
+                text="Add set"
+                onPress={onPressAddSet}
+                preset={ButtonEnum.PRIMARY}
+                IconComponent={() => (
+                  <Icon fontSize="xl" fontFamily="AntDesign" name="plus" ml="sm" color={theme.primary.onColor} />
+                )}
+                iconSuffix
+                containerProps={{ w: '40%' }}
+              />
             </Collapse.Body>
           </Collapse>
         </OpacityDecorator>
@@ -261,18 +264,13 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
         containerStyle={{ flex: 1, backgroundColor: theme.primary.color, paddingHorizontal: 20 }}
         ListHeaderComponentStyle={{ marginBottom: 20 }}
         ListHeaderComponent={<WorkoutTime forwardedRef={dateRef} />}
-        ListFooterComponentStyle={{
-          flex: 1,
-          flexDirection: 'row',
-          justifyContent: 'center',
-          marginTop: 20,
-        }}
+        ListFooterComponentStyle={{ marginTop: 20 }}
         ListFooterComponent={
           <CustomButton
             onPress={onPressSaveWorkout}
             text="Save workout"
             preset={ButtonEnum.PRIMARY}
-            containerProps={{ flex: 1 }}
+            containerProps={{ w: '100%' }}
           />
         }
         data={exercises}
@@ -281,7 +279,7 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
         renderItem={renderItem}
       />
       <TouchableOpacity
-        onPress={() => navigation.openDrawer()}
+        onPress={onPressAddMenu}
         style={{
           borderRadius: 100,
           width: 60,
@@ -296,7 +294,7 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
       >
         <Icon name="plus" fontFamily="AntDesign" fontSize={28} color={theme.primary.color} />
       </TouchableOpacity>
-      <Snackbar fontSize={16} ref={snackbarRef} bg="green700" color="white" />
+      <Snackbar fontSize={16} ref={snackbarRef} bg="transparent" color="white" p={10} m={0} borderRadius={10} />
     </Div>
   )
 }

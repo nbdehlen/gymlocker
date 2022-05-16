@@ -54,7 +54,7 @@ const WorkoutDrawer: FunctionComponent<{ workout: WorkoutModel }> = ({ workout }
     }
 
     setDrawerIndex(0)
-    navigation.navigate(ScreenRoute.WORKOUT_EDIT, { workout: newWorkout })
+    navigation.navigate(ScreenRoute.WORKOUT_EDIT, { workout: newWorkout, type: 'add_exercise' })
   }
 
   // TODO: Hide header and simulate back button?

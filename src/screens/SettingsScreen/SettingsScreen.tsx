@@ -392,9 +392,7 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
 
   const renderItem: ListRenderItem<ItemProps> = useCallback(
     ({ item }) => (
-      <Div alignItems="center">
-        <CustomButton onPress={item.fn} text={item.text} preset={ButtonEnum.PRIMARY} containerProps={{ w: '80%' }} />
-      </Div>
+      <CustomButton onPress={item.fn} text={item.text} preset={ButtonEnum.PRIMARY} containerProps={{ w: '80%' }} />
     ),
     []
   )
