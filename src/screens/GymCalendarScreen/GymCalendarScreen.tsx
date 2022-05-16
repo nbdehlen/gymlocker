@@ -243,6 +243,7 @@ export const GymCalendarScreen: FunctionComponent<Props> = () => {
               <Icon fontSize="xl" fontFamily="AntDesign" name="plus" ml="sm" color={theme.primary.onColor} />
             )}
             iconSuffix
+            containerProps={{ w: '100%' }}
           />
           <Div mt="2xl" />
           {selectedWorkouts &&
