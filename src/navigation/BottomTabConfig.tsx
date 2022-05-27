@@ -1,10 +1,9 @@
 import React from 'react'
 import { ParamListBase, RouteProp } from '@react-navigation/core'
-import { ScreenRoute, StackRoute, TabRoute } from './NAV_CONSTANTS'
+import { ScreenRoute, StackRoute } from './NAV_CONSTANTS'
 import theme from '../utils/theme'
 import { Icon } from 'react-native-magnus'
-import { getThemeColor } from 'react-native-magnus/lib/typescript/src/theme/theme.service'
-import { BottomTabBarOptions, BottomTabNavigationOptions } from '@react-navigation/bottom-tabs'
+import { BottomTabBarOptions } from '@react-navigation/bottom-tabs'
 
 type TabBarIconProps = {
   focused: boolean
@@ -12,7 +11,7 @@ type TabBarIconProps = {
   size: number
 }
 
-const iconSize = 22
+const iconSize = 28
 
 export const screenOptions = (route: RouteProp<ParamListBase, string>) => ({
   tabBarIcon: ({ focused, color, size }: TabBarIconProps) => {
@@ -60,7 +59,6 @@ export const screenOptions = (route: RouteProp<ParamListBase, string>) => ({
 })
 
 export const tabBarOptions: BottomTabBarOptions = {
-  // tabStyle: { flexDirection: 'row', alignItems: 'flex-start' },
   keyboardHidesTabBar: true,
   showLabel: false,
   style: {

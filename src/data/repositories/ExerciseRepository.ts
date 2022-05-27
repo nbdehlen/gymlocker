@@ -1,4 +1,4 @@
-import { Connection, DeepPartial, Repository } from 'typeorm'
+import { Connection, DeepPartial, Repository, SelectQueryBuilder } from 'typeorm'
 import { ExerciseModel } from '../entities/ExerciseModel'
 import { ExMod } from '../entities/ExMod'
 import { SetModel } from '../entities/SetModel'
@@ -11,6 +11,12 @@ export interface ICreateExerciseData {
   workout_id?: string
   sets?: Array<SetModel | ICreateSetData> // TODO: Not sure this is viable
   modifiers?: ExMod[]
+}
+
+export interface MusclesCount {
+  count: number
+  muscles_id: string
+  muscles_muscle: string
 }
 
 export class ExerciseRepository {
@@ -64,9 +70,6 @@ export class ExerciseRepository {
     return data
   }
 
-  // Using Math.random() as id on frontend for exercises that haven't been
-  // created yet. A unique identifier is required for react keys.
-  // Yes, it might not have been a good idea ;-)
   public async createOrUpdate(exerciseData: DeepPartial<ExerciseModel>): Promise<ExerciseModel> {
     const res = await this.ormRepository.save(exerciseData)
     return res
@@ -84,5 +87,27 @@ export class ExerciseRepository {
 
   public async deleteAll(): Promise<void> {
     await this.ormRepository.clear()
+  }
+
+  public async getMuscleCounts(from: string): Promise<MusclesCount[]> {
+    const res = await this.ormRepository
+      .createQueryBuilder('exercise')
+      .select('exercise.exerciseSelectId AS select_id')
+      .leftJoinAndSelect('exercise.exerciseSelect', 'exercise_select')
+      .leftJoinAndSelect('exercise_select.muscles', 'muscles')
+      .leftJoinAndSelect('exercise.workout', 'workout')
+      .select('muscles.muscle')
+      .addSelect('workout.start')
+      .where('workout.start >= :from', { from })
+      .addSelect('COUNT(*) AS count')
+      .groupBy('exercise_select.muscles')
+      .orderBy('count', 'ASC')
+      .getRawMany()
+
+    return res
+  }
+
+  public queryBuilder(initialColumn: string): SelectQueryBuilder<any> {
+    return this.ormRepository.createQueryBuilder().select(initialColumn)
   }
 }

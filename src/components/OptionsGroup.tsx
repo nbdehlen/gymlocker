@@ -8,9 +8,9 @@ const compare = (option: OptionsGroupData, selected: OptionsGroupData[]): boolea
   return res?.length > 0
 }
 
-type OptionsGroupData = {
+export type OptionsGroupData = {
   id: string | number
-} & { [key: string]: string }
+} & { [key: string]: string | number }
 
 type OwnProps = {
   optionsTitle: string
@@ -70,7 +70,7 @@ const OptionsGroup: FunctionComponent<Props> = ({
 
         return (
           <Div mr={marginRight} key={String(i)}>
-            <CustomButton text={option[displayKey]} onPress={toggleMods} preset={buttonPreset} />
+            <CustomButton text={String(option[displayKey])} onPress={toggleMods} preset={buttonPreset} />
           </Div>
         )
       })}
