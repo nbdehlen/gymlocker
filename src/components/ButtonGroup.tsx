@@ -45,7 +45,7 @@ const ButtonGroup: FunctionComponent<Props> = ({
   }
 
   return (
-    <Div flexDir="row" mb={16} justifyContent="flex-start">
+    <Div flexDir="row" mb={16} justifyContent="flex-start" flexWrap="wrap">
       <Text color={theme.light_1} fontSize={15} fontWeight="bold">
         Options:
       </Text>
