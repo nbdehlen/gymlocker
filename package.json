@@ -46,6 +46,7 @@
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.31",
     "uuid": "^8.3.2",
+    "validate-color": "^2.2.1",
     "victory-native": "^36.3.2"
   },
   "devDependencies": {
