@@ -72,20 +72,26 @@ const SetsTable: FunctionComponent<ExerciseTableProps> = ({ exercise, exerciseIn
                       value={sets[i].weight_kg > 0 ? String(sets[i].weight_kg) : ''}
                       preset={InputEnum.SET_INPUT}
                       onChangeText={(e) => onChange(e, i, 'weight')}
+                      placeholder={'0'}
+                      keyboardType={'number-pad'}
                     />
                   </Div>
                   <Div alignItems="center" flex={1} py="md">
                     <CustomInput
                       value={sets[i].repetitions > 0 ? String(sets[i].repetitions) : ''}
                       onChangeText={(e) => onChange(e, i, 'repetitions')}
+                      placeholder={'0'}
                       preset={InputEnum.SET_INPUT}
+                      keyboardType={'number-pad'}
                     />
                   </Div>
                   <Div alignItems="center" flex={1} py="md">
                     <CustomInput
                       value={typeof sets[i].rir === 'number' ? String(sets[i].rir) : ''}
                       onChangeText={(e) => onChange(e, i, 'rir')}
+                      placeholder={'0'}
                       preset={InputEnum.SET_INPUT}
+                      keyboardType={'number-pad'}
                     />
                   </Div>
                 </>
@@ -93,13 +99,15 @@ const SetsTable: FunctionComponent<ExerciseTableProps> = ({ exercise, exerciseIn
               {!inputMode && (
                 <>
                   <Div alignItems="center" flex={1} pt="md" pb={i === sets?.length - 1 ? 'lg' : 'md'}>
-                    <Text style={{ fontSize: 14, color: theme.light_1 }}>{set?.weight_kg} kg</Text>
+                    <Text style={{ fontSize: 14, color: theme.light_1 }}>
+                      {set.weight_kg ? `${set.weight_kg} kg` : 'bw'}
+                    </Text>
                   </Div>
                   <Div alignItems="center" flex={1} pt="md" pb={i === sets?.length - 1 ? 'lg' : 'md'}>
-                    <Text style={{ fontSize: 14, color: theme.light_1 }}>{set?.repetitions}</Text>
+                    <Text style={{ fontSize: 14, color: theme.light_1 }}>{set?.repetitions ?? 0}</Text>
                   </Div>
                   <Div alignItems="center" flex={1} pt="md" pb={i === sets?.length - 1 ? 'lg' : 'md'}>
-                    <Text style={{ fontSize: 14, color: theme.light_1 }}>{set?.rir}</Text>
+                    <Text style={{ fontSize: 14, color: theme.light_1 }}>{set?.rir ?? 0}</Text>
                   </Div>
                 </>
               )}
