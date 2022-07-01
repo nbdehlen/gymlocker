@@ -35,6 +35,12 @@ export class MuscleRepository {
     })
   }
 
+  public async getByIds(ids: string[]): Promise<MuscleModel[]> {
+    return await this.ormRepository.find({
+      where: { id: In(ids) },
+    })
+  }
+
   public async muscleIdExists(id: string): Promise<boolean> {
     const muscle = await this.ormRepository.find({ where: { id } })
     if (muscle) {

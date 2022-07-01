@@ -47,7 +47,8 @@
     "typeorm": "^0.2.31",
     "uuid": "^8.3.2",
     "validate-color": "^2.2.1",
-    "victory-native": "^36.3.2"
+    "victory-native": "^36.3.2",
+    "@react-native-community/slider": "4.1.12"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

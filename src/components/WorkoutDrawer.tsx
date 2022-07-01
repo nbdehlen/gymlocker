@@ -70,7 +70,7 @@ const WorkoutDrawer: FunctionComponent<{ workout: WorkoutModel }> = ({ workout }
           <CustomButton text="Cardio" onPress={() => { }} preset={ButtonEnum.LIST_ITEM} />
 
           {/* TODO: Memoize this */}
-          {muscles.muscles.map((muscle, i) => (
+          {muscles.map((muscle, i) => (
             <CustomButton
               onPress={() => onPressMuscle(muscle.muscle)}
               key={i}

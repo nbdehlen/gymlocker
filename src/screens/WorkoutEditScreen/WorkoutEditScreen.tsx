@@ -17,8 +17,8 @@ import ButtonGroup from '../../components/ButtonGroup'
 import 'react-native-get-random-values'
 import { v4 as uuidv4 } from 'uuid'
 import { ExMod } from '../../data/entities/ExMod'
-import { TouchableOpacity, TouchableWithoutFeedback } from 'react-native'
-import Animated, { FadeInUp, FadeOutUp } from 'react-native-reanimated'
+import { TouchableWithoutFeedback } from 'react-native'
+import Animated, { FadeInUp } from 'react-native-reanimated'
 
 /**
  * add cardios,
@@ -103,16 +103,16 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
       await saveWorkout(newWorkoutData)
       if (snackbarRef.current) {
         snackbarRef.current.show('Workout saved!', {
-          duration: 2000,
+          duration: 1000,
           suffix: <Icon name="checkcircle" color="white" fontSize="2xl" fontFamily="AntDesign" />,
-          style: { backgroundColor: '#27a731' },
+          style: { backgroundColor: '#40ad49' },
         })
       }
     } catch (e) {
       console.log(e)
       if (snackbarRef.current) {
         snackbarRef.current.show('There was an error saving your workout, please try again!', {
-          duration: 2000,
+          duration: 1000,
           suffix: <Icon name="closecircleo" color="white" fontSize="2xl" fontFamily="AntDesign" />,
           style: { backgroundColor: '#a32222' },
         })
@@ -262,7 +262,7 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
           </TouchableWithoutFeedback>
 
           {shouldExpand(item.id) && (
-            <Animated.View entering={FadeInUp.duration(100)} exiting={FadeOutUp.duration(50)}>
+            <Animated.View entering={FadeInUp.duration(100)}>
               <Div pt="lg" pb="none">
                 {item?.exerciseSelect?.modifiersAvailable?.length > 0 && (
                   <ButtonGroup
@@ -334,22 +334,6 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
         keyExtractor={(item, index) => `${item?.id ?? ''} ${item.exercise} ${index}`}
         renderItem={renderItem}
       />
-      <TouchableOpacity
-        onPress={onPressAddMenu}
-        style={{
-          borderRadius: 100,
-          width: 60,
-          height: 60,
-          backgroundColor: theme.primary.onColor,
-          justifyContent: 'center',
-          alignItems: 'center',
-          position: 'absolute',
-          bottom: 16,
-          right: 16,
-        }}
-      >
-        <Icon name="plus" fontFamily="AntDesign" fontSize={28} color={theme.primary.color} />
-      </TouchableOpacity>
       <Snackbar fontSize={16} ref={snackbarRef} bg="transparent" color="white" p={10} m={0} borderRadius={10} />
     </Div>
   )
