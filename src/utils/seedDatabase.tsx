@@ -9,7 +9,6 @@ import { MuscleModel } from '../data/entities/MuscleModel'
 import { ModifierModel } from '../data/entities/ModifierModel'
 import { ExerciseSelectModel } from '../data/entities/ExerciseSelectModel'
 import { ExSelectAssist } from '../data/entities/ExSelectAssist'
-// import { WorkoutModel } from '../data/entities/WorkoutModel'
 
 async function seedModifiers(connection: Connection) {
   const modifierCon = connection.getRepository<ModifierModel>('modifiers')
@@ -27,7 +26,7 @@ async function seedMuscles(connection: Connection) {
   const hasMuscles = await musclesCon.findOne()
 
   if (!hasMuscles) {
-    const musclesWithIds = await musclesCon.create(muscles.muscles)
+    const musclesWithIds = musclesCon.create(muscles)
     await musclesCon.save(musclesWithIds)
   }
 }

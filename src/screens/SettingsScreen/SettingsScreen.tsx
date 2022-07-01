@@ -11,13 +11,10 @@ import { WorkoutModel } from '../../data/entities/WorkoutModel'
 import { ExerciseModel } from '../../data/entities/ExerciseModel'
 import { CardioModel } from '../../data/entities/CardioModel'
 import { ICreateCardioData } from '../../data/repositories/CardioRepository'
-import { ICreateExerciseData } from '../../data/repositories/ExerciseRepository'
 import { clearAsyncStorage, logAsyncStorage } from '../../utils/asyncStorage'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { FlatList, ListRenderItem } from 'react-native'
 import CustomButton, { ButtonEnum } from '../../components/CustomButton'
-import { ICreateExAssistData } from '../../data/repositories/ExAssistRepository'
-import { ICreateExModData } from '../../data/repositories/ExModRepository'
 import 'react-native-get-random-values'
 import { v4 as uuidv4 } from 'uuid'
 import { ExMod } from '../../data/entities/ExMod'
@@ -51,7 +48,6 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
     exerciseSelectRepository,
     muscleRepository,
     exSelectAssistRepository,
-    exAssistRepository,
     modifierRepository,
     exSelectModAvailableRepository,
     exModRepository,
@@ -298,7 +294,6 @@ export const SettingsScreen: FunctionComponent<Props> = () => {
     await exSelectAssistRepository.deleteAll()
     await exSelectModAvailableRepository.deleteAll()
     await muscleRepository.deleteAll()
-    await exAssistRepository.deleteAll()
     await modifierRepository.deleteAll()
     await exModRepository.deleteAll()
   }

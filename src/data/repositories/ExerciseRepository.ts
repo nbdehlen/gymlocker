@@ -14,9 +14,10 @@ export interface ICreateExerciseData {
 }
 
 export interface MusclesCount {
-  count: number
-  muscles_id: string
-  muscles_muscle: string
+  count?: number
+  ast_count?: number
+  muscle: string
+  workout_start: string
 }
 
 export class ExerciseRepository {
@@ -96,12 +97,33 @@ export class ExerciseRepository {
       .leftJoinAndSelect('exercise.exerciseSelect', 'exercise_select')
       .leftJoinAndSelect('exercise_select.muscles', 'muscles')
       .leftJoinAndSelect('exercise.workout', 'workout')
-      .select('muscles.muscle')
+      .select('muscles.muscle', 'muscle')
       .addSelect('workout.start')
       .where('workout.start >= :from', { from })
       .addSelect('COUNT(*) AS count')
-      .groupBy('exercise_select.muscles')
+      .andWhere('muscle is not null')
+      .groupBy('muscle')
       .orderBy('count', 'ASC')
+      .getRawMany()
+
+    return res
+  }
+
+  public async getAstMuscleCounts(from: string, weighting: number): Promise<MusclesCount[]> {
+    const res = await this.ormRepository
+      .createQueryBuilder('exercise')
+      .select('exercise.exerciseSelectId AS select_id')
+      .leftJoinAndSelect('exercise.exerciseSelect', 'exercise_select')
+      .leftJoinAndSelect('exercise_select.assistingMuscles', 'exselectassist')
+      .leftJoinAndSelect('exselectassist.assistingMuscles', 'assisting_muscles')
+      .leftJoinAndSelect('exercise.workout', 'workout')
+      .select('workout.start')
+      .where('workout.start >= :from', { from })
+      .addSelect('assisting_muscles.muscle', 'muscle')
+      .addSelect(`sum(${weighting}) AS ast_count`)
+      .andWhere('muscle is not null')
+      .groupBy('muscle')
+      .orderBy('ast_count', 'ASC')
       .getRawMany()
 
     return res
