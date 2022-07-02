@@ -1,6 +1,6 @@
 import 'reflect-metadata'
 import 'react-native-gesture-handler'
-import { NavigationContainer } from '@react-navigation/native'
+import { NavigationContainer, DefaultTheme } from '@react-navigation/native'
 import React, { FunctionComponent, useEffect } from 'react'
 import { ThemeProvider } from 'react-native-magnus'
 import { DatabaseConnectionProvider } from './data/Connection'
@@ -22,6 +22,15 @@ if (Platform.OS === 'android') {
 
 const magnusTheme = {}
 
+const navTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    // avoid flashing white background color during screen transitions
+    background: theme.background,
+  },
+}
+
 export const App: FunctionComponent = () => {
   useEffect(() => {
     const checkInstall = async () => {
@@ -39,7 +48,7 @@ export const App: FunctionComponent = () => {
         <SafeAreaProvider>
           <GestureHandlerRootView style={{ flex: 1 }}>
             <StatusBar style="light" backgroundColor={theme.primary.color} />
-            <NavigationContainer>
+            <NavigationContainer theme={navTheme}>
               <BottomTabNavigation />
             </NavigationContainer>
           </GestureHandlerRootView>
