@@ -165,10 +165,9 @@ export const ChartsScreen: FunctionComponent<Props> = () => {
           {mergedMuscles.length > 1 && (
             <VictoryChart
               domainPadding={{ y: 20, x: 12 }}
-              padding={{ left: 100, top: 40, bottom: 40, right: 20 }}
+              padding={{ left: 100, top: 40, bottom: 40, right: 24 }}
               // TODO: height based on muscles count
               // TODO: Click label 'quads' to see quads sets week over week and similar
-              // TODO: Fix slider
               height={mergedMuscles.length > 10 ? 600 : 300}
               width={Dimensions.get('window').width}
             >

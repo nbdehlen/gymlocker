@@ -45,9 +45,8 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
   const { workoutRepository, exerciseRepository, setRepository, exModRepository } = useDatabaseConnection()
   const { workout, type } = route.params
   const dateRef = useRef({
-    // TODO: use ISOString?
     startDate: workout.start,
-    endDate: new Date(workout.start.getTime() + 60 * 60 * 1000),
+    endDate: workout.end,
   })
   const [exercises, setExercises] = useState<ExerciseModel[]>(workout?.exercises || [])
   const [expand, setExpand] = useState<string[]>([])
@@ -282,25 +281,12 @@ export const WorkoutEditScreen: FunctionComponent<Props> = ({ route }) => {
                   />
                 )}
                 <Div flexDir="row" justifyContent="center" m={8}>
-                  <CustomButton
-                    text="Add set"
-                    onPress={onPressAddSet}
-                    preset={ButtonEnum.PRIMARY}
-                  // IconComponent={() => (
-                  //   <Icon fontSize="xl" fontFamily="AntDesign" name="plus" ml="sm" color={theme.primary.onColor} />
-                  // )}
-                  // iconSuffix
-                  // containerProps={{ w: '40%' }}
-                  />
+                  <CustomButton text="Add set" onPress={onPressAddSet} preset={ButtonEnum.PRIMARY} />
                   {typeof index === 'number' && item?.sets?.length > 0 && (
                     <CustomButton
                       text="Copy set"
                       onPress={onPressCopySet}
                       preset={ButtonEnum.PRIMARY}
-                      // IconComponent={() => (
-                      //   <Icon fontSize="xl" fontFamily="AntDesign" name="plus" ml="sm" color={theme.primary.onColor} />
-                      // )}
-                      // iconSuffix
                       containerProps={{ ml: 16 }}
                     />
                   )}
